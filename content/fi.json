@@ -6,8 +6,9 @@
   "location": "[CITY], Suomi",
   "education": [
     {
-      "id": "edu-1",
-      "degree": "[DEGREE FI]"
+      "degree": "[DEGREE FI]",
+      "school": "[SCHOOL]",
+      "years": "[YYYY–YYYY]"
     }
   ],
   "certifications": [
@@ -65,5 +66,15 @@
       "languages": "kielet",
       "contact": "yhteystiedot"
     }
-  }
+  },
+  "hero": {
+    "prompt": "whoami",
+    "tagline": "[TAGLINE FI]",
+    "status": [
+      "[CITY], Suomi",
+      "[WHAT I AM LOOKING FOR FI]",
+      "[AVAILABILITY FI]"
+    ]
+  },
+  "footer": "[SIGN-OFF FI]"
 }

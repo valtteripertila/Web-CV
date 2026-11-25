@@ -48,23 +48,6 @@ def add_role():
 
 
 def add_project():
-  kind = ask("Type (hackathon or personal)").lower()
-  if kind not in ("hackathon", "personal"):
-    raise ValueError("Type must be hackathon or personal")
-  featured = ask("Featured? (y/N)").lower() in ("y", "yes")
-  entry = {
-    "type": kind, "featured": featured, "title": ask("Title"), "date": ask("Date (YYYY or MM/YYYY)"),
-    "event": ask("Event (hackathons only; blank otherwise)"),
-    "result": {"en": ask("Result EN (blank if none)"), "fi": ask("Result FI (blank if none)")},
-    "role": {"en": ask("Role EN (blank if none)"), "fi": ask("Role FI (blank if none)")},
-    "description": {"en": ask("Description EN"), "fi": ask("Description FI")},
-    "tags": [tag.strip() for tag in ask("Tags (comma-separated)").split(",") if tag.strip()],
-    "links": {"demo": ask("Demo URL (blank if none)"), "code": ask("Code URL (blank if none)"), "writeup": ask("Write-up URL (blank if none)")},
-  }
-  add_entry("projects.json", entry)
-
-
-def add_project():
   kind=ask("Type (hackathon or personal)").lower()
   if kind not in ("hackathon","personal"): raise ValueError("Type must be hackathon or personal")
   entry={"type":kind,"featured":ask("Featured? (y/N)").lower() in ("y","yes"),"title":ask("Title"),"date":ask("Date (YYYY or MM/YYYY)"),"event":ask("Event (blank for none)"),"result":{"en":ask("Result EN (blank for none)"),"fi":ask("Result FI (blank for none)")},"role":{"en":ask("Role EN (blank for none)"),"fi":ask("Role FI (blank for none)")},"description":{"en":ask("Description EN"),"fi":ask("Description FI")},"tags":[v.strip() for v in ask("Tags (comma-separated)").split(",") if v.strip()],"links":{"demo":ask("Demo URL (blank for none)"),"code":ask("Code URL (blank for none)"),"writeup":ask("Write-up URL (blank for none)")}}

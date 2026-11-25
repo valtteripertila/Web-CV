@@ -4,12 +4,5 @@
   "email": "[EMAIL]",
   "linkedin": "[LINKEDIN URL or leave empty string]",
   "github": "[GITHUB URL or leave empty string]",
-  "domain": "https://[YOUR-DOMAIN]",
-  "education": [
-    {
-      "id": "edu-1",
-      "school": "[SCHOOL]",
-      "years": "[YYYY–YYYY]"
-    }
-  ]
+  "domain": "https://[YOUR-DOMAIN]"
 }
