@@ -86,6 +86,8 @@
     "meta_title": "[FULL NAME] – [HEADLINE EN]",
     "meta_description": "[ONE SENTENCE PAGE DESCRIPTION EN]",
     "notFoundTitle": "Page not found",
-    "notFoundText": "The page you are looking for does not exist."
+    "notFoundText": "The page you are looking for does not exist.",
+    "themeToLight": "Switch to light theme",
+    "themeToDark": "Switch to dark theme"
   }
 }

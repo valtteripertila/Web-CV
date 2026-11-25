@@ -57,8 +57,8 @@ def validate(shared, en, fi, errors):
   check_keys(shared, ["name", "initials", "email", "linkedin", "github", "domain", "experience", "education", "projects"], "shared.json", errors)
   check_keys(en, ["lang", "locale", "headline", "summary", "location", "experience", "education", "certifications", "skills", "languages", "projects", "ui"], "en.json", errors)
   check_keys(fi, ["lang", "locale", "headline", "summary", "location", "experience", "education", "certifications", "skills", "languages", "projects", "ui"], "fi.json", errors)
-  check_keys(en.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "en.json", errors, "ui.")
-  check_keys(fi.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "fi.json", errors, "ui.")
+  check_keys(en.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "en.json", errors, "ui.")
+  check_keys(fi.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "fi.json", errors, "ui.")
   item_keys = {
     "shared.json": {"experience": ["id", "employer", "start", "end"], "education": ["id", "school", "years"], "projects": ["id", "tags", "url", "code"]},
     "en.json": {"experience": ["id", "role", "achievements"], "education": ["id", "degree"], "projects": ["id", "title", "description"]},
@@ -183,7 +183,8 @@ def page(lang, shared, text):
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{esc(text['ui']['meta_title'])}</title>
   <meta name="description" content="{esc(text['ui']['meta_description'])}">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#101614">
   <link rel="canonical" href="{esc(canonical)}">
   <link rel="alternate" hreflang="en" href="{esc(en_path)}">
   <link rel="alternate" hreflang="fi" href="{esc(fi_path)}">
@@ -194,6 +195,7 @@ def page(lang, shared, text):
   <meta property="og:url" content="{esc(canonical)}">
   <meta property="og:locale" content="{esc(text['locale'])}">
   <link rel="icon" href="{root}favicon.svg" type="image/svg+xml">
+  <script src="{root}theme.js"></script>
   <link rel="stylesheet" href="{root}style.css">
   <script type="application/ld+json">{json_ld_text}</script>
 </head>
@@ -206,6 +208,7 @@ def page(lang, shared, text):
       <nav class="language-switch" aria-label="{'Kieli' if fi else 'Language'}">
         <a href="{root}"{' aria-current="page"' if not fi else ''}>EN</a><span aria-hidden="true">|</span><a href="{other_path}"{' aria-current="page"' if fi else ''}>FI</a>
       </nav>
+      <button class="theme-toggle" type="button" aria-pressed="false" data-light-label="{esc(text['ui']['themeToLight'])}" data-dark-label="{esc(text['ui']['themeToDark'])}" aria-label="{esc(text['ui']['themeToLight'])}">{esc(text['ui']['themeToLight'])}</button>
     </div>
   </header>
   <main id="main">

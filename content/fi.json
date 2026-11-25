@@ -86,6 +86,8 @@
     "meta_title": "[FULL NAME] – [HEADLINE FI]",
     "meta_description": "[ONE SENTENCE PAGE DESCRIPTION FI]",
     "notFoundTitle": "Sivua ei löytynyt",
-    "notFoundText": "Etsimääsi sivua ei ole olemassa."
+    "notFoundText": "Etsimääsi sivua ei ole olemassa.",
+    "themeToLight": "Vaihda vaaleaan teemaan",
+    "themeToDark": "Vaihda tummaan teemaan"
   }
 }
