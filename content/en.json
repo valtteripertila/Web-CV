@@ -5,26 +5,72 @@
   "summary": "[2-3 SENTENCE SUMMARY EN]",
   "location": "[CITY], Finland",
   "experience": [
-    { "id": "job-1", "role": "[ROLE 1 EN]", "achievements": ["[ACHIEVEMENT 1 EN]", "[ACHIEVEMENT 2 EN]", "[ACHIEVEMENT 3 EN]"] },
-    { "id": "job-2", "role": "[ROLE 2 EN]", "achievements": ["[ACHIEVEMENT 1 EN]", "[ACHIEVEMENT 2 EN]"] }
+    {
+      "id": "job-1",
+      "role": "[ROLE 1 EN]",
+      "achievements": [
+        "[ACHIEVEMENT 1 EN]",
+        "[ACHIEVEMENT 2 EN]",
+        "[ACHIEVEMENT 3 EN]"
+      ]
+    },
+    {
+      "id": "job-2",
+      "role": "[ROLE 2 EN]",
+      "achievements": [
+        "[ACHIEVEMENT 1 EN]",
+        "[ACHIEVEMENT 2 EN]"
+      ]
+    }
   ],
   "education": [
-    { "id": "edu-1", "degree": "[DEGREE EN]" }
+    {
+      "id": "edu-1",
+      "degree": "[DEGREE EN]"
+    }
   ],
-  "certifications": ["[CERTIFICATION EN]"],
+  "certifications": [
+    "[CERTIFICATION EN]"
+  ],
   "skills": [
-    { "group": "[SKILL GROUP EN]", "items": ["[SKILL]", "[SKILL]"] },
-    { "group": "[SKILL GROUP EN]", "items": ["[SKILL]", "[SKILL]"] }
+    {
+      "group": "[SKILL GROUP EN]",
+      "items": [
+        "[SKILL]",
+        "[SKILL]"
+      ]
+    },
+    {
+      "group": "[SKILL GROUP EN]",
+      "items": [
+        "[SKILL]",
+        "[SKILL]"
+      ]
+    }
   ],
-  "languages": ["[LANGUAGE EN, e.g. Finnish (native)]", "[LANGUAGE EN, e.g. English (fluent)]"],
+  "languages": [
+    "[LANGUAGE EN, e.g. Finnish (native)]",
+    "[LANGUAGE EN, e.g. English (fluent)]"
+  ],
   "projects": [
-    { "id": "project-1", "title": "[PROJECT 1 TITLE EN]", "description": "[1-2 SENTENCES EN]" },
-    { "id": "project-2", "title": "[PROJECT 2 TITLE EN]", "description": "[1-2 SENTENCES EN]" },
-    { "id": "project-3", "title": "[PROJECT 3 TITLE EN]", "description": "[1-2 SENTENCES EN]" }
+    {
+      "id": "project-1",
+      "title": "[PROJECT 1 TITLE EN]",
+      "description": "[1-2 SENTENCES EN]"
+    },
+    {
+      "id": "project-2",
+      "title": "[PROJECT 2 TITLE EN]",
+      "description": "[1-2 SENTENCES EN]"
+    },
+    {
+      "id": "project-3",
+      "title": "[PROJECT 3 TITLE EN]",
+      "description": "[1-2 SENTENCES EN]"
+    }
   ],
   "ui": {
     "skip": "Skip to content",
-    "download": "Download CV (PDF)",
     "about": "About",
     "experience": "Experience",
     "projects": "Projects",

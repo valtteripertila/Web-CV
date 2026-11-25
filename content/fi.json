@@ -5,26 +5,72 @@
   "summary": "[2-3 SENTENCE SUMMARY FI]",
   "location": "[CITY], Suomi",
   "experience": [
-    { "id": "job-1", "role": "[ROLE 1 FI]", "achievements": ["[ACHIEVEMENT 1 FI]", "[ACHIEVEMENT 2 FI]", "[ACHIEVEMENT 3 FI]"] },
-    { "id": "job-2", "role": "[ROLE 2 FI]", "achievements": ["[ACHIEVEMENT 1 FI]", "[ACHIEVEMENT 2 FI]"] }
+    {
+      "id": "job-1",
+      "role": "[ROLE 1 FI]",
+      "achievements": [
+        "[ACHIEVEMENT 1 FI]",
+        "[ACHIEVEMENT 2 FI]",
+        "[ACHIEVEMENT 3 FI]"
+      ]
+    },
+    {
+      "id": "job-2",
+      "role": "[ROLE 2 FI]",
+      "achievements": [
+        "[ACHIEVEMENT 1 FI]",
+        "[ACHIEVEMENT 2 FI]"
+      ]
+    }
   ],
   "education": [
-    { "id": "edu-1", "degree": "[DEGREE FI]" }
+    {
+      "id": "edu-1",
+      "degree": "[DEGREE FI]"
+    }
   ],
-  "certifications": ["[CERTIFICATION FI]"],
+  "certifications": [
+    "[CERTIFICATION FI]"
+  ],
   "skills": [
-    { "group": "[SKILL GROUP FI]", "items": ["[SKILL]", "[SKILL]"] },
-    { "group": "[SKILL GROUP FI]", "items": ["[SKILL]", "[SKILL]"] }
+    {
+      "group": "[SKILL GROUP FI]",
+      "items": [
+        "[SKILL]",
+        "[SKILL]"
+      ]
+    },
+    {
+      "group": "[SKILL GROUP FI]",
+      "items": [
+        "[SKILL]",
+        "[SKILL]"
+      ]
+    }
   ],
-  "languages": ["[LANGUAGE FI, e.g. suomi (äidinkieli)]", "[LANGUAGE FI, e.g. englanti (sujuva)]"],
+  "languages": [
+    "[LANGUAGE FI, e.g. suomi (äidinkieli)]",
+    "[LANGUAGE FI, e.g. englanti (sujuva)]"
+  ],
   "projects": [
-    { "id": "project-1", "title": "[PROJECT 1 TITLE FI]", "description": "[1-2 SENTENCES FI]" },
-    { "id": "project-2", "title": "[PROJECT 2 TITLE FI]", "description": "[1-2 SENTENCES FI]" },
-    { "id": "project-3", "title": "[PROJECT 3 TITLE FI]", "description": "[1-2 SENTENCES FI]" }
+    {
+      "id": "project-1",
+      "title": "[PROJECT 1 TITLE FI]",
+      "description": "[1-2 SENTENCES FI]"
+    },
+    {
+      "id": "project-2",
+      "title": "[PROJECT 2 TITLE FI]",
+      "description": "[1-2 SENTENCES FI]"
+    },
+    {
+      "id": "project-3",
+      "title": "[PROJECT 3 TITLE FI]",
+      "description": "[1-2 SENTENCES FI]"
+    }
   ],
   "ui": {
     "skip": "Siirry sisältöön",
-    "download": "Lataa CV (PDF)",
     "about": "Tietoa minusta",
     "experience": "Työkokemus",
     "projects": "Projektit",

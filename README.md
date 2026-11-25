@@ -25,7 +25,7 @@ site/          Generated pages and static deployment assets
 
 The build prints warnings for every remaining `[PLACEHOLDER]`. Use `python3 build.py --check` to validate without writing generated files.
 
-Replace `site/cv-en.pdf` and `site/cv-fi.pdf` with your own PDF CVs. Change the accent color by editing `--accent` near the top of `site/style.css`.
+Change the accent color by editing `--accent` near the top of `site/style.css`.
 
 ## Git and publishing
 

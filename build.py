@@ -57,8 +57,8 @@ def validate(shared, en, fi, errors):
   check_keys(shared, ["name", "initials", "email", "linkedin", "github", "domain", "experience", "education", "projects"], "shared.json", errors)
   check_keys(en, ["lang", "locale", "headline", "summary", "location", "experience", "education", "certifications", "skills", "languages", "projects", "ui"], "en.json", errors)
   check_keys(fi, ["lang", "locale", "headline", "summary", "location", "experience", "education", "certifications", "skills", "languages", "projects", "ui"], "fi.json", errors)
-  check_keys(en.get("ui", {}), ["skip", "download", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "en.json", errors, "ui.")
-  check_keys(fi.get("ui", {}), ["skip", "download", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "fi.json", errors, "ui.")
+  check_keys(en.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "en.json", errors, "ui.")
+  check_keys(fi.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "fi.json", errors, "ui.")
   item_keys = {
     "shared.json": {"experience": ["id", "employer", "start", "end"], "education": ["id", "school", "years"], "projects": ["id", "tags", "url", "code"]},
     "en.json": {"experience": ["id", "role", "achievements"], "education": ["id", "degree"], "projects": ["id", "title", "description"]},
@@ -125,7 +125,6 @@ def page(lang, shared, text):
   fi = lang == "fi"
   root = "../" if fi else ""
   other_path = "../" if fi else "fi/"
-  pdf = "../cv-fi.pdf" if fi else "cv-en.pdf"
   locale = text["locale"].replace("_", "-")
   domain = shared["domain"].rstrip("/")
   canonical = domain + ("/fi/" if fi else "/")
@@ -207,7 +206,6 @@ def page(lang, shared, text):
       <nav class="language-switch" aria-label="{'Kieli' if fi else 'Language'}">
         <a href="{root}"{' aria-current="page"' if not fi else ''}>EN</a><span aria-hidden="true">|</span><a href="{other_path}"{' aria-current="page"' if fi else ''}>FI</a>
       </nav>
-      <a class="button" href="{pdf}" download>{esc(text['ui']['download'])}</a>
     </div>
   </header>
   <main id="main">
