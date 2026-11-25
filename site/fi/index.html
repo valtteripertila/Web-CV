@@ -19,81 +19,30 @@
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <script src="../theme.js"></script>
   <link rel="stylesheet" href="../style.css">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "[FULL NAME]", "jobTitle": "[HEADLINE FI]", "email": "mailto:[EMAIL]", "sameAs": ["[LINKEDIN URL or leave empty string]", "[GITHUB URL or leave empty string]"]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "[FULL NAME]", "jobTitle": "[HEADLINE FI]", "email": "mailto:[EMAIL]", "sameAs": []}</script>
 </head>
 <body id="top">
   <a class="skip-link" href="#main">Siirry sisältöön</a>
   <header>
+    <p class="terminal-prompt">$ whoami<span class="cursor" aria-hidden="true">_</span></p>
     <h1>[FULL NAME]</h1>
     <p class="headline">[HEADLINE FI]</p>
+    <p class="hero-tagline">[TAGLINE]</p>
+    <ul class="hero-status"><li>[CITY], Suomi</li><li>[WHAT I&#x27;M LOOKING FOR]</li><li>[AVAILABILITY]</li></ul>
+    <p class="summary">[2-3 SENTENCE SUMMARY FI]</p>
     <div class="topbar">
-      <nav class="language-switch" aria-label="Kieli">
-        <a href="../">EN</a><span aria-hidden="true">|</span><a href="../" aria-current="page">FI</a>
-      </nav>
+      <nav class="language-switch" aria-label="Kieli"><a href="../">EN</a><span aria-hidden="true">|</span><a href="../" aria-current="page">FI</a></nav>
       <button class="theme-toggle" type="button" aria-pressed="false" data-light-label="Vaihda vaaleaan teemaan" data-dark-label="Vaihda tummaan teemaan" aria-label="Vaihda vaaleaan teemaan">Vaihda vaaleaan teemaan</button>
     </div>
   </header>
   <main id="main">
-    <section id="about"><h2>Tietoa minusta</h2><p>[2-3 SENTENCE SUMMARY FI]</p></section>
-    <section id="experience"><h2>Työkokemus</h2>
-        <article class="job" id="job-1">
-          <h3>[ROLE 1 FI]</h3>
-          <p class="job-meta">[EMPLOYER 1] · <time>[MM/YYYY]</time> – <time>[MM/YYYY or empty string for Present]</time></p>
-          <ul>
-          <li>[ACHIEVEMENT 1 FI]</li>
-          <li>[ACHIEVEMENT 2 FI]</li>
-          <li>[ACHIEVEMENT 3 FI]</li>
-          </ul>
-        </article>
-        <article class="job" id="job-2">
-          <h3>[ROLE 2 FI]</h3>
-          <p class="job-meta">[EMPLOYER 2] · <time>[MM/YYYY]</time> – <time>[MM/YYYY or empty string for Present]</time></p>
-          <ul>
-          <li>[ACHIEVEMENT 1 FI]</li>
-          <li>[ACHIEVEMENT 2 FI]</li>
-          </ul>
-        </article>
-    </section>
-    <section id="projects"><h2>Projektit</h2><div class="project-grid">
-        <article class="project-card" id="project-1">
-          <h3>[PROJECT 1 TITLE FI]</h3>
-          <p>[1-2 SENTENCES FI]</p>
-          <p class="project-tags"><span>[TAG 1]</span><span>[TAG 2]</span></p>
-          <p class="project-links"><a href="[PROJECT URL or empty string]">Katso projekti</a> <a href="[CODE URL or empty string]">Koodi</a></p>
-        </article>
-        <article class="project-card" id="project-2">
-          <h3>[PROJECT 2 TITLE FI]</h3>
-          <p>[1-2 SENTENCES FI]</p>
-          <p class="project-tags"><span>[TAG 1]</span><span>[TAG 2]</span></p>
-          <p class="project-links"></p>
-        </article>
-        <article class="project-card" id="project-3">
-          <h3>[PROJECT 3 TITLE FI]</h3>
-          <p>[1-2 SENTENCES FI]</p>
-          <p class="project-tags"><span>[TAG 1]</span><span>[TAG 2]</span></p>
-          <p class="project-links"></p>
-        </article>
-    </div></section>
-    <section id="education"><h2>Koulutus</h2>
-        <article class="education-item" id="edu-1">
-          <h3>[DEGREE FI]</h3>
-          <p class="job-meta">[SCHOOL] · [YYYY–YYYY]</p>
-        </article>
-        <h3>Sertifikaatit</h3>
-        <ul><li>[CERTIFICATION FI]</li></ul>
-    </section>
-    <section id="skills"><h2>Taidot</h2><div class="skill-groups">
-          <div class="skill-group"><h3>[SKILL GROUP FI]</h3><p>[SKILL] · [SKILL]</p></div>
-          <div class="skill-group"><h3>[SKILL GROUP FI]</h3><p>[SKILL] · [SKILL]</p></div>
-    </div></section>
-    <section id="languages"><h2>Kielitaito</h2><ul><li>[LANGUAGE FI, e.g. suomi (äidinkieli)]</li><li>[LANGUAGE FI, e.g. englanti (sujuva)]</li></ul></section>
-    <section id="contact"><h2>Yhteystiedot</h2><ul class="contact-list">
-          <li><a href="mailto:[EMAIL]">[EMAIL]</a></li>
-          <li><a href="[LINKEDIN URL or leave empty string]">LinkedIn</a></li>
-          <li><a href="[GITHUB URL or leave empty string]">GitHub</a></li>
-          <li>[CITY], Suomi</li>
-    </ul></section>
+    <section id="projects"><h2><span class="section-label" data-label="projektit" aria-hidden="true"></span>Projektit</h2><div class="project-subsection"><h3>Hackathonit</h3><div class="project-grid"><article class="project-card featured"><h4>[HACKATHON TITLE]</h4><p class=project-meta><time>[HACKATHON DATE]</time> · <span>[HACKATHON EVENT]</span> · <span class="result-badge">[RESULT FI]</span></p><p class=project-role>[ROLE FI]</p><p>[HACKATHON DESCRIPTION FI]</p><p class=project-tags><span>#[TAG 1]</span><span>#[TAG 2]</span></p></article></div></div><div class="project-subsection"><h3>Omat projektit</h3><div class="project-grid"><article class="project-card"><h4>[PERSONAL PROJECT TITLE]</h4><p class=project-meta><time>[PERSONAL PROJECT DATE]</time></p><p class=project-role>[ROLE FI]</p><p>[PERSONAL PROJECT DESCRIPTION FI]</p><p class=project-tags><span>#[TAG 1]</span><span>#[TAG 2]</span></p></article></div></div></section>
+    <section id="experience"><h2><span class="section-label" data-label="kokemus" aria-hidden="true"></span>Työkokemus</h2><article class="job"><h3>[ROLE 1 FI]</h3><p class="job-meta"><span>[EMPLOYER 1]</span><time>[MM/YYYY]</time><time>[MM/YYYY or empty string for Present]</time></p><ul><li>[ACHIEVEMENT 1 FI]</li><li>[ACHIEVEMENT 2 FI]</li><li>[ACHIEVEMENT 3 FI]</li></ul></article><article class="job"><h3>[ROLE 2 FI]</h3><p class="job-meta"><span>[EMPLOYER 2]</span><time>[MM/YYYY]</time><time>[MM/YYYY or empty string for Present]</time></p><ul><li>[ACHIEVEMENT 1 FI]</li><li>[ACHIEVEMENT 2 FI]</li></ul></article></section>
+    <section id="skills"><h2><span class="section-label" data-label="taidot" aria-hidden="true"></span>Taidot</h2><div class="skill-groups"><div class="skill-group"><h3>[SKILL GROUP FI]</h3><p>[SKILL] · [SKILL]</p></div><div class="skill-group"><h3>[SKILL GROUP FI]</h3><p>[SKILL] · [SKILL]</p></div></div><h3 class="language-heading">Kielitaito</h3><ul><li>[LANGUAGE FI, e.g. suomi (äidinkieli)]</li><li>[LANGUAGE FI, e.g. englanti (sujuva)]</li></ul></section>
+    <section id="education"><h2><span class="section-label" data-label="koulutus" aria-hidden="true"></span>Koulutus</h2><article class="education-item"><h3>[DEGREE FI]</h3><p class="job-meta"> · </p></article><h3>Sertifikaatit</h3><ul><li>[CERTIFICATION FI]</li></ul></section>
+    <section id="languages"><h2><span class="section-label" data-label="kielet" aria-hidden="true"></span>Kielitaito</h2><ul><li>[LANGUAGE FI, e.g. suomi (äidinkieli)]</li><li>[LANGUAGE FI, e.g. englanti (sujuva)]</li></ul></section>
+    <section id="contact"><h2><span class="section-label" data-label="yhteystiedot" aria-hidden="true"></span>Yhteystiedot</h2><ul class="contact-list"><li><a href="mailto:[EMAIL]">[EMAIL]</a></li><li><a href="[LINKEDIN URL or leave empty string]">LinkedIn</a></li><li><a href="[GITHUB URL or leave empty string]">GitHub</a></li><li>[CITY], Suomi</li></ul></section>
   </main>
-  <footer><p>© 2026 [FULL NAME]</p><a class="back-to-top" href="#top">Takaisin ylös</a></footer>
+  <footer><p>[SIGN-OFF]</p><p>© 2026 [FULL NAME]</p><a class="back-to-top" href="#top">Takaisin ylös</a></footer>
 </body>
 </html>

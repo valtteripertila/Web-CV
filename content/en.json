@@ -33,23 +33,6 @@
     "[LANGUAGE EN, e.g. Finnish (native)]",
     "[LANGUAGE EN, e.g. English (fluent)]"
   ],
-  "projects": [
-    {
-      "id": "project-1",
-      "title": "[PROJECT 1 TITLE EN]",
-      "description": "[1-2 SENTENCES EN]"
-    },
-    {
-      "id": "project-2",
-      "title": "[PROJECT 2 TITLE EN]",
-      "description": "[1-2 SENTENCES EN]"
-    },
-    {
-      "id": "project-3",
-      "title": "[PROJECT 3 TITLE EN]",
-      "description": "[1-2 SENTENCES EN]"
-    }
-  ],
   "ui": {
     "skip": "Skip to content",
     "about": "About",
@@ -69,6 +52,18 @@
     "notFoundTitle": "Page not found",
     "notFoundText": "The page you are looking for does not exist.",
     "themeToLight": "Switch to light theme",
-    "themeToDark": "Switch to dark theme"
+    "themeToDark": "Switch to dark theme",
+    "hackathons": "Hackathons",
+    "personalProjects": "Personal projects",
+    "demo": "Demo",
+    "writeup": "Write-up",
+    "sectionLabels": {
+      "projects": "projects",
+      "experience": "experience",
+      "skills": "skills",
+      "education": "education",
+      "languages": "languages",
+      "contact": "contact"
+    }
   }
 }

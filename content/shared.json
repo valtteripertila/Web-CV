@@ -11,34 +11,5 @@
       "school": "[SCHOOL]",
       "years": "[YYYY–YYYY]"
     }
-  ],
-  "projects": [
-    {
-      "id": "project-1",
-      "tags": [
-        "[TAG 1]",
-        "[TAG 2]"
-      ],
-      "url": "[PROJECT URL or empty string]",
-      "code": "[CODE URL or empty string]"
-    },
-    {
-      "id": "project-2",
-      "tags": [
-        "[TAG 1]",
-        "[TAG 2]"
-      ],
-      "url": "",
-      "code": ""
-    },
-    {
-      "id": "project-3",
-      "tags": [
-        "[TAG 1]",
-        "[TAG 2]"
-      ],
-      "url": "",
-      "code": ""
-    }
   ]
 }

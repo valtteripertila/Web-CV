@@ -64,6 +64,13 @@ def add_project():
   add_entry("projects.json", entry)
 
 
+def add_project():
+  kind=ask("Type (hackathon or personal)").lower()
+  if kind not in ("hackathon","personal"): raise ValueError("Type must be hackathon or personal")
+  entry={"type":kind,"featured":ask("Featured? (y/N)").lower() in ("y","yes"),"title":ask("Title"),"date":ask("Date (YYYY or MM/YYYY)"),"event":ask("Event (blank for none)"),"result":{"en":ask("Result EN (blank for none)"),"fi":ask("Result FI (blank for none)")},"role":{"en":ask("Role EN (blank for none)"),"fi":ask("Role FI (blank for none)")},"description":{"en":ask("Description EN"),"fi":ask("Description FI")},"tags":[v.strip() for v in ask("Tags (comma-separated)").split(",") if v.strip()],"links":{"demo":ask("Demo URL (blank for none)"),"code":ask("Code URL (blank for none)"),"writeup":ask("Write-up URL (blank for none)")}}
+  add_entry("projects.json",entry)
+
+
 if __name__ == "__main__":
   if len(sys.argv) != 2 or sys.argv[1] not in ("role", "project"):
     raise SystemExit("Usage: python3 add.py role|project")

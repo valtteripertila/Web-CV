@@ -1,0 +1,58 @@
+[
+  {
+    "type": "hackathon",
+    "featured": true,
+    "title": "[HACKATHON TITLE]",
+    "date": "[HACKATHON DATE]",
+    "event": "[HACKATHON EVENT]",
+    "result": {
+      "en": "[RESULT EN]",
+      "fi": "[RESULT FI]"
+    },
+    "role": {
+      "en": "[ROLE EN]",
+      "fi": "[ROLE FI]"
+    },
+    "description": {
+      "en": "[HACKATHON DESCRIPTION EN]",
+      "fi": "[HACKATHON DESCRIPTION FI]"
+    },
+    "tags": [
+      "[TAG 1]",
+      "[TAG 2]"
+    ],
+    "links": {
+      "demo": "",
+      "code": "",
+      "writeup": ""
+    }
+  },
+  {
+    "type": "personal",
+    "featured": false,
+    "title": "[PERSONAL PROJECT TITLE]",
+    "date": "[PERSONAL PROJECT DATE]",
+    "event": "",
+    "result": {
+      "en": "",
+      "fi": ""
+    },
+    "role": {
+      "en": "[ROLE EN]",
+      "fi": "[ROLE FI]"
+    },
+    "description": {
+      "en": "[PERSONAL PROJECT DESCRIPTION EN]",
+      "fi": "[PERSONAL PROJECT DESCRIPTION FI]"
+    },
+    "tags": [
+      "[TAG 1]",
+      "[TAG 2]"
+    ],
+    "links": {
+      "demo": "",
+      "code": "",
+      "writeup": ""
+    }
+  }
+]

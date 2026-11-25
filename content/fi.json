@@ -33,23 +33,6 @@
     "[LANGUAGE FI, e.g. suomi (äidinkieli)]",
     "[LANGUAGE FI, e.g. englanti (sujuva)]"
   ],
-  "projects": [
-    {
-      "id": "project-1",
-      "title": "[PROJECT 1 TITLE FI]",
-      "description": "[1-2 SENTENCES FI]"
-    },
-    {
-      "id": "project-2",
-      "title": "[PROJECT 2 TITLE FI]",
-      "description": "[1-2 SENTENCES FI]"
-    },
-    {
-      "id": "project-3",
-      "title": "[PROJECT 3 TITLE FI]",
-      "description": "[1-2 SENTENCES FI]"
-    }
-  ],
   "ui": {
     "skip": "Siirry sisältöön",
     "about": "Tietoa minusta",
@@ -69,6 +52,18 @@
     "notFoundTitle": "Sivua ei löytynyt",
     "notFoundText": "Etsimääsi sivua ei ole olemassa.",
     "themeToLight": "Vaihda vaaleaan teemaan",
-    "themeToDark": "Vaihda tummaan teemaan"
+    "themeToDark": "Vaihda tummaan teemaan",
+    "hackathons": "Hackathonit",
+    "personalProjects": "Omat projektit",
+    "demo": "Demo",
+    "writeup": "Projektikuvaus",
+    "sectionLabels": {
+      "projects": "projektit",
+      "experience": "kokemus",
+      "skills": "taidot",
+      "education": "koulutus",
+      "languages": "kielet",
+      "contact": "yhteystiedot"
+    }
   }
 }
