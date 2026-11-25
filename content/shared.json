@@ -5,16 +5,40 @@
   "linkedin": "[LINKEDIN URL or leave empty string]",
   "github": "[GITHUB URL or leave empty string]",
   "domain": "https://[YOUR-DOMAIN]",
-  "experience": [
-    { "id": "job-1", "employer": "[EMPLOYER 1]", "start": "[MM/YYYY]", "end": "[MM/YYYY or empty string for Present]" },
-    { "id": "job-2", "employer": "[EMPLOYER 2]", "start": "[MM/YYYY]", "end": "[MM/YYYY or empty string for Present]" }
-  ],
   "education": [
-    { "id": "edu-1", "school": "[SCHOOL]", "years": "[YYYY–YYYY]" }
+    {
+      "id": "edu-1",
+      "school": "[SCHOOL]",
+      "years": "[YYYY–YYYY]"
+    }
   ],
   "projects": [
-    { "id": "project-1", "tags": ["[TAG 1]", "[TAG 2]"], "url": "[PROJECT URL or empty string]", "code": "[CODE URL or empty string]" },
-    { "id": "project-2", "tags": ["[TAG 1]", "[TAG 2]"], "url": "", "code": "" },
-    { "id": "project-3", "tags": ["[TAG 1]", "[TAG 2]"], "url": "", "code": "" }
+    {
+      "id": "project-1",
+      "tags": [
+        "[TAG 1]",
+        "[TAG 2]"
+      ],
+      "url": "[PROJECT URL or empty string]",
+      "code": "[CODE URL or empty string]"
+    },
+    {
+      "id": "project-2",
+      "tags": [
+        "[TAG 1]",
+        "[TAG 2]"
+      ],
+      "url": "",
+      "code": ""
+    },
+    {
+      "id": "project-3",
+      "tags": [
+        "[TAG 1]",
+        "[TAG 2]"
+      ],
+      "url": "",
+      "code": ""
+    }
   ]
 }

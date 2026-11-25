@@ -4,25 +4,6 @@
   "headline": "[HEADLINE FI]",
   "summary": "[2-3 SENTENCE SUMMARY FI]",
   "location": "[CITY], Suomi",
-  "experience": [
-    {
-      "id": "job-1",
-      "role": "[ROLE 1 FI]",
-      "achievements": [
-        "[ACHIEVEMENT 1 FI]",
-        "[ACHIEVEMENT 2 FI]",
-        "[ACHIEVEMENT 3 FI]"
-      ]
-    },
-    {
-      "id": "job-2",
-      "role": "[ROLE 2 FI]",
-      "achievements": [
-        "[ACHIEVEMENT 1 FI]",
-        "[ACHIEVEMENT 2 FI]"
-      ]
-    }
-  ],
   "education": [
     {
       "id": "edu-1",

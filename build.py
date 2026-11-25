@@ -32,6 +32,20 @@ def load_json(filename, errors):
     return {}
 
 
+def load_list_json(filename, errors):
+  path = CONTENT / filename
+  try:
+    with path.open(encoding="utf-8") as handle:
+      data = json.load(handle)
+    if not isinstance(data, list):
+      errors.append(f"{filename}: root must be a JSON array")
+      return []
+    return data
+  except (OSError, json.JSONDecodeError) as error:
+    errors.append(f"{filename}: {error}")
+    return []
+
+
 def check_keys(data, keys, filename, errors, prefix=""):
   for key in keys:
     if key not in data:
@@ -53,16 +67,40 @@ def ids(items, filename, field, errors):
   return result
 
 
-def validate(shared, en, fi, errors):
-  check_keys(shared, ["name", "initials", "email", "linkedin", "github", "domain", "experience", "education", "projects"], "shared.json", errors)
-  check_keys(en, ["lang", "locale", "headline", "summary", "location", "experience", "education", "certifications", "skills", "languages", "projects", "ui"], "en.json", errors)
-  check_keys(fi, ["lang", "locale", "headline", "summary", "location", "experience", "education", "certifications", "skills", "languages", "projects", "ui"], "fi.json", errors)
+def validate_experience(experience, errors):
+  for index, item in enumerate(experience, 1):
+    if not isinstance(item, dict):
+      errors.append(f"experience.json entry {index}: must be an object")
+      continue
+    for field in ("employer", "start", "role", "points"):
+      if field not in item:
+        errors.append(f"experience.json entry {index}: missing {field}")
+    for field in ("role", "points"):
+      value = item.get(field, {})
+      if not isinstance(value, dict):
+        errors.append(f"experience.json entry {index}: {field} must be an object")
+        continue
+      for lang in ("en", "fi"):
+        if lang not in value:
+          errors.append(f"experience.json entry {index}: missing {field}.{lang}")
+        elif field == "points" and not isinstance(value[lang], list):
+          errors.append(f"experience.json entry {index}: {field}.{lang} must be a list")
+    points = item.get("points", {})
+    if isinstance(points, dict) and isinstance(points.get("en"), list) and isinstance(points.get("fi"), list) and len(points["en"]) != len(points["fi"]):
+      print(f"WARNING: experience.json entry {index}: points.en and points.fi have different lengths")
+
+
+def validate(shared, en, fi, experience, errors):
+  validate_experience(experience, errors)
+  check_keys(shared, ["name", "initials", "email", "linkedin", "github", "domain", "education", "projects"], "shared.json", errors)
+  check_keys(en, ["lang", "locale", "headline", "summary", "location", "education", "certifications", "skills", "languages", "projects", "ui"], "en.json", errors)
+  check_keys(fi, ["lang", "locale", "headline", "summary", "location", "education", "certifications", "skills", "languages", "projects", "ui"], "fi.json", errors)
   check_keys(en.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "en.json", errors, "ui.")
   check_keys(fi.get("ui", {}), ["skip", "about", "experience", "projects", "education", "certifications", "skills", "languages", "contact", "present", "viewProject", "code", "backToTop", "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText"], "fi.json", errors, "ui.")
   item_keys = {
-    "shared.json": {"experience": ["id", "employer", "start", "end"], "education": ["id", "school", "years"], "projects": ["id", "tags", "url", "code"]},
-    "en.json": {"experience": ["id", "role", "achievements"], "education": ["id", "degree"], "projects": ["id", "title", "description"]},
-    "fi.json": {"experience": ["id", "role", "achievements"], "education": ["id", "degree"], "projects": ["id", "title", "description"]},
+    "shared.json": {"education": ["id", "school", "years"], "projects": ["id", "tags", "url", "code"]},
+    "en.json": {"education": ["id", "degree"], "projects": ["id", "title", "description"]},
+    "fi.json": {"education": ["id", "degree"], "projects": ["id", "title", "description"]},
   }
   for filename, data in (("shared.json", shared), ("en.json", en), ("fi.json", fi)):
     for group, keys in item_keys[filename].items():
@@ -80,7 +118,7 @@ def validate(shared, en, fi, errors):
           check_keys(item, keys, filename, errors, f"{group}[{index}].")
         else:
           errors.append(f"{filename}: {group}[{index}] must be an object")
-  for group in ("experience", "education", "projects"):
+  for group in ("education", "projects"):
     base = ids(shared.get(group, []), "shared.json", group, errors)
     for language, filename in ((en, "en.json"), (fi, "fi.json")):
       translated = ids(language.get(group, []), filename, group, errors)
@@ -121,7 +159,7 @@ def link(url, label, class_name=""):
   return f'<a{cls} href="{esc(url)}"{external}>{esc(label)}</a>'
 
 
-def page(lang, shared, text):
+def page(lang, shared, text, experience):
   fi = lang == "fi"
   root = "../" if fi else ""
   other_path = "../" if fi else "fi/"
@@ -131,16 +169,14 @@ def page(lang, shared, text):
   en_path = domain + "/"
   fi_path = domain + "/fi/"
   same_as = [value for value in (shared["linkedin"], shared["github"]) if value]
-  job_data, education_data, project_data = (by_id(shared[k]) for k in ("experience", "education", "projects"))
+  education_data, project_data = (by_id(shared[k]) for k in ("education", "projects"))
   jobs = []
-  localized_jobs = by_id(text["experience"])
-  for shared_item in shared["experience"]:
-    item = localized_jobs[shared_item["id"]]
-    end = shared_item["end"] or text["ui"]["present"]
-    achievements = "\n".join(f"          <li>{esc(value)}</li>" for value in item["achievements"])
-    jobs.append(f'''        <article class="job" id="{esc(item['id'])}">
-          <h3>{esc(item['role'])}</h3>
-          <p class="job-meta">{esc(shared_item['employer'])} · <time>{esc(shared_item['start'])}</time> – <time>{esc(end)}</time></p>
+  for index, item in enumerate(experience):
+    end = item.get("end", "") or text["ui"]["present"]
+    achievements = "\n".join(f"          <li>{esc(value)}</li>" for value in item["points"][lang])
+    jobs.append(f'''        <article class="job" id="job-{index + 1}">
+          <h3>{esc(item['role'][lang])}</h3>
+          <p class="job-meta">{esc(item['employer'])} · <time>{esc(item['start'])}</time> – <time>{esc(end)}</time></p>
           <ul>
 {achievements}
           </ul>
@@ -254,19 +290,20 @@ def main():
   shared = load_json("shared.json", errors)
   en = load_json("en.json", errors)
   fi = load_json("fi.json", errors)
-  validate(shared, en, fi, errors)
+  experience = load_list_json("experience.json", errors)
+  validate(shared, en, fi, experience, errors)
   if errors:
     for error in errors:
       print(f"ERROR: {error}", file=sys.stderr)
     return 1
-  warnings({"shared.json": shared, "en.json": en, "fi.json": fi})
+  warnings({"shared.json": shared, "en.json": en, "fi.json": fi, "experience.json": experience})
   if args.check:
     print("Content validation passed; no files written.")
     return 0
   for directory in (SITE, SITE / "fi"):
     directory.mkdir(parents=True, exist_ok=True)
-  en_html, favicon = page("en", shared, en)
-  fi_html, _ = page("fi", shared, fi)
+  en_html, favicon = page("en", shared, en, experience)
+  fi_html, _ = page("fi", shared, fi, experience)
   files = {
     SITE / "index.html": en_html,
     SITE / "fi" / "index.html": fi_html,
