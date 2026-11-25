@@ -1,41 +1,85 @@
-# Personal CV website
+# Bilingual CV website
 
-A static bilingual (English and Finnish) CV generated with Python's standard library and hosted on Cloudflare Pages. The deployed `site/` directory contains the generated HTML and hand-written assets; Cloudflare Pages needs no build command.
+A static English and Finnish personal website generated with Python 3's standard library. The generated `site/` directory is deployed to Cloudflare Pages without a build command.
 
 ## Project structure
 
 ```text
-content/       Editable shared data and English/Finnish text
-build.py       Standard-library site generator and validator
-site/          Generated pages and static deployment assets
+content/shared.json       Name, initials, email, profile links and canonical domain
+content/en.json           English hero, summary, skills, education and UI strings
+content/fi.json           Finnish hero, summary, skills, education and UI strings
+content/experience.json   Work history with both languages in each entry
+content/projects.json     Hackathon and personal project entries
+build.py                  Validator and static HTML generator
+add.py                    Interactive role and project entry helper
+site/                     Generated pages plus hand-written CSS and theme script
 ```
 
-## Edit content
+## Edit the content
 
-- `content/shared.json`: name, initials, contacts, links, domain, dates, project tags and URLs.
-- `content/en.json` and `content/fi.json`: all English and Finnish text.
-- Add a job, education item or project by adding the same `id` in `shared.json` and both language files.
+- Put shared identity and contact details in `content/shared.json`.
+- Put translated text, skills, education and interface labels in `content/en.json` and `content/fi.json`.
+- Each entry in `content/experience.json` stores employer, dates, role translations and achievement lists together.
+- Each entry in `content/projects.json` stores a hackathon or personal project and all translated fields together. List order controls display order; featured cards appear first within each subsection.
+- Text in square brackets is a placeholder to replace. The build lists every remaining placeholder by file and field path.
 
-## Update workflow
+### Add a role
 
-1. Edit the content files.
-2. Run `python3 build.py` from this directory (on Windows, `py -3 build.py` also works).
-3. Check `git status`.
-4. Run `git add -A` and `git commit -m "Update CV"`.
+You can add an entry by hand at the top of `content/experience.json`:
 
-The build prints warnings for every remaining `[PLACEHOLDER]`. Use `python3 build.py --check` to validate without writing generated files.
+```json
+{
+  "employer": "[EMPLOYER]",
+  "start": "[MM/YYYY]",
+  "end": "",
+  "role": { "en": "[ROLE EN]", "fi": "[ROLE FI]" },
+  "points": { "en": ["[POINT EN]"], "fi": ["[POINT FI]"] }
+}
+```
 
-Change the accent color by editing `--accent` near the top of `site/style.css`.
+Or run `python3 add.py role` (on Windows, `py -3 add.py role`). Answer the prompts; enter one achievement per line and finish each language with a blank line. The helper inserts the new entry at the top and preserves the existing entries.
 
-## Git and publishing
+### Add a project
 
-The repository root is `cv-project/`, the default branch is `main`, and no remote is set. To publish later, create an **empty** GitHub repository (private is fine; the deployed site is public), then run:
+Add an entry by hand at the top of `content/projects.json`:
+
+```json
+{
+  "type": "hackathon",
+  "featured": true,
+  "title": "[TITLE]",
+  "date": "[YYYY or MM/YYYY]",
+  "event": "[EVENT]",
+  "result": { "en": "[RESULT EN]", "fi": "[RESULT FI]" },
+  "role": { "en": "[ROLE EN]", "fi": "[ROLE FI]" },
+  "description": { "en": "[DESCRIPTION EN]", "fi": "[DESCRIPTION FI]" },
+  "tags": ["[TAG]"],
+  "links": { "demo": "", "code": "", "writeup": "" }
+}
+```
+
+Or run `python3 add.py project` (on Windows, `py -3 add.py project`) and answer the prompts. It inserts the entry at the top without replacing prior projects.
+
+## Theme
+
+The site starts in dark mode. The header button switches to light mode and back, and saves the selected theme in browser storage. If JavaScript is unavailable, the page remains dark and the toggle stays hidden. Palette colors are custom properties near the top of `site/style.css`; edit the accent property for each theme to change its accent color.
+
+## Build and commit
+
+From the repository root, edit the content files, then run:
 
 ```sh
-git remote add origin <URL>
-git push -u origin main
+python3 build.py
+python3 build.py --check
 ```
 
-On Cloudflare Pages, either upload the `site/` folder directly or connect the Git repository with no build command and `site` as the build output directory. Pushes to `main` then update the site.
+On Windows, use `py -3 build.py` and `py -3 build.py --check`. The check command validates without writing generated files. Review `git status`, then commit the updated content and generated site:
 
-Set `domain` in `content/shared.json` once the final URL is known, then rebuild.
+```sh
+git add -A
+git commit -m "Update CV"
+```
+
+## Cloudflare Pages
+
+Deploy the `site/` directory. You can upload that folder directly, or connect the Git repository and set the build command to empty and the build output directory to `site`. The website is public after deployment, even if the repository is private. Set `domain` in `content/shared.json` to the final public URL and rebuild before deploying.
