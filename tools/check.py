@@ -1,0 +1,292 @@
+#!/usr/bin/env python3
+"""Run the complete offline validation suite for the generated site."""
+
+import html.parser
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
+ROOT = Path(__file__).resolve().parents[1]
+SITE = ROOT / "site"
+sys.path.insert(0, str(ROOT))
+
+
+def _run(command, env=None):
+    return subprocess.run(command, cwd=ROOT, env=env, text=True, capture_output=True)
+
+
+def check_build():
+    result = _run([sys.executable, "build.py", "--check"])
+    return [] if result.returncode == 0 else [result.stdout + result.stderr]
+
+
+def check_unittests():
+    result = _run([sys.executable, "-m", "unittest", "discover", "-s", "tests"])
+    return [] if result.returncode == 0 else [result.stdout + result.stderr]
+
+
+class Links(html.parser.HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.ids = set()
+        self.hrefs = []
+        self.sources = []
+
+    def handle_starttag(self, tag, attrs):
+        data = dict(attrs)
+        if data.get("id"):
+            self.ids.add(data["id"])
+        if data.get("href"):
+            self.hrefs.append(data["href"])
+        if data.get("src"):
+            self.sources.append(data["src"])
+
+
+def link_errors(site_root, page_path):
+    errors = []
+    page = Path(page_path)
+    try:
+        parser = Links()
+        parser.feed(page.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError) as error:
+        return [f"{page}: cannot read HTML: {error}"]
+    for raw in parser.hrefs + parser.sources:
+        url = urlsplit(raw)
+        if url.scheme or url.netloc or raw.startswith("//"):
+            continue
+        target = (page.parent / unquote(url.path)).resolve() if url.path else page.resolve()
+        if target.is_dir():
+            target = target / "index.html"
+        if not target.exists():
+            errors.append(f"{page.relative_to(site_root)}: missing target {raw}")
+        elif url.fragment and target.suffix.lower() in (".html", ""):
+            target_parser = Links()
+            try:
+                target_parser.feed(target.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError) as error:
+                errors.append(f"{target}: cannot read fragment target: {error}")
+            else:
+                if unquote(url.fragment) not in target_parser.ids:
+                    errors.append(f"{page.relative_to(site_root)}: missing fragment #{url.fragment} in {raw}")
+    return errors
+
+
+def internal_link_check(site_root=SITE):
+    pages = sorted(Path(site_root).rglob("*.html"))
+    return [error for page in pages for error in link_errors(Path(site_root), page)]
+
+
+def _section_ids(path):
+    class Sections(html.parser.HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.values = []
+
+        def handle_starttag(self, tag, attrs):
+            values = dict(attrs)
+            if tag == "section" and values.get("id"):
+                self.values.append(values["id"])
+
+    parser = Sections()
+    parser.feed(Path(path).read_text(encoding="utf-8"))
+    return parser.values
+
+
+def language_parity_check():
+    errors = []
+    en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
+    fi = json.loads((ROOT / "content/fi.json").read_text(encoding="utf-8"))
+    now = json.loads((ROOT / "content/now.json").read_text(encoding="utf-8"))
+    pairs = {"home": (SITE / "index.html", SITE / "fi/index.html"),
+             "how": (SITE / en["slugs"]["how"] / "index.html", SITE / "fi" / fi["slugs"]["how"] / "index.html"),
+             "changelog": (SITE / en["slugs"]["changelog"] / "index.html", SITE / "fi" / fi["slugs"]["changelog"] / "index.html")}
+    if now.get("items"):
+        pairs["now"] = (SITE / en["slugs"]["now"] / "index.html", SITE / "fi" / fi["slugs"]["now"] / "index.html")
+    actual = {path.resolve() for path in SITE.rglob("*.html") if path.name != "404.html"}
+    expected = {path.resolve() for pair in pairs.values() for path in pair}
+    if actual != expected:
+        errors.append("generated EN/FI page set does not match optional content pages")
+    for key, pair in pairs.items():
+        if not all(path.exists() for path in pair):
+            errors.append(f"{key}: language page is missing")
+        else:
+            if _section_ids(pair[0]) != _section_ids(pair[1]):
+                errors.append(f"{key}: section order differs between EN and FI")
+    def compare_values(left, right, at="ui"):
+        if isinstance(left, dict) and isinstance(right, dict):
+            if left.keys() != right.keys():
+                errors.append(f"{at}: translated UI keys differ")
+                return
+            for key in left:
+                compare_values(left[key], right[key], at + "." + key)
+        elif isinstance(left, str) and isinstance(right, str):
+            if not left.strip() or not right.strip():
+                errors.append(f"{at}: UI translation is empty")
+            elif left == right and left.lower() not in {"demo", "lighthouse"} and at != "ui.lighthouseFooter":
+                errors.append(f"{at}: EN and FI UI strings are identical")
+    compare_values(en["ui"], fi["ui"])
+    return errors
+
+
+class HTMLSanity(html.parser.HTMLParser):
+    VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.stack = []
+        self.errors = []
+        self.ids = set()
+        self.h1 = 0
+        self.lang = ""
+
+    def handle_starttag(self, tag, attrs):
+        data = dict(attrs)
+        if tag == "html":
+            self.lang = data.get("lang", "")
+        if tag == "h1":
+            self.h1 += 1
+        identifier = data.get("id")
+        if identifier:
+            if identifier in self.ids:
+                self.errors.append(f"duplicate id: {identifier}")
+            self.ids.add(identifier)
+        if tag not in self.VOID:
+            self.stack.append(tag)
+
+    def handle_endtag(self, tag):
+        if tag in self.VOID:
+            return
+        if not self.stack or self.stack[-1] != tag:
+            self.errors.append(f"unexpected closing tag: {tag}")
+            if tag in self.stack:
+                while self.stack and self.stack[-1] != tag:
+                    self.stack.pop()
+                if self.stack:
+                    self.stack.pop()
+            return
+        self.stack.pop()
+
+
+def html_sanity_check(site_root=SITE):
+    errors = []
+    for page in sorted(Path(site_root).rglob("*.html")):
+        parser = HTMLSanity()
+        try:
+            parser.feed(page.read_text(encoding="utf-8"))
+            parser.close()
+        except (OSError, UnicodeError) as error:
+            errors.append(f"{page}: {error}")
+            continue
+        if parser.stack:
+            errors.append(f"{page.relative_to(site_root)}: unclosed tags {parser.stack}")
+        if parser.h1 != 1:
+            errors.append(f"{page.relative_to(site_root)}: expected one h1, found {parser.h1}")
+        expected_lang = "fi" if "\\fi\\" in str(page.resolve()).lower() else "en"
+        if parser.lang != expected_lang:
+            errors.append(f"{page.relative_to(site_root)}: expected lang={expected_lang}, got {parser.lang}")
+        errors.extend(f"{page.relative_to(site_root)}: {item}" for item in parser.errors)
+    return errors
+
+
+def external_resource_check(site_root=SITE):
+    from tools.sitebuilder import count_external_resources
+    errors = []
+    for page in Path(site_root).rglob("*.html"):
+        count = count_external_resources(page.read_text(encoding="utf-8"))
+        if count:
+            errors.append(f"{page.relative_to(site_root)}: {count} external HTML resource(s)")
+    for path in (Path(site_root) / "style.css",):
+        if path.exists() and re.search(r"url\(\s*['\"]?https?://", path.read_text(encoding="utf-8"), re.I):
+            errors.append(f"{path.relative_to(site_root)}: external CSS resource")
+    return errors
+
+
+def contrast_check():
+    from tools.quality import contrast_report
+    passed, values = contrast_report((SITE / "style.css").read_text(encoding="utf-8"))
+    return [] if passed else ["contrast thresholds failed: " + json.dumps(values, sort_keys=True)]
+
+
+def privacy_check():
+    errors = []
+    phone_pattern = re.compile(r"(?<![\w])(?:\+?\d[\s().-]*){9,}(?![\w])")
+    address_words = re.compile(r"\b(?:street|st\.?|road|rd\.?|avenue|ave\.?|boulevard|blvd\.?|katu|tie|kuja|polku|väylä)\b", re.I)
+    for folder in (ROOT / "content", SITE):
+        for path in folder.rglob("*"):
+            if not path.is_file() or path.suffix.lower() not in (".json", ".html", ".txt", ".svg", ".css", ".js"):
+                continue
+            value = path.read_text(encoding="utf-8", errors="replace")
+            value = re.sub(r"\b\d{4}-\d{2}-\d{2}\b", "", value)
+            if phone_pattern.search(value):
+                errors.append(f"{path.relative_to(ROOT)}: phone-number-like sequence")
+            if address_words.search(value):
+                errors.append(f"{path.relative_to(ROOT)}: street-address word")
+    return errors
+
+
+def freshness_check():
+    committed = (SITE / "index.html").read_text(encoding="utf-8")
+    match = re.search(r"©\s+(\d{4})", committed)
+    if not match:
+        return ["site/index.html: could not read committed footer year"]
+    env = os.environ.copy()
+    env["CV_BUILD_YEAR"] = match.group(1)
+    with tempfile.TemporaryDirectory(prefix="cv-build-") as temporary:
+        result = _run([sys.executable, "build.py", "--output-dir", temporary], env=env)
+        if result.returncode:
+            return ["temporary build failed: " + result.stdout + result.stderr]
+        generated = ("index.html", "fi/index.html", "404.html", "favicon.svg", "sitemap.xml", "robots.txt", "llms.txt")
+        for en_name, fi_name in (("how-this-site-is-built/index.html", "fi/sivuston-rakenne/index.html"),
+                                 ("changelog/index.html", "fi/muutosloki/index.html"),
+                                 ("now/index.html", "fi/nyt/index.html")):
+            for name in (en_name, fi_name):
+                if (SITE / name).exists() or (Path(temporary) / name).exists():
+                    generated += (name,)
+        errors = []
+        for name in generated:
+            current, built = SITE / name, Path(temporary) / name
+            if not current.exists() or not built.exists():
+                errors.append(f"freshness mismatch: {name} missing")
+            elif current.read_bytes() != built.read_bytes():
+                errors.append(f"freshness mismatch: {name}")
+        return errors
+
+
+CHECKS = [
+    ("content", "Build content validation passes.", "Sisällön muodostustarkistus läpäisee.", check_build),
+    ("tests", "Unit tests pass.", "Yksikkötestit läpäisevät.", check_unittests),
+    ("links", "Internal links, fragments and assets resolve.", "Sisäiset linkit, kohdat ja resurssit löytyvät.", internal_link_check),
+    ("language", "English and Finnish pages and translations stay in parity.", "Englannin- ja suomenkieliset sivut ja käännökset pysyvät rinnakkain.", language_parity_check),
+    ("html", "HTML tags, ids, headings and language attributes are valid.", "HTML-tunnisteet, tunnisteet, pääotsikot ja kielimerkinnät ovat kelvollisia.", html_sanity_check),
+    ("external", "HTML and CSS load no external resources.", "HTML ja CSS eivät lataa ulkoisia resursseja.", external_resource_check),
+    ("contrast", "Both theme palettes pass measured contrast thresholds.", "Molempien teemojen värit läpäisevät mitatut kontrastirajat.", contrast_check),
+    ("privacy", "No private contact details are included.", "Yksityisiä yhteystietoja ei ole lisätty.", privacy_check),
+    ("freshness", "Committed site files match a fresh temporary build.", "Julkaistut sivutiedostot vastaavat väliaikaista uutta koostetta.", freshness_check),
+]
+
+
+def main():
+    failed = 0
+    for name, _, _, check in CHECKS:
+        try:
+            errors = check()
+        except Exception as error:  # Report a failed check rather than hiding its cause.
+            errors = [f"{type(error).__name__}: {error}"]
+        if errors:
+            failed += 1
+            print(f"FAIL {name}: {len(errors)} issue(s)")
+            for error in errors:
+                print("  " + error)
+        else:
+            print(f"PASS {name}")
+    print(f"Summary: {len(CHECKS) - failed}/{len(CHECKS)} checks passed")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
