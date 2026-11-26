@@ -46,12 +46,12 @@ def link(url, label):
     if not url:
         return ""
     external = str(url).startswith(("http://", "https://"))
-    attrs = ' target="_blank" rel="noopener noreferrer"' if external else ""
+    attrs = ' rel="noopener noreferrer"' if external else ""
     return f'<a href="{esc(url)}"{attrs}>{esc(label)}</a>'
 
 
-def heading(label, title):
-    return f'<h2><span class="section-label" data-label="{esc(label)}" aria-hidden="true"></span>{esc(title)}</h2>'
+def heading(title, ignored=None):
+    return f'<h2>{esc(title)}</h2>'
 
 
 def json_ld(data):
@@ -146,7 +146,7 @@ def top_bar(lang, page, pages, shared, text, sample=False):
     return f'<header class="topbar">{brand}<div class="topbar-controls">{switch}{toggle}{menu}</div></header>'
 
 
-def structured_data(page, lang, shared, text, experience, projects, domain, pages):
+def structured_data(page, lang, shared, text, domain, pages):
     person = {"@type": "Person"}
     for key, value in (("name", shared.get("name")), ("email", shared.get("email")), ("jobTitle", text.get("headline"))):
         if real(value):
@@ -168,88 +168,130 @@ def structured_data(page, lang, shared, text, experience, projects, domain, page
         {"@type": "ListItem", "position": 2, "name": text["ui"].get("navHow" if page == "how" else "navChangelog" if page == "changelog" else "navNow"), "item": current_url}]}
 
 
-def home_sections(lang, shared, text, experience, projects, ui, sample=False):
+def code_panel(lines, cls=""):
+    if not lines: return ""
+    rows = []
+    for key, vals in lines:
+        if isinstance(vals, list):
+            rows.append(f'<div class="code-line"><dt>{esc(key)}</dt><dd class="array"><ul>{"".join(f"<li>{esc(v)}</li>" for v in vals)}</ul></dd></div>')
+        else:
+            rows.append(f'<div class="code-line"><dt>{esc(key)}</dt><dd>{esc(vals)}</dd></div>')
+    return f'<div class="code {cls}"><dl>{"".join(rows)}</dl></div>'
+
+
+def display_date(item, lang):
+    value = item.get("date_start") or item.get("start") or item.get("date", "")
+    end = item.get("date_end", "")
+    if not re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", str(value)): return str(value)
+    if len(value) == 7: return value
+    y, m, d = int(value[:4]), int(value[5:7]), int(value[8:10])
+    months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    if lang == "fi": return f"{d}.–{int(end[8:10])}.{m}.{y}" if len(end) == 10 and end[:7] == value[:7] else f"{d}.{m}.{y}"
+    return f"{d}–{int(end[8:10])} {months[m-1]} {y}" if len(end) == 10 and end[:7] == value[:7] else f"{d} {months[m-1]} {y}"
+
+
+def timeline_sort_key(pair):
+    index, item = pair
+    value = item.get("date_start") or item.get("start") or item.get("date", "")
+    if re.fullmatch(r"\d{4}-\d{2}", str(value)):
+        value += "-01"
+    try:
+        return (1, date.fromisoformat(value).toordinal(), -index)
+    except (TypeError, ValueError):
+        return (0, 0, -index)
+
+
+def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
     result = []
-    groups = []
-    for kind, label in (("hackathon", ui["hackathons"]), ("personal", ui["personalProjects"])):
-        selected = [item for item in projects if item.get("type") == kind]
-        selected.sort(key=lambda item: not item.get("featured", False))
-        if not selected:
-            continue
-        cards = []
-        for item in selected:
-            date_line = f'<time>{esc(item.get("date", ""))}</time>' if item.get("date") else ""
-            event = f'<span>{esc(item["event"])}</span>' if kind == "hackathon" and filled(item.get("event")) else ""
-            result_value = item.get("result", {}).get(lang, "")
-            badge = f'<span class="result-badge">{esc(result_value)}</span>' if kind == "hackathon" and filled(result_value) else ""
-            meta = " · ".join(part for part in (date_line, event, badge) if part)
-            role = item.get("role", {}).get(lang, "")
-            tag_prefix = "SAMPLE #" if sample else "#"
-            tags = "".join(f'<span>{tag_prefix}{esc(tag[7:] if sample and tag.startswith("SAMPLE ") else tag)}</span>' for tag in item.get("tags", []) if filled(tag))
-            links = item.get("links", {})
-            link_html = " ".join(filter(None, (link(links.get("demo", ""), ui["demo"]), link(links.get("code", ""), ui["code"]), link(links.get("writeup", ""), ui["writeup"])) ))
-            writeup = item.get("writeup", {})
-            writeup_parts = []
-            for field, label_key in (("team", "writeupTeam"), ("part", "writeupPart"), ("learned", "writeupLearned")):
-                value = writeup.get(field, {}).get(lang, "")
-                if filled(value):
-                    writeup_parts.append(f'<p><strong>{esc(ui[label_key])}:</strong> {esc(value)}</p>')
-            details = f'<details class="project-writeup"><summary>{esc(ui["writeupSummary"])}</summary>{"".join(writeup_parts)}</details>' if writeup_parts else ""
-            featured = " featured" if item.get("featured", False) else ""
-            title = item.get("title", "") if filled(item.get("title")) else ""
-            description = item.get("description", {}).get(lang, "")
-            if not any((title, meta, filled(role), filled(description), tags, link_html, details)):
-                continue
-            cards.append(f'<article class="project-card{featured}">{f"<h4>{esc(title)}</h4>" if title else ""}{f"<p class=project-meta>{meta}</p>" if meta else ""}{f"<p class=project-role>{esc(role)}</p>" if filled(role) else ""}{f"<p>{esc(description)}</p>" if filled(description) else ""}{f"<p class=project-tags>{tags}</p>" if tags else ""}{f"<p class=project-links>{link_html}</p>" if link_html else ""}{details}</article>')
-        if cards:
-            groups.append(f'<div class="project-subsection"><h3>{esc(label)}</h3><div class="project-grid">{"".join(cards)}</div></div>')
-    if groups:
-        result.append(f'<section id="projects">{heading(ui["sectionLabels"]["projects"], ui["projects"])}{"".join(groups)}</section>')
-    jobs = []
-    for item in experience:
-        role = item.get("role", {}).get(lang, "")
-        points = "".join(f"<li>{esc(value)}</li>" for value in item.get("points", {}).get(lang, []) if filled(value))
-        fields = [item.get("employer", ""), item.get("start", ""), item.get("end", "") or ui["present"]]
-        meta = "".join(f"<span>{esc(value)}</span>" for value in fields if filled(value))
-        if filled(role) or meta or points:
-            jobs.append(f'<article class="job">{f"<h3>{esc(role)}</h3>" if filled(role) else ""}{f"<p class=job-meta>{meta}</p>" if meta else ""}{f"<ul>{points}</ul>" if points else ""}</article>')
-    if jobs:
-        result.append(f'<section id="experience">{heading(ui["sectionLabels"]["experience"], ui["experience"])}{"".join(jobs)}</section>')
-    skill_groups = []
-    for item in text.get("skills", []):
-        group = item.get("group", "")
-        values = [value for value in item.get("items", []) if filled(value)]
-        if filled(group) or values:
-            skill_groups.append(f'<div class="skill-group">{f"<h3>{esc(group)}</h3>" if filled(group) else ""}{f"<p>{" · ".join(esc(value) for value in values)}</p>" if values else ""}</div>')
-    if skill_groups:
-        result.append(f'<section id="skills">{heading(ui["sectionLabels"]["skills"], ui["skills"])}<div class="skill-groups">{"".join(skill_groups)}</div></section>')
-    education = []
-    for item in text.get("education", []):
-        degree = item.get("degree", "")
-        school_years = " · ".join(esc(value) for value in (item.get("school", ""), item.get("years", "")) if filled(value))
-        if filled(degree) or school_years:
-            education.append(f'<article class="education-item">{f"<h3>{esc(degree)}</h3>" if filled(degree) else ""}{f"<p class=job-meta>{school_years}</p>" if school_years else ""}</article>')
-    certs = [value for value in text.get("certifications", []) if filled(value)]
-    if education or certs:
-        cert_html = f'<h3>{esc(ui["certifications"])}</h3><ul>{"".join(f"<li>{esc(value)}</li>" for value in certs)}</ul>' if certs else ""
-        result.append(f'<section id="education">{heading(ui["sectionLabels"]["education"], ui["education"])}{"".join(education)}{cert_html}</section>')
-    languages = [value for value in text.get("languages", []) if filled(value)]
-    if languages:
-        result.append(f'<section id="languages">{heading(ui["sectionLabels"]["languages"], ui["languages"])}<ul>{"".join(f"<li>{esc(value)}</li>" for value in languages)}</ul></section>')
-    email = shared.get("email", "")
-    contact_items = [link("mailto:" + email, email) if filled(email) else "",
-                     link(shared.get("linkedin", ""), ("SAMPLE " if sample else "") + "LinkedIn"),
-                     link(shared.get("github", ""), ("SAMPLE " if sample else "") + "GitHub"),
-                     esc(text.get("location", "")) if filled(text.get("location")) else ""]
-    contact_items = [value for value in contact_items if value]
-    if contact_items:
-        result.append(f'<section id="contact">{heading(ui["sectionLabels"]["contact"], ui["contact"])}<ul class="contact-list">{"".join(f"<li>{value}</li>" for value in contact_items)}</ul></section>')
+    hero = text.get("hero", {})
+    status = [(row.get("key", ""), row.get("value", "")) for row in hero.get("status", []) if filled(row.get("value"))]
+    result.append(f'<section class="hero"><p class="shell-prompt">$ {esc(hero.get("prompt", "whoami"))}</p><h1>{esc(shared.get("name", ""))}</h1><p class="headline">{esc(text.get("headline", ""))}</p><p class="summary">{esc(text.get("summary", ""))}</p>{code_panel(status,"hero-code")}</section>')
+    items = sorted(enumerate(timeline), key=timeline_sort_key, reverse=True)
+    entries = [item for _, item in items]
+    kinds = [k for k in ("hackathon", "project", "role") if any(x.get("type")==k for x in entries)]
+    filters = ""
+    if len(kinds) > 1:
+        choices = [("all", ui["filterAll"])] + [(k,ui["filterHackathons"] if k=="hackathon" else ui["filterProjects"] if k=="project" else ui["filterRoles"]) for k in kinds]
+        filters = f'<fieldset class="filters"><legend>{esc(ui["filterLegend"])}</legend>' + "".join(f'<input type="radio" name="timeline-filter" id="f-{k}" {"checked" if k=="all" else ""}><label for="f-{k}">{esc(v)} ({sum(x.get("type")==k for x in entries) if k!="all" else len(entries)})</label>' for k,v in choices) + "</fieldset>"
+    cards=[]
+    for item in entries:
+        kind=item.get("type"); date_text=display_date(item,lang); date_text=("SAMPLE " + date_text) if sample else date_text; links=item.get("links",{}); media=""
+        if kind == "hackathon": links=item.get("project",{}).get("links",{})
+        media_rows=item.get("project",{}).get("media",[]) if kind=="hackathon" else item.get("media",[])
+        figures=[]
+        for media_index, m in enumerate(media_rows[:4], 1):
+            src=("../" if lang=="fi" else "")+"img/"+m.get("file",""); alt=m.get("alt",{}).get(lang,"")
+            if src!="img/" and alt:
+                base=(root/"preview"/"img" if sample else root/"site"/"img") if root else Path()
+                try:
+                    from tools.media import image_dimensions
+                    dims=image_dimensions(base/m.get("file",""))
+                except (OSError,ValueError): dims=None
+                dimensions=f' width="{dims[0]}" height="{dims[1]}"' if dims else ""
+                caption=m.get("caption",{}).get(lang,"")
+                caption_text=("SAMPLE " if sample else "")+f"fig.{media_index} — {caption}" if caption else ""
+                figures.append(f'<figure><a href="{esc(src)}"><img src="{esc(src)}" alt="{esc(alt)}"{dimensions} loading="lazy" decoding="async"></a>{f"<figcaption>{esc(caption_text)}</figcaption>" if caption_text else ""}</figure>')
+        if len(figures)==1: media=f'<div class="media-gallery media-one">{figures[0]}</div>'
+        elif len(figures)==2: media=f'<div class="media-gallery media-two">{"".join(figures)}</div>'
+        elif figures: media=f'<div class="media-gallery media-many"><div class="media-main">{figures[0]}</div><div class="media-side">{"".join(figures[1:])}</div></div>'
+        tagrows=item.get("project",{}).get("tags",[]) if kind=="hackathon" else item.get("tags",[])
+        tags="".join(f'<span>{("SAMPLE #"+esc(t[7:] if t.startswith("SAMPLE ") else t)) if sample else "#"+esc(t)}</span>' for t in tagrows if filled(t))
+        linkrows=" ".join(filter(None,(link(links.get("demo"),ui["demo"]),link(links.get("code"),ui["repo"]),link(links.get("writeup"),ui["writeup"]))))
+        if kind=="role":
+            points=item.get("points",{}).get(lang,[]); role=item.get("role",{}).get(lang,"")
+            content=f'<p class="employer">{esc(item.get("employer",""))}</p><h3>{esc(role)}</h3>{"<ul>"+"".join(f"<li>{esc(p)}</li>" for p in points)+"</ul>" if points else ""}'
+            end_value=item.get("end","")
+            end=display_date({"date":end_value},lang) if end_value else ui["present"]
+            date_text += f" – {end}" if end else ""
+        elif kind=="hackathon":
+            p=item.get("project",{}); info=[]
+            for key in ("what","where","theme"):
+                value=item.get(key,{}).get(lang,"")
+                if value: info.append((key,value))
+            info.insert(1,("when",date_text)); size=item.get("team",{}).get("size")
+            if size: info.append(("team",ui["teamSize"].format(count=size)))
+            role=item.get("role",{}).get(lang,"")
+            if role: info.append(("my_role",role))
+            resultval=item.get("result",{}).get(lang,"")
+            project_title=p.get("title",""); project_description=p.get("description",{}).get(lang,"")
+            title_html=f"<h4>{esc(project_title)}</h4>" if project_title else ""
+            description_html=f"<p>{esc(project_description)}</p>" if project_description else ""
+            badge=f"<p class=result-badge>{esc(resultval)}</p>" if resultval else ""
+            event=esc(item.get("event", ""))
+            learned_value=item.get("learned",{}).get(lang,"")
+            learned_html=f'<details><summary>{esc(ui["learned"])}</summary><p>{esc(learned_value)}</p></details>' if learned_value else ""
+            what_built=("SAMPLE // "+esc(ui["whatBuilt"][7:])) if sample and ui["whatBuilt"].startswith("SAMPLE ") else "// "+esc(ui["whatBuilt"])
+            content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{badge}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{description_html}{media}{learned_html}'
+        else:
+            title=item.get("title",""); role=item.get("role",{}).get(lang,""); desc=item.get("description",{}).get(lang,"")
+            learned_value=item.get("learned",{}).get(lang,"")
+            learned_html=f'<details><summary>{esc(ui["learned"])}</summary><p>{esc(learned_value)}</p></details>' if learned_value else ""
+            content=f'<span class="entry-kind">{ui["project"]}</span>{f"<h3>{esc(title)}</h3>" if title else ""}{f"<p class=project-role>{esc(role)}</p>" if role else ""}{f"<p>{esc(desc)}</p>" if desc else ""}{media}{learned_html}'
+        content+=f'<p class="project-tags">{tags}</p>' if tags else ""
+        content+=f'<p class="project-links">{linkrows}</p>' if linkrows else ""
+        cards.append(f'<article class="timeline-entry" data-kind="{kind}"><div class="entry-date">{esc(date_text)}</div><div class="entry-card">{content}</div></article>')
+    if cards: result.append(f'<section id="timeline">{heading(ui["timeline"])}{filters}<div class="timeline">{"".join(cards)}</div></section>')
+    profile=[]
+    for group in text.get("skills",[]):
+        key=re.sub(r"[^a-zA-Z0-9]+","_",group.get("group","")).strip("_").lower() or "skills"
+        vals=[v for v in group.get("items",[]) if filled(v)]
+        if vals: profile.append((key,vals))
+    education=[" · ".join(str(x.get(k,"")) for k in ("degree","school","years") if filled(x.get(k))) for x in text.get("education",[])]
+    if any(education): profile.append(("education",[v for v in education if v]))
+    certs=[v for v in text.get("certifications",[]) if filled(v)]
+    if certs: profile.append(("certifications",certs))
+    langs=[v for v in text.get("languages",[]) if filled(v)]
+    if langs: profile.append(("spoken",langs))
+    if profile: result.append(f'<section id="profile">{heading(ui["profile"])}{code_panel(profile,"profile-code")}</section>')
+    email=shared.get("email",""); contact=f'<p class="mail-line">$ mail {link("mailto:"+email,email)}</p>' if email else ""
+    socials=" ".join(filter(None,(link(shared.get("github"),ui["github"]),link(shared.get("linkedin"),ui["linkedin"]))))
+    if contact or socials: result.append(f'<section id="contact">{heading(ui["contact"])}{contact}{f"<div class=contact-buttons>{socials}</div>" if socials else ""}</section>')
     return "".join(result)
 
 
 def how_body(lang, shared, text, site_info, quality, pages, sizes, contrast_pass, root, sample=False):
     ui = text["ui"]
-    labels = ui["sectionLabels"]
+    labels = ui
     intro = site_info.get("intro", {}).get(lang, "")
     architecture_lines = ["content/*.json", "  -> build.py", "  -> site/", "  -> GitHub main", "  -> Cloudflare Pages"]
     if sample:
@@ -292,14 +334,13 @@ def changelog_body(lang, text, changelog):
         value = item.get(lang, "")
         if real(value):
             entries.append(f'<li><time datetime="{esc(item["date"])}">{esc(item["date"])}</time> — {esc(value)}</li>')
-    label = ui["sectionLabels"]["entries"]
-    return f'<section id="entries">{heading(label, ui["navChangelog"])}<p>{esc(ui["changelogIntro"])}</p><ol class="changelog-list">{"".join(entries)}</ol></section>'
+    return f'<section id="entries">{heading(ui["navChangelog"])}<p>{esc(ui["changelogIntro"])}</p><ol class="changelog-list">{"".join(entries)}</ol></section>'
 
 
 def now_body(lang, text, now):
     ui = text["ui"]
     entries = [item.get(lang, "") for item in now.get("items", []) if real(item.get(lang, ""))]
-    return (f'<section id="now">{heading(ui["sectionLabels"]["now"], ui["navNow"])}'
+    return (f'<section id="now">{heading(ui["navNow"])}'
             f'<p>{esc(ui["nowIntro"])}</p><p><strong>{esc(ui["updated"])}:</strong> <time datetime="{esc(now["updated"])}">{esc(now["updated"])}</time></p>'
             f'<ul>{"".join(f"<li>{esc(value)}</li>" for value in entries)}</ul></section>')
 
@@ -367,25 +408,18 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
                  f'<link rel="alternate" hreflang="fi" href="{esc(page_url(domain, pages[page]["fi"]))}">'
                  f'<link rel="alternate" hreflang="x-default" href="{esc(page_url(domain, pages[page]["en"]))}">')
     depth_path = asset_prefix
-    structured = structured_data(page, lang, shared, text, [], [], domain, pages)
+    structured = structured_data(page, lang, shared, text, domain, pages)
     structured_tag = '<script type="application/ld+json">' + json_ld(structured) + "</script>"
     og = ""
-    if (root / "site" / "og.png").exists():
+    if not sample and (root / "site" / "og.png").exists():
         og = '<meta property="og:image" content="' + esc(clean_url(domain) + "og.png") + '"><meta name="twitter:card" content="summary_large_image">'
     bar = top_bar(lang, page, pages, shared, text, sample)
     fact = size_line(lang, ui, sizes[lang], sizes["external"], contrast_pass, sizes.get("quality"))
     title = page_title if real(page_title) else ui["navHome"]
     if page == "home":
-        hero = text.get("hero", {})
-        prompt = esc(hero.get("prompt", "whoami"))
-        header_h1 = esc(shared.get("name", ""))
-        headline = text.get("headline", "")
-        tagline = hero.get("tagline", "")
-        status = "".join(f"<li>{esc(value)}</li>" for value in hero.get("status", []))
-        page_intro = (f'<p class="headline">{esc(headline)}</p>' if headline else "")
-        page_intro += (f'<p class="hero-tagline">{esc(tagline)}</p>' if tagline else "")
-        page_intro += (f'<ul class="hero-status">{status}</ul>' if status else "")
-        page_intro += (f'<p class="summary">{esc(text.get("summary", ""))}</p>' if text.get("summary") else "")
+        prompt = ""
+        header_h1 = ""
+        page_intro = ""
         title_tag = text.get("ui", {}).get("meta_title", title)
     else:
         prompt = ("SAMPLE " if sample else "") + "cat " + page
@@ -395,7 +429,7 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
     if sample:
         fact = "SAMPLE " + fact
     footer = (f'<footer><p>{"SAMPLE " if sample else ""}© {build_year()} {esc(shared["name"])}</p>'
-              f'<a class="build-facts" href="{rel_dir(directory, pages["how"][lang])}#automated-checks">{esc(fact)}</a>'
+              f'<span class="build-facts">{esc(fact)}</span>'
               f'<a class="back-to-top" href="#top">{esc(ui["backToTop"])}</a></footer>')
     prefix = "SAMPLE " if sample else ""
     return "\n".join([
@@ -410,12 +444,11 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
         f'  <script src="{depth_path}theme.js"></script>', f'  <link rel="stylesheet" href="{depth_path}style.css">', f'  {structured_tag}',
         '</head><body id="top">', f'  <a class="skip-link" href="#main">{esc(ui["skip"])}</a>',
         f'  {bar}',
-        f'  <main id="main"><section class="hero"><p class="terminal-prompt">$ {prompt}<span class="cursor" aria-hidden="true">_</span></p>',
-        f'    <h1>{header_h1}</h1>{page_intro}</section>{body}</main>', f'  {footer}', '</body></html>', ""
+        f'  <main id="main">{("<section class=page-hero><p class=shell-prompt>$ cat "+esc(page)+"</p><h1>"+esc(title)+"</h1><p class=page-intro>"+esc(ui["pageIntro"])+"</p></section>" if page != "home" else "")}{body}</main>', f'  {footer}', '</body></html>', ""
     ])
 
 
-def make_llms(shared, en, fi, projects, pages, domain):
+def make_llms(shared, en, fi, timeline, pages, domain):
     lines = ["# " + shared["name"], ""]
     for lang, text in (("en", en), ("fi", fi)):
         if real(text.get("headline")):
@@ -430,46 +463,60 @@ def make_llms(shared, en, fi, projects, pages, domain):
     for label, value in (("GitHub", shared.get("github")), ("LinkedIn", shared.get("linkedin"))):
         if real(value):
             lines.append(f"- {label}: {value}")
-    real_projects = [item for item in projects if real(item.get("title"))]
-    if real_projects:
+    named = [(item.get("event") if item.get("type")=="hackathon" else item.get("title"), item) for item in timeline]
+    named = [(name,item) for name,item in named if real(name)]
+    if named:
         lines.extend(["", "## Projects"])
-        for item in real_projects:
-            links = item.get("links", {})
+        for name, item in named:
+            links = item.get("project",{}).get("links",{}) if item.get("type")=="hackathon" else item.get("links", {})
             destinations = [links[key] for key in ("demo", "code", "writeup") if real(links.get(key))]
             suffix = " — " + ", ".join(destinations) if destinations else ""
-            lines.append(f"- {item['title']}{suffix}")
+            lines.append(f"- {name}{suffix}")
     return "\n".join(lines) + "\n"
 
 
-def generate(root, shared, en, fi, experience, projects, site_info, quality, changelog, now, output_dir=None, sample=False):
+def generate(root, shared, en, fi, timeline, site_info, quality, changelog, now, output_dir=None, sample=False):
     root = Path(root)
     content_dir = root / "content"
     out = Path(output_dir) if output_dir else root / "site"
     out.mkdir(parents=True, exist_ok=True)
+    if sample and out.resolve() != (root / "preview").resolve():
+        raise ValueError("sample output is restricted to preview/")
     if sample:
-        project_types = [item.get("type") for item in projects]
-        def sample_value(value):
-            if isinstance(value, dict):
-                return {key: sample_value(child) for key, child in value.items()}
-            if isinstance(value, list):
-                return [sample_value(child) for child in value]
-            if isinstance(value, str) and value:
-                return "SAMPLE " + value
+        def label(value):
+            if isinstance(value, dict): return {k: label(v) for k,v in value.items()}
+            if isinstance(value, list): return [label(v) for v in value]
+            if isinstance(value, str) and value and not value.startswith("SAMPLE "): return "SAMPLE " + value
             return value
-        shared, en, fi = sample_value(shared), sample_value(en), sample_value(fi)
-        experience, projects = sample_value(experience), sample_value(projects)
-        for index, item in enumerate(projects):
-            item["type"] = project_types[index]
-        site_info, quality = sample_value(site_info), sample_value(quality)
-        changelog = sample_value(changelog)
-        shared["domain"] = "https://example.invalid"
-        for item in projects:
-            if item.get("type") == "hackathon":
-                item["writeup"] = {key: {"en": "SAMPLE preview text", "fi": "SAMPLE esimerkkiteksti"} for key in ("team", "part", "learned")}
-        # Slugs remain safe for a preview URL while all displayed copy is sample-labelled.
-        en["slugs"] = {"how": "how-this-site-is-built", "changelog": "changelog", "now": "now"}
-        fi["slugs"] = {"how": "sivuston-rakenne", "changelog": "muutosloki", "now": "nyt"}
-        now = {"updated": "2026-11-26", "items": []}
+        shared, en, fi = label(shared), label(en), label(fi)
+        shared.update({"name":"SAMPLE Person","initials":"SAMPLE","email":"","github":"","linkedin":"","repo":""})
+        en.update({"headline":"SAMPLE Computer science student","summary":"SAMPLE Building small software projects and learning through team work.","education":[{"degree":"SAMPLE First-year student","school":"SAMPLE Example University","years":"SAMPLE 2026–present"}],"certifications":["SAMPLE Certificate"],"skills":[{"group":"SAMPLE Tools","items":["SAMPLE Python","SAMPLE Git"]}],"languages":["SAMPLE Finnish","SAMPLE English"],"hero":{"prompt":"SAMPLE whoami","status":[{"key":"location","value":"SAMPLE Espoo"},{"key":"looking_for","value":"SAMPLE learning opportunities"},{"key":"availability","value":"SAMPLE available"}]}})
+        fi.update({"headline":"SAMPLE Tietojenkäsittelytieteen opiskelija","summary":"SAMPLE Rakennan ohjelmistoprojekteja ja opin tiimityössä.","education":[{"degree":"SAMPLE Ensimmäisen vuoden opiskelija","school":"SAMPLE Esimerkkikorkeakoulu","years":"SAMPLE 2026–nykyhetki"}],"certifications":["SAMPLE Todistus"],"skills":[{"group":"SAMPLE Työkalut","items":["SAMPLE Python","SAMPLE Git"]}],"languages":["SAMPLE suomi","SAMPLE englanti"],"hero":{"prompt":"SAMPLE whoami","status":[{"key":"location","value":"SAMPLE Espoo"},{"key":"looking_for","value":"SAMPLE oppimismahdollisuudet"},{"key":"availability","value":"SAMPLE käytettävissä"}]}})
+        changelog=[]
+        site_info={"intro":{"en":"SAMPLE This page documents the example site.","fi":"SAMPLE Tämä sivu kuvaa esimerkkisivustoa."},"ai_note":{"en":"","fi":""}}
+        site_info, quality, changelog = label(site_info), label(quality), label(changelog)
+        shared["domain"] = ""
+        preview_img=out / "img"; preview_img.mkdir(parents=True,exist_ok=True)
+        def sample_media(count, prefix):
+            rows=[]
+            for n in range(1,count+1):
+                name=f"{prefix}-{n}.svg"; target=preview_img/name
+                target.write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360"><rect width="640" height="360" fill="#1a2420"/><text x="320" y="190" text-anchor="middle" fill="#8bd6ae" font-family="monospace" font-size="42">SAMPLE</text></svg>\n',encoding="utf-8")
+                rows.append({"file":name,"alt":{"en":"SAMPLE preview image","fi":"SAMPLE esimerkkikuva"},"caption":{"en":"SAMPLE preview","fi":"SAMPLE esikatselu"}})
+            return rows
+        blank_links={"demo":"","code":"","writeup":""}
+        blank_bi={"en":"SAMPLE preview text","fi":"SAMPLE esimerkkiteksti"}
+        preview_hack={"type":"hackathon","date_start":"2026-09-18","date_end":"2026-09-20","event":"SAMPLE Hackathon","what":blank_bi,"where":blank_bi,"theme":blank_bi,"team":{"name":"SAMPLE Team","size":5},"role":blank_bi,"result":blank_bi,"project":{"title":"SAMPLE Build","description":blank_bi,"tags":["SAMPLE Data"],"links":blank_links,"media":sample_media(4,"SAMPLE-hackathon")},"learned":blank_bi}
+        timeline=[preview_hack,
+          {"type":"project","date":"2026-08","title":"SAMPLE One image project","role":blank_bi,"description":blank_bi,"tags":["SAMPLE Build"],"links":blank_links,"media":sample_media(1,"SAMPLE-project-one"),"learned":blank_bi},
+          {"type":"project","date":"2026-07","title":"SAMPLE Two image project","role":blank_bi,"description":blank_bi,"tags":[],"links":blank_links,"media":sample_media(2,"SAMPLE-project-two"),"learned":blank_bi},
+          {"type":"project","date":"2026-06","title":"SAMPLE Text project","role":blank_bi,"description":blank_bi,"tags":[],"links":blank_links,"media":[],"learned":blank_bi},
+          {"type":"hackathon","date_start":"2026-05-01","date_end":"","event":"SAMPLE Hackathon without images","what":blank_bi,"where":blank_bi,"theme":blank_bi,"team":{"name":"","size":0},"role":blank_bi,"result":{"en":"","fi":""},"project":{"title":"SAMPLE Entry","description":blank_bi,"tags":[],"links":blank_links,"media":[]},"learned":{"en":"","fi":""}},
+          {"type":"role","start":"2026-04","end":"","employer":"SAMPLE Employer","role":blank_bi,"points":{"en":["SAMPLE Contribution"],"fi":["SAMPLE Työpanos"]}},
+          {"type":"role","start":"2026-03","end":"2026-04","employer":"SAMPLE Employer","role":blank_bi,"points":{"en":[],"fi":[]}}]
+        en["slugs"]={"how":"how-this-site-is-built","changelog":"changelog","now":"now"}
+        fi["slugs"]={"how":"sivuston-rakenne","changelog":"muutosloki","now":"nyt"}
+        now={"updated":"","items":[]}
     has_now = bool(now.get("items"))
     pages = page_dirs(en, fi, has_now)
     domain = shared.get("domain", "")
@@ -481,7 +528,7 @@ def generate(root, shared, en, fi, experience, projects, site_info, quality, cha
     size = {"external": external_request_count("", stylesheet, theme, favicon), "en": 0, "fi": 0, "quality": quality}
     rendered = {}
     for lang, text in (("en", en), ("fi", fi)):
-        body = home_sections(lang, shared, text, experience, projects, text["ui"], sample=sample)
+        body = home_sections(lang, shared, text, timeline, text["ui"], sample=sample, root=root)
         rendered[("home", lang)] = body
         # Iterate to account for the measured footer line in the HTML byte total.
         total = css_bytes + js_bytes + icon_bytes
@@ -520,7 +567,7 @@ def generate(root, shared, en, fi, experience, projects, site_info, quality, cha
             if path.exists():
                 path.unlink()
     (out / "favicon.svg").write_text(favicon, encoding="utf-8", newline="\n")
-    llms = make_llms(shared, en, fi, projects, pages, domain)
+    llms = make_llms(shared, en, fi, timeline, pages, domain)
     if sample:
         llms = "SAMPLE " + llms
     (out / "llms.txt").write_text(llms, encoding="utf-8", newline="\n")
@@ -554,11 +601,10 @@ def not_found(shared, en, fi, pages, sizes, contrast_pass, sample=False):
     bar = top_bar("en", "home", pages, shared, en, sample)
     facts = []
     for lang, ui in (("en", en_ui), ("fi", fi_ui)):
-        href = rel_dir("", pages["how"][lang]) + "#automated-checks"
-        facts.append(f'<a class="build-facts" href="{href}">{esc(sample_prefix + size_line(lang, ui, sizes[lang], sizes["external"], contrast_pass, sizes.get("quality")))}</a>')
+        facts.append(f'<span class="build-facts">{esc(sample_prefix + size_line(lang, ui, sizes[lang], sizes["external"], contrast_pass, sizes.get("quality")))}</span>')
     return "\n".join(["<!doctype html>", '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#101614">',
         f'<title>{esc(en["ui"]["notFoundTitle"])} / {esc(fi["ui"]["notFoundTitle"])}</title>',
         '<script src="theme.js"></script><link rel="stylesheet" href="style.css"></head><body id="top">',
         f'<a class="skip-link" href="#main">{esc(sample_prefix + en["ui"]["skip"])}</a>{bar}',
         f'<main id="main" class="not-found"><section class="hero"><h1>{esc(sample_prefix + en["ui"]["notFoundTitle"])} / {esc(sample_prefix + fi["ui"]["notFoundTitle"])}</h1></section><p lang="en">{esc(sample_prefix + en["ui"]["notFoundText"])}</p><p lang="fi">{esc(sample_prefix + fi["ui"]["notFoundText"])}</p></main>',
-        f'<footer><p>{sample_prefix}© {build_year()} {esc(shared["name"])}</p>{"".join(facts)}</footer>', '</body></html>', ""])
+        f'<footer><p>{sample_prefix}© {build_year()} {esc(shared["name"])}</p>{"".join(facts)}<a class="back-to-top" href="#top">{esc(sample_prefix + en["ui"]["backToTop"])}</a></footer>', '</body></html>', ""])
