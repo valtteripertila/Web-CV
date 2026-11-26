@@ -7,6 +7,7 @@ A bilingual static CV site generated from structured English and Finnish content
 ## Features
 
 - English and Finnish pages with page-by-page language switching.
+- A sticky top bar holds the language and theme controls plus a grouped links menu; the native menu also opens without JavaScript.
 - Dark default theme with a light-theme toggle.
 - Static HTML generated with Python's standard library.
 - Local checks for content, links, HTML, language parity, privacy patterns, theme contrast and build freshness.

@@ -193,6 +193,102 @@ def html_sanity_check(site_root=SITE):
     return errors
 
 
+class TopbarLinks(html.parser.HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.topbars = 0
+        self.switch_depth = 0
+        self.menu_depth = 0
+        self.switch_hrefs = []
+        self.menu_hrefs = []
+        self.first_focusable = None
+
+    def handle_starttag(self, tag, attrs):
+        data = dict(attrs)
+        classes = data.get("class", "").split()
+        if self.first_focusable is None and (
+            (tag == "a" and data.get("href")) or tag in {"button", "summary", "input", "select", "textarea"}
+        ):
+            self.first_focusable = "skip" if "skip-link" in classes else tag
+        if tag == "header" and "topbar" in classes:
+            self.topbars += 1
+        if tag == "nav":
+            if "language-switch" in classes:
+                self.switch_depth += 1
+            elif self.menu_depth:
+                self.menu_depth += 1
+        if tag == "details" and "menu-wrap" in classes:
+            self.menu_depth += 1
+        if tag == "a" and data.get("href"):
+            if self.switch_depth:
+                self.switch_hrefs.append(data["href"])
+            if self.menu_depth:
+                self.menu_hrefs.append(data["href"])
+
+    def handle_endtag(self, tag):
+        if tag == "nav" and self.switch_depth:
+            self.switch_depth -= 1
+        elif tag == "nav" and self.menu_depth > 1:
+            self.menu_depth -= 1
+        elif tag == "details" and self.menu_depth:
+            self.menu_depth = 0
+
+
+def topbar_check(site_root=SITE):
+    from tools.sitebuilder import page_dirs
+    errors = []
+    en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
+    fi = json.loads((ROOT / "content/fi.json").read_text(encoding="utf-8"))
+    now = json.loads((ROOT / "content/now.json").read_text(encoding="utf-8"))
+    pages = page_dirs(en, fi, bool(now.get("items")))
+    root = Path(site_root)
+
+    def local_target(page, href):
+        value = urlsplit(href)
+        if value.scheme or value.netloc or href.startswith("//"):
+            return None
+        target = (page.parent / unquote(value.path)).resolve() if value.path else page.resolve()
+        return (target / "index.html").resolve() if target.is_dir() else target
+
+    def generated_page(path):
+        relative = path.relative_to(root).as_posix()
+        if relative == "404.html":
+            return "home", "en"
+        directory = "" if relative == "index.html" else relative[:-len("/index.html")]
+        for key, langs in pages.items():
+            for lang in ("en", "fi"):
+                if directory == langs[lang]:
+                    return key, lang
+        return None, None
+
+    for page in sorted(root.rglob("*.html")):
+        parser = TopbarLinks()
+        parser.feed(page.read_text(encoding="utf-8"))
+        label = page.relative_to(root).as_posix()
+        if parser.topbars != 1:
+            errors.append(f"{label}: expected one header.topbar, found {parser.topbars}")
+        if parser.first_focusable != "skip":
+            errors.append(f"{label}: skip link is not the first focusable element")
+        key, lang = generated_page(page)
+        if not key:
+            errors.append(f"{label}: page is not mapped to a generated language page")
+            continue
+        expected = [(lang, pages[key][lang]) for lang in ("en", "fi")]
+        if len(parser.switch_hrefs) != 2:
+            errors.append(f"{label}: language switch should contain EN and FI links")
+        else:
+            for href, (target_lang, directory) in zip(parser.switch_hrefs, expected):
+                target = local_target(page, href)
+                expected_path = (root / directory / "index.html").resolve() if directory else (root / "index.html").resolve()
+                if target != expected_path or not expected_path.exists():
+                    errors.append(f"{label}: language switch {target_lang} target is missing or not equivalent: {href}")
+        for href in parser.menu_hrefs:
+            target = local_target(page, href)
+            if target is not None and not target.exists():
+                errors.append(f"{label}: menu target is missing: {href}")
+    return errors
+
+
 def external_resource_check(site_root=SITE):
     from tools.sitebuilder import count_external_resources
     errors = []
@@ -263,6 +359,7 @@ CHECKS = [
     ("links", "Internal links, fragments and assets resolve.", "Sisäiset linkit, kohdat ja resurssit löytyvät.", internal_link_check),
     ("language", "English and Finnish pages and translations stay in parity.", "Englannin- ja suomenkieliset sivut ja käännökset pysyvät rinnakkain.", language_parity_check),
     ("html", "HTML tags, ids, headings and language attributes are valid.", "HTML-tunnisteet, tunnisteet, pääotsikot ja kielimerkinnät ovat kelvollisia.", html_sanity_check),
+    ("topbar", "Every page has one top bar with valid language and menu links.", "Jokaisella sivulla on yksi yläpalkki ja toimivat kieli- ja valikkolinkit.", topbar_check),
     ("external", "HTML and CSS load no external resources.", "HTML ja CSS eivät lataa ulkoisia resursseja.", external_resource_check),
     ("contrast", "Both theme palettes pass measured contrast thresholds.", "Molempien teemojen värit läpäisevät mitatut kontrastirajat.", contrast_check),
     ("privacy", "No private contact details are included.", "Yksityisiä yhteystietoja ei ole lisätty.", privacy_check),

@@ -58,6 +58,35 @@ class BuildTests(unittest.TestCase):
         pages = sitebuilder.page_dirs(en, fi, False)
         value = sitebuilder.language_switch("en", "how", pages, en["ui"])
         self.assertIn('../fi/sivuston-rakenne/', value)
+        self.assertIn('aria-current="true"', value)
+
+    def test_site_menu_is_omitted_when_empty(self):
+        en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
+        self.assertEqual("", sitebuilder.site_menu("en", "home", {}, {}, en))
+
+    def test_site_menu_omits_empty_groups_and_missing_links(self):
+        en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
+        pages = {"home": {"en": "", "fi": "fi"}, "now": {"en": "now", "fi": "fi/nyt"}}
+        menu = sitebuilder.site_menu("en", "home", pages, {"github": "", "linkedin": "[PROFILE URL]"}, en)
+        self.assertIn("// More", menu)
+        self.assertIn("Now", menu)
+        self.assertNotIn("About this site", menu)
+        self.assertNotIn("GitHub", menu)
+        self.assertNotIn("LinkedIn", menu)
+
+    def test_site_menu_uses_relative_paths_for_subpages(self):
+        en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
+        fi = json.loads((ROOT / "content/fi.json").read_text(encoding="utf-8"))
+        pages = sitebuilder.page_dirs(en, fi, True)
+        menu = sitebuilder.site_menu("fi", "how", pages, {}, fi)
+        self.assertIn('href="../muutosloki/"', menu)
+        self.assertIn('href="../nyt/"', menu)
+
+    def test_brand_uses_name_without_handle_decoration(self):
+        value = sitebuilder.brand_link("Valtteri Pertilä", "./")
+        self.assertIn('<span class="first">Valtteri</span> <span class="last">Pertilä</span>', value)
+        self.assertNotIn("@", value)
+        self.assertEqual('<a class="brand" href="./"><span class="first">Single</span></a>', sitebuilder.brand_link("Single", "./"))
 
     def test_two_builds_are_byte_identical(self):
         env = os.environ.copy()

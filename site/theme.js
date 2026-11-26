@@ -24,4 +24,18 @@
     button.style.display = "inline-flex";
     update();
   });
+
+  // Let details provide no-JavaScript access, with small dismissal helpers.
+  document.addEventListener("keydown", function (event) {
+    var menu = document.querySelector(".menu-wrap[open]");
+    if (event.key === "Escape" && menu) {
+      menu.open = false;
+      menu.querySelector("summary").focus();
+    }
+  });
+  document.addEventListener("click", function (event) {
+    var menu = document.querySelector(".menu-wrap[open]");
+    if (menu && !menu.contains(event.target)) menu.open = false;
+    if (menu && event.target.closest && event.target.closest(".menu-wrap nav a")) menu.open = false;
+  });
 }());

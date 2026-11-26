@@ -31,7 +31,7 @@ def contrast_report(css):
     """Measure real text, muted text, accent, and border pairs for both themes."""
     palettes = parse_colors(css)
     results = {}
-    required = {"--background", "--text", "--muted", "--accent", "--border"}
+    required = {"--background", "--surface", "--text", "--muted", "--accent", "--border"}
     for theme in ("dark", "light"):
         palette = palettes.get(theme, {})
         missing = required - palette.keys()
@@ -43,6 +43,9 @@ def contrast_report(css):
             "muted": contrast_ratio(palette["--muted"], background),
             "accent": contrast_ratio(palette["--accent"], background),
             "border": contrast_ratio(palette["--border"], background),
+            "menu_link_surface": contrast_ratio(palette["--accent"], palette["--surface"]),
+            "menu_label_surface": contrast_ratio(palette["--muted"], palette["--surface"]),
+            "menu_hover_background": contrast_ratio(palette["--text"], background),
         }
         results[theme] = ratios
     passed = all(
@@ -50,6 +53,9 @@ def contrast_report(css):
         and result["muted"] >= 4.5
         and result["accent"] >= 4.5
         and result["border"] >= 3.0
+        and result["menu_link_surface"] >= 4.5
+        and result["menu_label_surface"] >= 4.5
+        and result["menu_hover_background"] >= 4.5
         for result in results.values()
     )
     return passed, results
