@@ -1,0 +1,123 @@
+[
+  {
+    "type": "hackathon",
+    "date_start": "2026-09-18",
+    "date_end": "2026-09-20",
+    "event": "AaltoAI Hackathon: Data Sovereignty & Responsible AI",
+    "what": {
+      "en": "48-hour build sprint; €10,000 prize pool; partners: Microsoft, Verda, Norrin, Relex, IBM and Elisa.",
+      "fi": "48 tunnin rakennussprintti; 10 000 euron palkintopotti; kumppanit: Microsoft, Verda, Norrin, Relex, IBM ja Elisa."
+    },
+    "where": {
+      "en": "Aalto Design Factory, Espoo",
+      "fi": "Aalto Design Factory, Espoo"
+    },
+    "theme": {
+      "en": "Data sovereignty and responsible AI",
+      "fi": "Datan suvereniteetti ja vastuullinen tekoäly"
+    },
+    "team": {
+      "name": "",
+      "size": 5
+    },
+    "role": {
+      "en": "Data engineering and research in a team of five.",
+      "fi": "Data engineering ja tutkimus viiden hengen tiimissä."
+    },
+    "result": {
+      "en": "Won IBM Best Use of IBM Bob.",
+      "fi": "Voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta."
+    },
+    "project": {
+      "title": "[PROJECT TITLE]",
+      "description": {
+        "en": "Built a solution during a 48-hour sprint focused on data sovereignty and responsible AI. I contributed data engineering and research as part of a five-person team.",
+        "fi": "Rakensimme ratkaisua 48 tunnin sprintissä, jonka aiheina olivat datan suvereniteetti ja vastuullinen tekoäly. Vastasin tiimissä data engineeringistä ja tutkimuksesta."
+      },
+      "tags": [
+        "Data engineering",
+        "Responsible AI",
+        "Data sovereignty"
+      ],
+      "links": {
+        "demo": "",
+        "code": "",
+        "writeup": ""
+      },
+      "media": []
+    },
+    "learned": {
+      "en": "",
+      "fi": ""
+    }
+  },
+  {
+    "type": "project",
+    "date": "[PERSONAL PROJECT DATE]",
+    "title": "[PERSONAL PROJECT TITLE]",
+    "role": {
+      "en": "[ROLE EN]",
+      "fi": "[ROLE FI]"
+    },
+    "description": {
+      "en": "[PERSONAL PROJECT DESCRIPTION EN]",
+      "fi": "[PERSONAL PROJECT DESCRIPTION FI]"
+    },
+    "tags": [
+      "[TAG 1]",
+      "[TAG 2]"
+    ],
+    "links": {
+      "demo": "",
+      "code": "",
+      "writeup": ""
+    },
+    "media": [],
+    "learned": {
+      "en": "",
+      "fi": ""
+    }
+  },
+  {
+    "type": "role",
+    "start": "[MM/YYYY]",
+    "end": "",
+    "employer": "[EMPLOYER 1]",
+    "role": {
+      "en": "[ROLE 1 EN]",
+      "fi": "[ROLE 1 FI]"
+    },
+    "points": {
+      "en": [
+        "[ACHIEVEMENT 1 EN]",
+        "[ACHIEVEMENT 2 EN]",
+        "[ACHIEVEMENT 3 EN]"
+      ],
+      "fi": [
+        "[ACHIEVEMENT 1 FI]",
+        "[ACHIEVEMENT 2 FI]",
+        "[ACHIEVEMENT 3 FI]"
+      ]
+    }
+  },
+  {
+    "type": "role",
+    "start": "[MM/YYYY]",
+    "end": "",
+    "employer": "[EMPLOYER 2]",
+    "role": {
+      "en": "[ROLE 2 EN]",
+      "fi": "[ROLE 2 FI]"
+    },
+    "points": {
+      "en": [
+        "[ACHIEVEMENT 1 EN]",
+        "[ACHIEVEMENT 2 EN]"
+      ],
+      "fi": [
+        "[ACHIEVEMENT 1 FI]",
+        "[ACHIEVEMENT 2 FI]"
+      ]
+    }
+  }
+]

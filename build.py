@@ -6,12 +6,23 @@ import json
 import re
 import sys
 from datetime import date
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parent
 CONTENT = ROOT / "content"
 SITE = ROOT / "site"
-UI_KEYS = ["skip", "about", "experience", "projects", "hackathons", "personalProjects", "education", "certifications", "skills", "languages", "contact", "present", "demo", "code", "writeup", "backToTop", "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText", "navNow", "navHome", "navHow", "navChangelog", "languageNav", "mainNav", "navMenu", "menuAbout", "menuMore", "overview", "architecture", "contentModel", "automatedChecks", "constraints", "source", "aiAssisted", "pageIntro", "contentDescriptions", "contentFile", "contentHolds", "cspLabel", "buildFacts", "externalRequests", "siteBytes", "contrastPass", "contrastFail", "writeupTeam", "writeupPart", "writeupLearned", "writeupSummary", "changelogIntro", "nowIntro", "updated", "buildChecked", "contrastLabel", "lighthouseLabel", "lighthouseFooter", "project", "home", "writeupMismatch", "sectionLabels"]
+UI_KEYS = [
+        "skip", "contact", "present", "demo", "repo", "writeup", "github", "linkedin", "backToTop",
+        "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText",
+        "navNow", "navHome", "navHow", "navChangelog", "languageNav", "mainNav", "navMenu", "menuAbout",
+        "menuMore", "overview", "architecture", "contentModel", "automatedChecks", "constraints", "source",
+        "aiAssisted", "pageIntro", "contentDescriptions", "contentFile", "contentHolds", "cspLabel", "buildFacts",
+        "externalRequests", "siteBytes", "contrastPass", "contrastFail", "changelogIntro", "nowIntro", "updated",
+        "buildChecked", "contrastLabel", "lighthouseLabel", "lighthouseFooter", "timeline", "profile", "whatBuilt",
+        "learned", "filterLegend", "filterAll", "filterHackathons", "filterProjects", "filterRoles", "hackathon",
+        "project", "role", "teamSize"
+]
 
 
 def esc(value):
@@ -48,71 +59,260 @@ def require(data, keys, filename, errors, prefix=""):
                         errors.append(f"{filename}: missing {prefix}{key}")
 
 
-def validate_experience(entries, errors):
-        for number, item in enumerate(entries, 1):
-                if not isinstance(item, dict):
-                        errors.append(f"experience.json entry {number}: must be an object")
-                        continue
-                for field in ("employer", "start", "role", "points"):
-                        if field not in item:
-                                errors.append(f"experience.json entry {number}: missing {field}")
-                for field in ("role", "points"):
-                        value = item.get(field, {})
-                        if not isinstance(value, dict):
-                                errors.append(f"experience.json entry {number}: {field} must be an object")
-                                continue
-                        for lang in ("en", "fi"):
-                                if lang not in value:
-                                        errors.append(f"experience.json entry {number}: missing {field}.{lang}")
-                                elif field == "points" and not isinstance(value[lang], list):
-                                        errors.append(f"experience.json entry {number}: {field}.{lang} must be a list")
-                pts = item.get("points", {})
-                if isinstance(pts, dict) and isinstance(pts.get("en"), list) and isinstance(pts.get("fi"), list) and len(pts["en"]) != len(pts["fi"]):
-                        print(f"WARNING: experience.json entry {number}: points.en and points.fi have different lengths")
+def value_present(value):
+        return isinstance(value, str) and bool(value.strip())
 
 
-def validate_projects(entries, errors):
+def parse_date_key(value):
+        if not isinstance(value, str):
+                return None
+        if re.fullmatch(r"\d{4}-\d{2}", value):
+                year, month = (int(part) for part in value.split("-"))
+                if 1 <= month <= 12:
+                        return date(year, month, 1)
+        elif re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+                try:
+                        parsed = date.fromisoformat(value)
+                        if parsed.isoformat() == value:
+                                return parsed
+                except ValueError:
+                        return None
+        return None
+
+
+def validate_bilingual(value, filename, number, field, errors, expected="string"):
+        if not isinstance(value, dict):
+                errors.append(f"{filename} entry {number} field {field}: must be an object with en and fi")
+                return
+        values = []
+        for lang in ("en", "fi"):
+                if lang not in value:
+                        errors.append(f"{filename} entry {number} field {field}.{lang}: missing")
+                        continue
+                child = value[lang]
+                correct = isinstance(child, list) if expected == "list" else isinstance(child, str)
+                if not correct:
+                        errors.append(f"{filename} entry {number} field {field}.{lang}: must be a {expected}")
+                elif expected == "list" and any(not isinstance(entry, str) for entry in child):
+                        errors.append(f"{filename} entry {number} field {field}.{lang}: list values must be strings")
+                values.append(bool(child) if correct else False)
+        if len(values) == 2 and values[0] != values[1]:
+                print(f"WARNING: {filename} entry {number} field {field}: content is present in only one language")
+
+
+def validate_iso_field(item, number, field, required, errors, filename="timeline.json"):
+        value = item.get(field, "")
+        if not value_present(value):
+                if required:
+                        errors.append(f"{filename} entry {number} field {field}: required")
+                return None
+        parsed = parse_date_key(value)
+        if parsed is None and "[" not in value:
+                errors.append(f"{filename} entry {number} field {field}: expected YYYY-MM or YYYY-MM-DD")
+        return parsed
+
+
+def validate_urls(links, number, errors):
+        if not isinstance(links, dict):
+                errors.append(f"timeline.json entry {number} field links: must be an object")
+                return
+        for key in ("demo", "code", "writeup"):
+                if key not in links:
+                        errors.append(f"timeline.json entry {number} field links.{key}: missing")
+                        continue
+                value = links[key]
+                if not isinstance(value, str):
+                        errors.append(f"timeline.json entry {number} field links.{key}: must be a string")
+                        continue
+                if value and (urlsplit(value).scheme not in ("http", "https") or not urlsplit(value).netloc):
+                        errors.append(f"timeline.json entry {number} field links.{key}: must start with http:// or https:// and include a host")
+
+
+def validate_media(media, number, field, site_root, errors):
+        if not isinstance(media, list):
+                errors.append(f"timeline.json entry {number} field {field}: must be a list")
+                return
+        if len(media) > 4:
+                print(f"WARNING: timeline.json entry {number} field {field}: only the first 4 of {len(media)} media items are displayed")
+        root = Path(site_root) / "img"
+        seen = set()
+        for media_number, item in enumerate(media, 1):
+                prefix = f"timeline.json entry {number} field {field}[{media_number - 1}]"
+                if not isinstance(item, dict):
+                        errors.append(f"{prefix}: must be an object")
+                        continue
+                filename = item.get("file", "")
+                if not isinstance(filename, str) or not filename:
+                        errors.append(f"{prefix}.file: required")
+                        continue
+                posix_path, windows_path = PurePosixPath(filename), PureWindowsPath(filename)
+                if posix_path.is_absolute() or windows_path.is_absolute() or windows_path.drive or ".." in posix_path.parts or ".." in windows_path.parts:
+                        errors.append(f"{prefix}.file: path must stay relative to site/img without '..'")
+                        continue
+                if filename in seen:
+                        errors.append(f"{prefix}.file: duplicate file within this entry")
+                seen.add(filename)
+                target = root / Path(*posix_path.parts)
+                allowed = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif"}
+                if target.suffix.lower() not in allowed:
+                        errors.append(f"{prefix}.file: unsupported extension {target.suffix or '(none)'}")
+                        continue
+                try:
+                        resolved_root = root.resolve()
+                        resolved_target = target.resolve(strict=True)
+                        resolved_target.relative_to(resolved_root)
+                except (OSError, ValueError):
+                        errors.append(f"{prefix}.file: file must exist under site/img")
+                        continue
+                if not resolved_target.is_file():
+                        errors.append(f"{prefix}.file: must be a file")
+                        continue
+                size = resolved_target.stat().st_size
+                if size > 5 * 1024 * 1024:
+                        errors.append(f"{prefix}.file: exceeds 5 MB")
+                elif size > 400 * 1024:
+                        print(f"WARNING: {prefix}.file: larger than 400 KB ({size} bytes)")
+                alt = item.get("alt")
+                validate_bilingual(alt, "timeline.json", number, f"{field}[{media_number - 1}].alt", errors)
+                if isinstance(alt, dict) and any(not value_present(alt.get(lang)) for lang in ("en", "fi")):
+                        errors.append(f"{prefix}.alt: alt text is required in both languages")
+                caption = item.get("caption", {"en": "", "fi": ""})
+                validate_bilingual(caption, "timeline.json", number, f"{field}[{media_number - 1}].caption", errors)
+                try:
+                        from tools.media import image_dimensions
+                        dimensions = image_dimensions(resolved_target)
+                        if dimensions is None:
+                                print(f"WARNING: {prefix}.file: image dimensions could not be read")
+                        elif max(dimensions) > 1600:
+                                print(f"WARNING: {prefix}.file: longest dimension is over 1600 px ({dimensions[0]}×{dimensions[1]})")
+                        if target.suffix.lower() == ".svg":
+                                svg = resolved_target.read_text(encoding="utf-8", errors="replace")
+                                if re.search(r"(?:href|src)\s*=\s*['\"]https?://", svg, re.I):
+                                        errors.append(f"{prefix}.file: SVG must not reference external resources")
+                except (OSError, ValueError):
+                        print(f"WARNING: {prefix}.file: image dimensions could not be read")
+
+
+def validate_timeline(entries, errors, site_root=SITE):
+        if not isinstance(entries, list):
+                errors.append("timeline.json: root must be an array")
+                return
+        bilingual_fields = {
+                "hackathon": ("what", "where", "theme", "role", "result", "learned"),
+                "project": ("role", "description", "learned"),
+                "role": ("role", "points"),
+        }
         for number, item in enumerate(entries, 1):
                 if not isinstance(item, dict):
-                        errors.append(f"projects.json entry {number}: must be an object")
+                        errors.append(f"timeline.json entry {number}: must be an object")
                         continue
-                for field in ("type", "title", "description"):
-                        if field not in item:
-                                errors.append(f"projects.json entry {number}: missing {field}")
-                if item.get("type") not in ("hackathon", "personal"):
-                        errors.append(f"projects.json entry {number}: type must be hackathon or personal")
-                desc = item.get("description", {})
-                if not isinstance(desc, dict):
-                        errors.append(f"projects.json entry {number}: description must be an object")
+                kind = item.get("type")
+                if kind not in ("hackathon", "project", "role"):
+                        errors.append(f"timeline.json entry {number} field type: must be hackathon, project or role")
+                        continue
+                required_by_kind = {
+                        "hackathon": ("date_start", "date_end", "event", "what", "where", "theme", "team", "role", "result", "project", "learned"),
+                        "project": ("date", "title", "role", "description", "tags", "links", "media", "learned"),
+                        "role": ("start", "end", "employer", "role", "points"),
+                }
+                for required_field in required_by_kind[kind]:
+                        if required_field not in item:
+                                errors.append(f"timeline.json entry {number} field {required_field}: missing")
+                if kind == "hackathon":
+                        start = validate_iso_field(item, number, "date_start", True, errors)
+                        end = validate_iso_field(item, number, "date_end", False, errors)
+                        if start is None and "[" in str(item.get("date_start", "")):
+                                print(f"WARNING: timeline.json entry {number} field date_start: unparseable placeholder sorts last")
+                        if end and start and end < start:
+                                errors.append(f"timeline.json entry {number} field date_end: cannot precede date_start")
+                        if not value_present(item.get("event")):
+                                errors.append(f"timeline.json entry {number} field event: required")
+                        project = item.get("project")
+                        if not isinstance(project, dict):
+                                errors.append(f"timeline.json entry {number} field project: must be an object")
+                                project = {}
+                        if not value_present(project.get("title")):
+                                errors.append(f"timeline.json entry {number} field project.title: required")
+                        team = item.get("team", {})
+                        if not isinstance(team, dict):
+                                errors.append(f"timeline.json entry {number} field team: must be an object")
+                        else:
+                                if not isinstance(team.get("name", ""), str):
+                                        errors.append(f"timeline.json entry {number} field team.name: must be a string")
+                                if type(team.get("size")) is not int or team.get("size", -1) < 0:
+                                        errors.append(f"timeline.json entry {number} field team.size: must be a non-negative integer")
+                        if isinstance(project, dict):
+                                for required_field in ("title", "description", "tags", "links", "media"):
+                                        if required_field not in project:
+                                                errors.append(f"timeline.json entry {number} field project.{required_field}: missing")
+                                for field in ("description",):
+                                        validate_bilingual(project.get(field, {"en": "", "fi": ""}), "timeline.json", number, f"project.{field}", errors)
+                                validate_urls(project.get("links"), number, errors)
+                                validate_media(project.get("media"), number, "project.media", site_root, errors)
+                                if not isinstance(project.get("tags"), list):
+                                        errors.append(f"timeline.json entry {number} field project.tags: must be a list")
+                elif kind == "project":
+                        parsed = validate_iso_field(item, number, "date", True, errors)
+                        if parsed is None and "[" in str(item.get("date", "")):
+                                print(f"WARNING: timeline.json entry {number} field date: unparseable placeholder sorts last")
+                        if not value_present(item.get("title")):
+                                errors.append(f"timeline.json entry {number} field title: required")
+                        validate_urls(item.get("links"), number, errors)
+                        validate_media(item.get("media"), number, "media", site_root, errors)
+                        if not isinstance(item.get("tags"), list):
+                                errors.append(f"timeline.json entry {number} field tags: must be a list")
                 else:
-                        for lang in ("en", "fi"):
-                                if lang not in desc:
-                                        errors.append(f"projects.json entry {number}: missing description.{lang}")
-                writeup = item.get("writeup", {})
-                if writeup and isinstance(writeup, dict):
-                        for field, translations in writeup.items():
-                                if not isinstance(translations, dict):
-                                        errors.append(f"projects.json entry {number}: writeup.{field} must be an object")
-                                        continue
-                                en_value, fi_value = translations.get("en", ""), translations.get("fi", "")
-                                if bool(en_value) != bool(fi_value):
-                                        print(f"WARNING: projects.json entry {number}: write-up {field} is present in only one language")
+                        parsed = validate_iso_field(item, number, "start", True, errors)
+                        if parsed is None and "[" in str(item.get("start", "")):
+                                print(f"WARNING: timeline.json entry {number} field start: unparseable placeholder sorts last")
+                        validate_iso_field(item, number, "end", False, errors)
+                        if not value_present(item.get("employer")):
+                                errors.append(f"timeline.json entry {number} field employer: required")
+                for field in bilingual_fields[kind]:
+                        if field not in item:
+                                errors.append(f"timeline.json entry {number} field {field}: missing")
+                        value = item.get(field, {"en": "", "fi": ""})
+                        expected = "list" if kind == "role" and field == "points" else "string"
+                        validate_bilingual(value, "timeline.json", number, field, errors, expected)
+                if kind == "role" and "media" in item:
+                        errors.append(f"timeline.json entry {number} field media: role entries cannot contain media")
 
 
-def validate(shared, en, fi, experience, projects, errors):
-        require(shared, ["name", "initials", "email", "linkedin", "github", "domain", "repo"], "shared.json", errors)
+def validate(shared, en, fi, timeline, errors, site_root=SITE):
+        require(shared, ["name", "initials", "email", "linkedin", "github", "domain", "repo", "heroStatusKeys"], "shared.json", errors)
+        status_keys = shared.get("heroStatusKeys", [])
+        if not isinstance(status_keys, list) or any(not isinstance(key, str) or not re.fullmatch(r"[a-z_][a-z0-9_]*", key) for key in status_keys):
+                errors.append("shared.json field heroStatusKeys: expected unique code-style keys")
+                status_keys = []
+        elif len(status_keys) != len(set(status_keys)):
+                errors.append("shared.json field heroStatusKeys: keys must be unique")
         for lang, data in (("en", en), ("fi", fi)):
-                require(data, ["lang", "locale", "slugs", "headline", "summary", "location", "education", "certifications", "skills", "languages", "ui"], f"{lang}.json", errors)
+                require(data, ["lang", "locale", "slugs", "headline", "summary", "education", "certifications", "skills", "languages", "ui", "hero"], f"{lang}.json", errors)
                 require(data.get("slugs", {}), ["how", "changelog", "now"], f"{lang}.json", errors, "slugs.")
                 require(data.get("ui", {}), UI_KEYS, f"{lang}.json", errors, "ui.")
-                for section in ("education", "skills"):
-                        items = data.get(section, [])
-                        if isinstance(items, list):
-                                for index, item in enumerate(items, 1):
-                                        if not isinstance(item, dict):
-                                                errors.append(f"{lang}.json: {section} entry {index} must be an object")
-        validate_experience(experience, errors)
-        validate_projects(projects, errors)
+                hero = data.get("hero", {})
+                statuses = hero.get("status", []) if isinstance(hero, dict) else []
+                if not isinstance(statuses, list):
+                        errors.append(f"{lang}.json field hero.status: must be a list")
+                        statuses = []
+                keys = []
+                for index, entry in enumerate(statuses, 1):
+                        if not isinstance(entry, dict):
+                                errors.append(f"{lang}.json field hero.status[{index - 1}]: must be an object")
+                                continue
+                        key = entry.get("key", "")
+                        if not isinstance(key, str) or not re.fullmatch(r"[a-z_][a-z0-9_]*", key):
+                                errors.append(f"{lang}.json field hero.status[{index - 1}].key: invalid identifier")
+                        else:
+                                keys.append(key)
+                        if not isinstance(entry.get("value"), str):
+                                errors.append(f"{lang}.json field hero.status[{index - 1}].value: must be a string")
+                if keys != status_keys:
+                        errors.append(f"{lang}.json field hero.status: keys must match shared.heroStatusKeys in order")
+                for field in ("education", "skills", "certifications", "languages"):
+                        if not isinstance(data.get(field), list):
+                                errors.append(f"{lang}.json field {field}: must be a list")
+        validate_timeline(timeline, errors, site_root)
 
 
 def validate_extra(site_info, quality, changelog, now, errors):
@@ -165,19 +365,24 @@ def validate_extra(site_info, quality, changelog, now, errors):
 
 def warn_placeholders(files):
         found = []
-        def walk(filename, value, path):
+        def walk(filename, value, path, entry_number=None):
                 if isinstance(value, dict):
                         for key, child in value.items():
-                                walk(filename, child, f"{path}.{key}" if path else key)
+                                walk(filename, child, f"{path}.{key}" if path else key, entry_number)
                 elif isinstance(value, list):
                         for index, child in enumerate(value):
-                                walk(filename, child, f"{path}[{index}]")
+                                next_number = index + 1 if filename == "timeline.json" and not path else entry_number
+                                child_path = f"{path}[{index}]" if path or filename != "timeline.json" else ""
+                                walk(filename, child, child_path, next_number)
                 elif isinstance(value, str) and "[" in value:
-                        found.append((filename, path, value))
+                        found.append((filename, entry_number, path, value))
         for filename, data in files.items():
                 walk(filename, data, "")
-        for filename, path, value in found:
-                print(f"WARNING: {filename} {path}: placeholder remains: {value}")
+        for filename, entry_number, path, value in found:
+                if filename == "timeline.json":
+                        print(f"WARNING: {filename} entry {entry_number} field {path}: placeholder remains: {value}")
+                else:
+                        print(f"WARNING: {filename} {path}: placeholder remains: {value}")
         print(f"Placeholder warning count: {len(found)}")
 
 
@@ -191,28 +396,27 @@ def main():
         shared = load_object("shared.json", errors)
         en = load_object("en.json", errors)
         fi = load_object("fi.json", errors)
-        experience = load_list("experience.json", errors)
-        projects = load_list("projects.json", errors)
+        timeline = load_list("timeline.json", errors)
         site_info = load_object("site_info.json", errors)
         quality = load_object("quality.json", errors)
         changelog = load_list("changelog.json", errors)
         now = load_object("now.json", errors)
-        validate(shared, en, fi, experience, projects, errors)
+        validate(shared, en, fi, timeline, errors, SITE)
         validate_extra(site_info, quality, changelog, now, errors)
+        warn_placeholders({"shared.json": shared, "en.json": en, "fi.json": fi,
+                           "timeline.json": timeline,
+                           "site_info.json": site_info, "quality.json": quality,
+                           "changelog.json": changelog, "now.json": now})
         if errors:
                 for error in errors:
                         print("ERROR: " + error, file=sys.stderr)
                 return 1
-        warn_placeholders({"shared.json": shared, "en.json": en, "fi.json": fi,
-                           "experience.json": experience, "projects.json": projects,
-                           "site_info.json": site_info, "quality.json": quality,
-                           "changelog.json": changelog, "now.json": now})
         if args.check:
                 print("Content validation passed; no files written.")
                 return 0
         from tools.sitebuilder import generate
         output = ROOT / "preview" if args.preview_sample else args.output_dir
-        generate(ROOT, shared, en, fi, experience, projects, site_info, quality, changelog,
+        generate(ROOT, shared, en, fi, timeline, site_info, quality, changelog,
                  now, output_dir=output, sample=args.preview_sample)
         return 0
 

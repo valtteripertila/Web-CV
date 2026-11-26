@@ -5,5 +5,10 @@
   "linkedin": "https://www.linkedin.com/in/valtteri-pertil%C3%A4-43729b434/",
   "github": "https://github.com/valtteripertila",
   "domain": "https://Pertila-CV.pages.dev",
-  "repo": ""
+  "repo": "",
+  "heroStatusKeys": [
+    "location",
+    "looking_for",
+    "availability"
+  ]
 }

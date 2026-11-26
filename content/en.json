@@ -8,7 +8,6 @@
   },
   "headline": "[HEADLINE EN]",
   "summary": "[2-3 SENTENCE SUMMARY EN]",
-  "location": "Espoo, Finland",
   "education": [
     {
       "degree": "First-year Bachelor's student in Computer Science",
@@ -41,17 +40,8 @@
   ],
   "ui": {
     "skip": "Skip to content",
-    "about": "About",
-    "experience": "Experience",
-    "projects": "Projects",
-    "education": "Education",
-    "certifications": "Certifications",
-    "skills": "Skills",
-    "languages": "Languages",
-    "contact": "Contact",
+    "contact": "contact",
     "present": "Present",
-    "viewProject": "View project",
-    "code": "Code",
     "backToTop": "Back to top",
     "meta_title": "[FULL NAME] – [HEADLINE EN]",
     "meta_description": "[ONE SENTENCE PAGE DESCRIPTION EN]",
@@ -59,8 +49,6 @@
     "notFoundText": "The page you are looking for does not exist.",
     "themeToLight": "Switch to light theme",
     "themeToDark": "Switch to dark theme",
-    "hackathons": "Hackathons",
-    "personalProjects": "Personal projects",
     "demo": "Demo",
     "writeup": "Write-up",
     "navNow": "Now",
@@ -84,12 +72,11 @@
       "shared": "Name, contact links, repository and site domain.",
       "en": "English CV content and interface strings.",
       "fi": "Finnish CV content and interface strings.",
-      "experience": "Bilingual work-history entries.",
-      "projects": "Bilingual project entries.",
       "site_info": "Overview prose and optional AI note.",
       "quality": "Optional manually measured Lighthouse results.",
       "changelog": "Bilingual entries based on repository history.",
-      "now": "Optional current-focus entries."
+      "now": "Optional current-focus entries.",
+      "timeline": "One bilingual timeline of hackathons, projects and roles."
     },
     "contentFile": "File",
     "contentHolds": "What it holds",
@@ -99,10 +86,6 @@
     "siteBytes": "uncompressed page assets",
     "contrastPass": "contrast check passed",
     "contrastFail": "contrast check did not pass",
-    "writeupTeam": "Team and setting",
-    "writeupPart": "My part",
-    "writeupLearned": "What I learned",
-    "writeupSummary": "Write-up",
     "changelogIntro": "Changes recorded in the project history.",
     "nowIntro": "What I am focused on now.",
     "updated": "Updated",
@@ -110,36 +93,38 @@
     "contrastLabel": " · contrast AA",
     "lighthouseLabel": "Lighthouse",
     "lighthouseFooter": " · Lighthouse {performance}/{accessibility}/{best_practices}/{seo}",
-    "project": "Project",
-    "home": "Home",
-    "main": "Main navigation",
-    "writeupMismatch": "write-up fields are present in only one language",
-    "sectionLabels": {
-      "projects": "projects",
-      "experience": "experience",
-      "skills": "skills",
-      "education": "education",
-      "languages": "languages",
-      "contact": "contact",
-      "overview": "overview",
-      "architecture": "architecture",
-      "contentModel": "content model",
-      "automatedChecks": "automated checks",
-      "constraints": "constraints",
-      "source": "source",
-      "aiAssisted": "AI-assisted development",
-      "entries": "entries",
-      "now": "now"
-    }
+    "project": "project",
+    "timeline": "timeline",
+    "profile": "profile",
+    "whatBuilt": "what we built",
+    "learned": "What I learned",
+    "filterLegend": "Filter timeline entries",
+    "filterAll": "all",
+    "filterHackathons": "hackathons",
+    "filterProjects": "projects",
+    "filterRoles": "roles",
+    "hackathon": "hackathon",
+    "role": "role",
+    "repo": "repo",
+    "teamSize": "{count} people",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
   },
   "hero": {
     "prompt": "whoami",
-    "tagline": "[TAGLINE EN]",
     "status": [
-      "Espoo, Finland",
-      "[WHAT I AM LOOKING FOR EN]",
-      "[AVAILABILITY EN]"
+      {
+        "key": "location",
+        "value": "Espoo, Finland"
+      },
+      {
+        "key": "looking_for",
+        "value": "[WHAT I AM LOOKING FOR EN]"
+      },
+      {
+        "key": "availability",
+        "value": "[AVAILABILITY EN]"
+      }
     ]
-  },
-  "footer": "[SIGN-OFF EN]"
+  }
 }

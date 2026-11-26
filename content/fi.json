@@ -8,7 +8,6 @@
   },
   "headline": "[HEADLINE FI]",
   "summary": "[2-3 SENTENCE SUMMARY FI]",
-  "location": "Espoo, Suomi",
   "education": [
     {
       "degree": "Tietojenkäsittelytieteen kandidaattiopintojen 1. vuoden opiskelija",
@@ -41,17 +40,8 @@
   ],
   "ui": {
     "skip": "Siirry sisältöön",
-    "about": "Tietoa minusta",
-    "experience": "Työkokemus",
-    "projects": "Projektit",
-    "education": "Koulutus",
-    "certifications": "Sertifikaatit",
-    "skills": "Taidot",
-    "languages": "Kielitaito",
-    "contact": "Yhteystiedot",
-    "present": "Nykyinen",
-    "viewProject": "Katso projekti",
-    "code": "Koodi",
+    "contact": "yhteystiedot",
+    "present": "nykyhetki",
     "backToTop": "Takaisin ylös",
     "meta_title": "[FULL NAME] – [HEADLINE FI]",
     "meta_description": "[ONE SENTENCE PAGE DESCRIPTION FI]",
@@ -59,8 +49,6 @@
     "notFoundText": "Etsimääsi sivua ei ole olemassa.",
     "themeToLight": "Vaihda vaaleaan teemaan",
     "themeToDark": "Vaihda tummaan teemaan",
-    "hackathons": "Hackathonit",
-    "personalProjects": "Omat projektit",
     "demo": "Demo",
     "writeup": "Projektikuvaus",
     "navNow": "Nyt",
@@ -84,12 +72,11 @@
       "shared": "Nimi, yhteystiedot, lähdekoodin osoite ja sivuston verkkotunnus.",
       "en": "Ansioluettelon englanninkielinen sisältö ja käyttöliittymän tekstit.",
       "fi": "Ansioluettelon suomenkielinen sisältö ja käyttöliittymän tekstit.",
-      "experience": "Kaksikieliset työkokemustiedot.",
-      "projects": "Kaksikieliset projektitiedot.",
       "site_info": "Yleiskuvaustekstit ja valinnainen tekoälymaininta.",
       "quality": "Valinnaiset käsin mitatut Lighthouse-tulokset.",
       "changelog": "Kaksikieliset projektihistoriaan perustuvat merkinnät.",
-      "now": "Valinnaiset nykyisiä tavoitteita kuvaavat merkinnät."
+      "now": "Valinnaiset nykyisiä tavoitteita kuvaavat merkinnät.",
+      "timeline": "Kaksikielinen aikajana hackathoneista, projekteista ja työrooleista."
     },
     "contentFile": "Tiedosto",
     "contentHolds": "Sisältö",
@@ -99,10 +86,6 @@
     "siteBytes": "pakkaamattomat sivutiedostot",
     "contrastPass": "kontrastitarkistus läpäisty",
     "contrastFail": "kontrastitarkistus ei läpäissyt",
-    "writeupTeam": "Ryhmä ja tilanne",
-    "writeupPart": "Oma osuuteni",
-    "writeupLearned": "Mitä opin",
-    "writeupSummary": "Projektikuvaus",
     "changelogIntro": "Projektihistoriaan kirjatut muutokset.",
     "nowIntro": "Mihin keskityn tällä hetkellä.",
     "updated": "Päivitetty",
@@ -110,36 +93,38 @@
     "contrastLabel": " · kontrasti AA",
     "lighthouseLabel": "Lighthouse",
     "lighthouseFooter": " · Lighthouse {performance}/{accessibility}/{best_practices}/{seo}",
-    "project": "Projekti",
-    "home": "Etusivu",
-    "main": "Päänavigaatio",
-    "writeupMismatch": "projektikuvauksen tietoja on vain toisella kielellä",
-    "sectionLabels": {
-      "projects": "projektit",
-      "experience": "kokemus",
-      "skills": "taidot",
-      "education": "koulutus",
-      "languages": "kielet",
-      "contact": "yhteystiedot",
-      "overview": "yleiskuva",
-      "architecture": "arkkitehtuuri",
-      "contentModel": "sisältömalli",
-      "automatedChecks": "automaattiset tarkistukset",
-      "constraints": "rajoitteet",
-      "source": "lähdekoodi",
-      "aiAssisted": "tekoälyn avustama kehitys",
-      "entries": "merkinnät",
-      "now": "nyt"
-    }
+    "project": "projekti",
+    "timeline": "aikajana",
+    "profile": "profiili",
+    "whatBuilt": "mitä rakensimme",
+    "learned": "Mitä opin",
+    "filterLegend": "Suodata aikajanan merkintöjä",
+    "filterAll": "kaikki",
+    "filterHackathons": "hackathonit",
+    "filterProjects": "projektit",
+    "filterRoles": "roolit",
+    "hackathon": "hackathon",
+    "role": "rooli",
+    "repo": "repo",
+    "teamSize": "{count} henkilöä",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
   },
   "hero": {
     "prompt": "whoami",
-    "tagline": "[TAGLINE FI]",
     "status": [
-      "Espoo, Suomi",
-      "[WHAT I AM LOOKING FOR FI]",
-      "[AVAILABILITY FI]"
+      {
+        "key": "location",
+        "value": "Espoo, Suomi"
+      },
+      {
+        "key": "looking_for",
+        "value": "[WHAT I AM LOOKING FOR FI]"
+      },
+      {
+        "key": "availability",
+        "value": "[AVAILABILITY FI]"
+      }
     ]
-  },
-  "footer": "[SIGN-OFF FI]"
+  }
 }
