@@ -1,0 +1,13 @@
+[
+  {"date":"2026-11-26","en":"Regenerated the site after updating personal details.","fi":"Sivusto muodostettiin uudelleen henkilötietojen päivityksen jälkeen."},
+  {"date":"2026-11-26","en":"Updated personal information in the shared content file.","fi":"Päivitettiin henkilötietoja yhteiseen sisältötiedostoon."},
+  {"date":"2026-11-26","en":"Prepared the site for Cloudflare Pages deployment.","fi":"Valmisteltiin sivusto Cloudflare Pages -julkaisua varten."},
+  {"date":"2026-11-26","en":"Documented the bilingual content workflow.","fi":"Dokumentoitiin kaksikielisen sisällön työnkulku."},
+  {"date":"2026-11-26","en":"Added a terminal-inspired bilingual hero and styling.","fi":"Lisättiin komentorivistä inspiraationsa saanut kaksikielinen aloitusosa ja tyylit."},
+  {"date":"2026-11-25","en":"Organized projects by hackathon and personal project type.","fi":"Järjestettiin projektit hackathoneihin ja omiin projekteihin."},
+  {"date":"2026-11-25","en":"Moved work experience into bilingual entries.","fi":"Siirrettiin työkokemus kaksikielisiksi merkinnöiksi."},
+  {"date":"2026-11-25","en":"Added a dark-default theme toggle.","fi":"Lisättiin tumma oletusteema ja teeman vaihtopainike."},
+  {"date":"2026-11-25","en":"Removed the PDF download button and files.","fi":"Poistettiin PDF-latauspainike ja tiedostot."},
+  {"date":"2026-11-25","en":"Generated the site from structured content.","fi":"Sivusto muodostettiin rakenteisesta sisällöstä."},
+  {"date":"2026-11-25","en":"Created the initial CV project scaffold.","fi":"Luotiin ansioluetteloprojektin perusrakenne."}
+]

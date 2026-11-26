@@ -1,0 +1,10 @@
+# Valtteri Pertilä
+
+- [EN CV](https://Pertila-CV.pages.dev/)
+- [How this site is built](https://Pertila-CV.pages.dev/how-this-site-is-built/)
+- [Changelog](https://Pertila-CV.pages.dev/changelog/)
+- [FI CV](https://Pertila-CV.pages.dev/fi/)
+- [Sivuston rakenne](https://Pertila-CV.pages.dev/fi/sivuston-rakenne/)
+- [Muutosloki](https://Pertila-CV.pages.dev/fi/muutosloki/)
+- GitHub: https://github.com/valtteripertila
+- LinkedIn: https://www.linkedin.com/in/valtteri-pertil%C3%A4-43729b434/
