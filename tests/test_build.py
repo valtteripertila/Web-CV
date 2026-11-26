@@ -14,13 +14,14 @@ sys.path.insert(0, str(ROOT))
 
 import add
 import build
+from tools.media import image_dimensions
 from tools import check, quality, sitebuilder
 
 
 class BuildTests(unittest.TestCase):
     def test_validation_reports_missing_required_fields(self):
         errors = []
-        build.validate({}, {}, {}, [], [], errors)
+        build.validate({}, {}, {}, [], errors)
         self.assertTrue(any("shared.json: missing name" in value for value in errors))
         self.assertTrue(any("en.json: missing headline" in value for value in errors))
 
@@ -47,10 +48,12 @@ class BuildTests(unittest.TestCase):
         self.assertEqual("", sitebuilder.link("", "Demo"))
         en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
         text = dict(en)
-        text.update({"skills": [], "education": [], "certifications": [], "languages": [], "location": ""})
+        text.update({"skills": [], "education": [], "certifications": [], "languages": [], "hero": {"status": []}})
         shared = {"email": "", "linkedin": "", "github": ""}
-        output = sitebuilder.home_sections("en", shared, text, [], [], en["ui"])
-        self.assertEqual("", output)
+        output = sitebuilder.home_sections("en", shared, text, [], en["ui"])
+        self.assertNotIn('id="timeline"', output)
+        self.assertNotIn('id="profile"', output)
+        self.assertNotIn('id="contact"', output)
 
     def test_language_switch_maps_equivalent_subpage(self):
         en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
@@ -101,10 +104,10 @@ class BuildTests(unittest.TestCase):
 
     def test_add_entry_inserts_at_top_without_overwriting(self):
         with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "entries.json"
+            path = Path(temporary) / "timeline.json"
             path.write_text(json.dumps([{"title": "existing"}]), encoding="utf-8")
             with patch.object(add, "CONTENT", Path(temporary)):
-                add.add_entry("entries.json", {"title": "new"})
+                add.add_entry({"title": "new"})
             self.assertEqual([{"title": "new"}, {"title": "existing"}], json.loads(path.read_text(encoding="utf-8")))
 
     def test_known_contrast_ratio(self):
@@ -119,15 +122,80 @@ class BuildTests(unittest.TestCase):
             self.assertEqual(1, len(errors))
             self.assertIn("missing target", errors[0])
 
-    def test_writeup_is_omitted_until_language_has_content(self):
+    def test_empty_learned_and_links_are_omitted(self):
         en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
-        project = {"type": "hackathon", "title": "Event", "description": {"en": "One", "fi": "Yksi"},
-                   "writeup": {"team": {"en": "Team text", "fi": ""}}}
-        output = sitebuilder.home_sections("en", {}, en, [], [project], en["ui"])
-        self.assertIn("<details", output)
-        self.assertIn("Team text", output)
-        fi_output = sitebuilder.home_sections("fi", {}, json.loads((ROOT / "content/fi.json").read_text(encoding="utf-8")), [], [project], json.loads((ROOT / "content/fi.json").read_text(encoding="utf-8"))["ui"])
-        self.assertNotIn("<details", fi_output)
+        project = {"type":"project","date":"2025-03","title":"Example","role":{"en":"","fi":""},"description":{"en":"One","fi":"Yksi"},"tags":[],"links":{"demo":"","code":"","writeup":""},"media":[],"learned":{"en":"","fi":""}}
+        output = sitebuilder.home_sections("en", {}, en, [project], en["ui"])
+        self.assertIn("Example", output)
+        self.assertNotIn("<details", output)
+        self.assertNotIn("project-links", output)
+
+    def test_date_formatting_and_chronological_sort(self):
+        self.assertEqual("18–20 Sep 2026", sitebuilder.display_date({"date_start":"2026-09-18","date_end":"2026-09-20"},"en"))
+        self.assertEqual("18.–20.9.2026", sitebuilder.display_date({"date_start":"2026-09-18","date_end":"2026-09-20"},"fi"))
+        rows=list(enumerate([{"date":"[DATE]"},{"date":"2025-01"},{"date":"2026-02"}]))
+        self.assertEqual([2,1,0],[i for i,_ in sorted(rows,key=sitebuilder.timeline_sort_key,reverse=True)])
+
+    def test_tokens_meet_aa_on_panel_surface(self):
+        passed, report=quality.contrast_report((ROOT/"site/style.css").read_text(encoding="utf-8"))
+        self.assertTrue(passed, report)
+        self.assertGreaterEqual(report["dark"]["token_key_surface"],4.5)
+        self.assertGreaterEqual(report["light"]["token_string_surface"],4.5)
+
+    def test_media_validation_requires_existing_file_and_bilingual_alt(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); (root/"img").mkdir()
+            (root/"img"/"ok.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"/>',encoding="utf-8")
+            self.assertEqual((640,360),image_dimensions(root/"img"/"ok.svg"))
+            errors=[]
+            build.validate_media([{"file":"missing.png","alt":{"en":"SAMPLE alt","fi":"SAMPLE alt"}}],1,"media",root,errors)
+            self.assertTrue(any("file must exist" in issue for issue in errors))
+            alt_errors=[]
+            build.validate_media([{"file":"ok.svg","alt":{"en":"","fi":""}}],1,"media",root,alt_errors)
+            self.assertTrue(any("alt text is required" in issue for issue in alt_errors))
+
+    def test_timeline_optional_empty_fields_are_valid_and_filters_need_two_types(self):
+        project={"type":"project","date":"2025-03","title":"SAMPLE project","role":{"en":"","fi":""},"description":{"en":"","fi":""},"tags":[],"links":{"demo":"","code":"","writeup":""},"media":[],"learned":{"en":"","fi":""}}
+        errors=[]; build.validate_timeline([project],errors)
+        self.assertEqual([],errors)
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        output=sitebuilder.home_sections("en",{},en,[project],en["ui"])
+        self.assertNotIn('class="filters"',output)
+
+    def test_add_role_and_project_write_to_timeline(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            content=Path(temporary)
+            with patch.object(add,"CONTENT",content), patch("builtins.input",side_effect=["2025-01","","SAMPLE employer","SAMPLE role","SAMPLE rooli","SAMPLE point","","SAMPLE kohta",""]):
+                add.add_role()
+            role=json.loads((content/"timeline.json").read_text(encoding="utf-8"))[0]
+            self.assertEqual("role",role["type"])
+            with patch.object(add,"CONTENT",content), patch("builtins.input",side_effect=["2025-02","SAMPLE project","","","SAMPLE description","SAMPLE kuvaus","tag","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]):
+                add.add_project()
+            entries=json.loads((content/"timeline.json").read_text(encoding="utf-8"))
+            self.assertEqual("project",entries[0]["type"])
+            self.assertEqual("role",entries[1]["type"])
+
+    def test_add_hackathon_writes_new_schema(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch.object(add,"CONTENT",Path(temporary)), patch.object(add,"ask",side_effect=["2025-03-14","2025-03-16","SAMPLE event","SAMPLE team","5","SAMPLE build"]), patch.object(add,"bilingual",return_value={"en":"","fi":""}), patch.object(add,"tags",return_value=[]), patch.object(add,"links",return_value={"demo":"","code":"","writeup":""}):
+                add.add_hackathon()
+            item=json.loads((Path(temporary)/"timeline.json").read_text(encoding="utf-8"))[0]
+            self.assertEqual("hackathon",item["type"])
+            self.assertEqual("SAMPLE event",item["event"])
+            self.assertEqual("SAMPLE build",item["project"]["title"])
+
+    def test_media_cli_copies_without_overwriting(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); content=root/"content"; site=root/"site"; content.mkdir(); site.mkdir()
+            source=root/"source.svg"; source.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>',encoding="utf-8")
+            entry={"type":"project","title":"SAMPLE media","date":"2025-01","media":[]}
+            (content/"timeline.json").write_text(json.dumps([entry]),encoding="utf-8")
+            answers=["1",str(source),"SAMPLE alt","SAMPLE alt fi",""," "]
+            with patch.object(add,"CONTENT",content), patch.object(add,"SITE",site), patch("builtins.input",side_effect=answers):
+                add.add_media()
+            saved=json.loads((content/"timeline.json").read_text(encoding="utf-8"))[0]["media"][0]
+            self.assertTrue((site/"img"/saved["file"]).is_file())
+            self.assertEqual("SAMPLE alt",saved["alt"]["en"])
 
 
 if __name__ == "__main__":

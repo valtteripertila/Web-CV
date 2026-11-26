@@ -32,8 +32,7 @@ The JSON files are the editable source. Run the generator and commit both the co
 content/                  CV and optional page content
   en.json, fi.json        Translated CV fields and interface text
   shared.json             Name, contact details, site URL and optional repo URL
-  experience.json         Bilingual work-history entries
-  projects.json           Bilingual project entries
+  timeline.json           Bilingual hackathon, project and role entries
   site_info.json          Site overview and optional AI note
   changelog.json          Bilingual project history
   now.json                Optional current-focus entries
@@ -67,14 +66,13 @@ On Windows, use `py -3 build.py`, `py -3 tools/check.py`, and `py -3 -m http.ser
 | --- | --- |
 | `content/shared.json` | Name, initials, email, profile URLs, site domain and optional repository URL |
 | `content/en.json`, `content/fi.json` | Translated CV fields, interface text and page slugs |
-| `content/experience.json` | Roles and bilingual achievement lists |
-| `content/projects.json` | Hackathon and personal-project details; optional bilingual write-ups |
+| `content/timeline.json` | Hackathons, personal projects and roles; newest entries appear first automatically |
 | `content/site_info.json` | Site overview and optional AI note |
 | `content/changelog.json` | Dated bilingual history entries, newest first |
 | `content/now.json` | Current focus; the page is absent while the item list is empty |
 | `content/quality.json` | Optional manually measured Lighthouse result |
 
-Use `py -3 add.py role` or `python3 add.py role` to insert a role at the top. Use `add.py project`, `add.py now`, or `add.py changelog` for those entry types. Blank write-up answers skip those optional fields. The Now page is generated only after you enter at least one bilingual item.
+Use `py -3 add.py hackathon|project|role|media` (or `python3 add.py ...`) to add a timeline entry or media. Media is copied into `site/img/` without overwriting existing files. Use `add.py now` or `add.py changelog` for those entry types. Timeline dates use `YYYY-MM` or `YYYY-MM-DD`; blank end dates mark a current role. Image alt text is required in both languages; captions are optional. Keep images under 1600px and preferably below 300KB. Supported formats are PNG, JPEG, WebP, GIF, SVG and AVIF. Put media paths in timeline JSON relative to `site/img/`; remove the JSON entry and unused image file to remove an image. The Now page is generated only after you enter at least one bilingual item. Timeline filters use native radio controls and CSS, so they work without JavaScript.
 
 The following JSON snippets are README-only illustrations with invented example values. Replace every example value with verified information before adding an entry to the real content files.
 
@@ -82,31 +80,56 @@ The following JSON snippets are README-only illustrations with invented example 
 
 ```json
 {
-  "employer": "Example employer (README example only)",
-  "start": "Example date (replace before use)",
+  "type": "role",
+  "employer": "SAMPLE employer",
+  "start": "2025-01",
   "end": "",
-  "role": {"en": "Example role (replace before use)", "fi": "Esimerkkitehtävä (vaihda ennen käyttöä)"},
+  "role": {"en": "SAMPLE role", "fi": "SAMPLE tehtävä"},
   "points": {
-    "en": ["Example responsibility (replace before use)"],
-    "fi": ["Esimerkkivastuu (vaihda ennen käyttöä)"]
+    "en": ["SAMPLE responsibility"],
+    "fi": ["SAMPLE vastuu"]
   }
 }
 ```
 
-**Hackathon project example**
+**Hackathon example**
 
 ```json
 {
   "type": "hackathon",
-  "featured": false,
-  "title": "Example hackathon title (README example only)",
-  "event": "Example event (replace before use)",
-  "role": {"en": "Example role", "fi": "Esimerkkitehtävä"},
-  "description": {
-    "en": "Example description (replace before use)",
-    "fi": "Esimerkkikuvaus (vaihda ennen käyttöä)"
+  "date_start": "2025-03-14",
+  "date_end": "2025-03-16",
+  "event": "SAMPLE event",
+  "what": {"en": "SAMPLE event details", "fi": "SAMPLE tapahtuman tiedot"},
+  "where": {"en": "SAMPLE venue", "fi": "SAMPLE tapahtumapaikka"},
+  "theme": {"en": "SAMPLE theme", "fi": "SAMPLE teema"},
+  "team": {"name": "SAMPLE team", "size": 0},
+  "role": {"en": "SAMPLE role", "fi": "SAMPLE tehtävä"},
+  "result": {"en": "", "fi": ""},
+  "project": {
+    "title": "SAMPLE build",
+    "description": {"en": "SAMPLE description", "fi": "SAMPLE kuvaus"},
+    "tags": [],
+    "links": {"demo": "", "code": "", "writeup": ""},
+    "media": []
   },
-  "links": {"demo": "", "code": "", "writeup": ""}
+  "learned": {"en": "", "fi": ""}
+}
+```
+
+**Personal project example**
+
+```json
+{
+  "type": "project",
+  "date": "2025-03",
+  "title": "SAMPLE project",
+  "role": {"en": "", "fi": ""},
+  "description": {"en": "SAMPLE description", "fi": "SAMPLE kuvaus"},
+  "tags": [],
+  "links": {"demo": "", "code": "", "writeup": ""},
+  "media": [],
+  "learned": {"en": "", "fi": ""}
 }
 ```
 
@@ -125,7 +148,7 @@ Cloudflare Pages settings:
 - Build command: leave empty
 - Build output directory: `site`
 
-For each update, edit the content or code, run `py -3 build.py`, run `py -3 tools/check.py`, review the generated diff, then commit and push to `main`.
+For each update, edit the content or code, run `py -3 build.py`, run `py -3 tools/check.py`, review the generated diff, then commit locally. Publish only through the repository's separately authorized deployment workflow.
 
 ## Design decisions
 

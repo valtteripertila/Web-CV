@@ -127,7 +127,7 @@ def language_parity_check():
         elif isinstance(left, str) and isinstance(right, str):
             if not left.strip() or not right.strip():
                 errors.append(f"{at}: UI translation is empty")
-            elif left == right and left.lower() not in {"demo", "lighthouse"} and at != "ui.lighthouseFooter":
+            elif left == right and left.lower() not in {"demo", "lighthouse", "hackathon", "repo", "github", "linkedin"} and at != "ui.lighthouseFooter":
                 errors.append(f"{at}: EN and FI UI strings are identical")
     compare_values(en["ui"], fi["ui"])
     return errors
