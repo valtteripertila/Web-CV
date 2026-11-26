@@ -186,7 +186,8 @@ def html_sanity_check(site_root=SITE):
             errors.append(f"{page.relative_to(site_root)}: unclosed tags {parser.stack}")
         if parser.h1 != 1:
             errors.append(f"{page.relative_to(site_root)}: expected one h1, found {parser.h1}")
-        expected_lang = "fi" if "\\fi\\" in str(page.resolve()).lower() else "en"
+        relative_page = page.relative_to(Path(site_root))
+        expected_lang = "fi" if relative_page.parts and relative_page.parts[0].lower() == "fi" else "en"
         if parser.lang != expected_lang:
             errors.append(f"{page.relative_to(site_root)}: expected lang={expected_lang}, got {parser.lang}")
         errors.extend(f"{page.relative_to(site_root)}: {item}" for item in parser.errors)

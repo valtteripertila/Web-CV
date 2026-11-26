@@ -122,6 +122,14 @@ class BuildTests(unittest.TestCase):
             self.assertEqual(1, len(errors))
             self.assertIn("missing target", errors[0])
 
+    def test_html_language_check_uses_relative_path_parts(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            (root/"fi").mkdir()
+            (root/"index.html").write_text('<html lang="en"><body><h1>Home</h1></body></html>',encoding="utf-8")
+            (root/"fi"/"index.html").write_text('<html lang="fi"><body><h1>Etusivu</h1></body></html>',encoding="utf-8")
+            self.assertEqual([],check.html_sanity_check(root))
+
     def test_empty_learned_and_links_are_omitted(self):
         en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
         project = {"type":"project","date":"2025-03","title":"Example","role":{"en":"","fi":""},"description":{"en":"One","fi":"Yksi"},"tags":[],"links":{"demo":"","code":"","writeup":""},"media":[],"learned":{"en":"","fi":""}}
