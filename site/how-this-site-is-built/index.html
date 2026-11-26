@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How this site is built</title>
+  <meta name="description" content="[ONE SENTENCE PAGE DESCRIPTION EN]">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#101614">
+  <link rel="canonical" href="https://Pertila-CV.pages.dev/how-this-site-is-built/">
+  <link rel="alternate" hreflang="en" href="https://Pertila-CV.pages.dev/how-this-site-is-built/"><link rel="alternate" hreflang="fi" href="https://Pertila-CV.pages.dev/fi/sivuston-rakenne/"><link rel="alternate" hreflang="x-default" href="https://Pertila-CV.pages.dev/how-this-site-is-built/">
+  <meta property="og:title" content="How this site is built">
+  <meta property="og:description" content="[ONE SENTENCE PAGE DESCRIPTION EN]">
+  <meta property="og:type" content="website"><meta property="og:url" content="https://Pertila-CV.pages.dev/how-this-site-is-built/"><meta property="og:image" content="https://Pertila-CV.pages.dev/og.png"><meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <script src="../theme.js"></script>
+  <link rel="stylesheet" href="../style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://Pertila-CV.pages.dev/"},{"@type":"ListItem","position":2,"name":"How this site is built","item":"https://Pertila-CV.pages.dev/how-this-site-is-built/"}]}</script>
+</head><body id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header>
+    <p class="terminal-prompt">$ cat how<span class="cursor" aria-hidden="true">_</span></p>
+    <h1>How this site is built</h1>
+<p class="page-intro">This page describes how the site is generated and deployed.</p>
+    <div class="topbar"><nav class="language-switch" aria-label="Language"><a href="./" aria-current="page">EN</a><span aria-hidden="true">|</span><a href="../fi/sivuston-rakenne/">FI</a></nav><button class="theme-toggle" type="button" aria-pressed="false" data-light-label="Switch to light theme" data-dark-label="Switch to dark theme" aria-label="Switch to light theme">Switch to light theme</button></div>
+  </header>
+  <main id="main"><section id="overview"><h2><span class="section-label" data-label="overview" aria-hidden="true"></span>Overview</h2><p>This bilingual CV is authored as structured JSON and rendered to static HTML by a Python standard-library build script.</p></section><section id="architecture"><h2><span class="section-label" data-label="architecture" aria-hidden="true"></span>Architecture</h2><pre aria-label="Architecture">content/*.json
+  -&gt; build.py
+  -&gt; site/
+  -&gt; GitHub main
+  -&gt; Cloudflare Pages</pre></section><section id="content-model"><h2><span class="section-label" data-label="content model" aria-hidden="true"></span>Content model</h2><table><thead><tr><th scope="col">File</th><th scope="col">What it holds</th></tr></thead><tbody><tr><th scope="row"><code>changelog.json</code></th><td>Bilingual entries based on repository history.</td></tr><tr><th scope="row"><code>en.json</code></th><td>English CV content and interface strings.</td></tr><tr><th scope="row"><code>experience.json</code></th><td>Bilingual work-history entries.</td></tr><tr><th scope="row"><code>fi.json</code></th><td>Finnish CV content and interface strings.</td></tr><tr><th scope="row"><code>now.json</code></th><td>Optional current-focus entries.</td></tr><tr><th scope="row"><code>projects.json</code></th><td>Bilingual project entries.</td></tr><tr><th scope="row"><code>quality.json</code></th><td>Optional manually measured Lighthouse results.</td></tr><tr><th scope="row"><code>shared.json</code></th><td>Name, contact links, repository and site domain.</td></tr><tr><th scope="row"><code>site_info.json</code></th><td>Overview prose and optional AI note.</td></tr></tbody></table></section><section id="automated-checks"><h2><span class="section-label" data-label="automated checks" aria-hidden="true"></span>Automated checks</h2><ul><li>Build content validation passes.</li><li>Unit tests pass.</li><li>Internal links, fragments and assets resolve.</li><li>English and Finnish pages and translations stay in parity.</li><li>HTML tags, ids, headings and language attributes are valid.</li><li>HTML and CSS load no external resources.</li><li>Both theme palettes pass measured contrast thresholds.</li><li>No private contact details are included.</li><li>Committed site files match a fresh temporary build.</li></ul></section><section id="constraints"><h2><span class="section-label" data-label="constraints" aria-hidden="true"></span>Constraints in force</h2><h3>Content Security Policy</h3><pre>default-src &#x27;self&#x27;; style-src &#x27;self&#x27;; img-src &#x27;self&#x27;; font-src &#x27;self&#x27;; script-src &#x27;self&#x27;; connect-src &#x27;self&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;; frame-ancestors &#x27;none&#x27;</pre><h3>Build-measured facts</h3><p>external resource requests: 0; uncompressed page assets: 14.0 KB; contrast check passed.</p></section></main>
+  <footer><p>© 2026 Valtteri Pertilä</p><nav class="footer-nav" aria-label="Main navigation"><a href="../">Home</a><a href="./">How this site is built</a><a href="../changelog/">Changelog</a></nav><a class="build-facts" href="./#automated-checks">build-checked: 0 external requests · 14.0 KB · contrast AA</a><a class="back-to-top" href="#top">Back to top</a></footer>
+</body></html>

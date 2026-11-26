@@ -3,6 +3,8 @@
 import argparse
 import html
 import json
+import os
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -10,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 CONTENT = ROOT / "content"
 SITE = ROOT / "site"
-UI_KEYS = ["skip", "about", "experience", "projects", "hackathons", "personalProjects", "education", "certifications", "skills", "languages", "contact", "present", "demo", "code", "writeup", "backToTop", "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText"]
+UI_KEYS = ["skip", "about", "experience", "projects", "hackathons", "personalProjects", "education", "certifications", "skills", "languages", "contact", "present", "demo", "code", "writeup", "backToTop", "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText", "navNow", "navHome", "navHow", "navChangelog", "languageNav", "mainNav", "overview", "architecture", "contentModel", "automatedChecks", "constraints", "source", "aiAssisted", "pageIntro", "contentDescriptions", "contentFile", "contentHolds", "cspLabel", "buildFacts", "externalRequests", "siteBytes", "contrastPass", "contrastFail", "writeupTeam", "writeupPart", "writeupLearned", "writeupSummary", "changelogIntro", "nowIntro", "updated", "buildChecked", "contrastLabel", "lighthouseLabel", "lighthouseFooter", "project", "home", "writeupMismatch", "sectionLabels"]
 
 
 def esc(value):
@@ -87,12 +89,22 @@ def validate_projects(entries, errors):
                         for lang in ("en", "fi"):
                                 if lang not in desc:
                                         errors.append(f"projects.json entry {number}: missing description.{lang}")
+                writeup = item.get("writeup", {})
+                if writeup and isinstance(writeup, dict):
+                        for field, translations in writeup.items():
+                                if not isinstance(translations, dict):
+                                        errors.append(f"projects.json entry {number}: writeup.{field} must be an object")
+                                        continue
+                                en_value, fi_value = translations.get("en", ""), translations.get("fi", "")
+                                if bool(en_value) != bool(fi_value):
+                                        print(f"WARNING: projects.json entry {number}: write-up {field} is present in only one language")
 
 
 def validate(shared, en, fi, experience, projects, errors):
-        require(shared, ["name", "initials", "email", "linkedin", "github", "domain"], "shared.json", errors)
+        require(shared, ["name", "initials", "email", "linkedin", "github", "domain", "repo"], "shared.json", errors)
         for lang, data in (("en", en), ("fi", fi)):
-                require(data, ["lang", "locale", "headline", "summary", "location", "education", "certifications", "skills", "languages", "ui"], f"{lang}.json", errors)
+                require(data, ["lang", "locale", "slugs", "headline", "summary", "location", "education", "certifications", "skills", "languages", "ui"], f"{lang}.json", errors)
+                require(data.get("slugs", {}), ["how", "changelog", "now"], f"{lang}.json", errors, "slugs.")
                 require(data.get("ui", {}), UI_KEYS, f"{lang}.json", errors, "ui.")
                 for section in ("education", "skills"):
                         items = data.get(section, [])
@@ -102,6 +114,54 @@ def validate(shared, en, fi, experience, projects, errors):
                                                 errors.append(f"{lang}.json: {section} entry {index} must be an object")
         validate_experience(experience, errors)
         validate_projects(projects, errors)
+
+
+def validate_extra(site_info, quality, changelog, now, errors):
+        if not isinstance(site_info, dict):
+                errors.append("site_info.json: root must be a JSON object")
+        else:
+                intro = site_info.get("intro", {})
+                note = site_info.get("ai_note", {})
+                for field, value in (("intro", intro), ("ai_note", note)):
+                        if not isinstance(value, dict) or any(not isinstance(value.get(lang), str) for lang in ("en", "fi")):
+                                errors.append(f"site_info.json: {field} must contain en and fi strings")
+        if not isinstance(quality, dict):
+                errors.append("quality.json: root must be a JSON object")
+        if not isinstance(changelog, list):
+                errors.append("changelog.json: root must be a JSON array")
+        else:
+                previous = None
+                for index, item in enumerate(changelog, 1):
+                        if not isinstance(item, dict):
+                                errors.append(f"changelog.json entry {index}: must be an object")
+                                continue
+                        for key in ("date", "en", "fi"):
+                                if key not in item:
+                                        errors.append(f"changelog.json entry {index}: missing {key}")
+                        try:
+                                if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", item["date"]):
+                                        raise ValueError("invalid date format")
+                                entry_date = date.fromisoformat(item["date"])
+                                if previous and entry_date > previous:
+                                        errors.append("changelog.json: entries must be newest first")
+                                previous = entry_date
+                        except (KeyError, ValueError, TypeError):
+                                errors.append(f"changelog.json entry {index}: date must be YYYY-MM-DD")
+        if not isinstance(now, dict) or not isinstance(now.get("items"), list):
+                errors.append("now.json: expected an object with an items array")
+        elif now["items"]:
+                try:
+                        updated_text = now.get("updated", "")
+                        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", updated_text):
+                                raise ValueError("invalid date format")
+                        updated = date.fromisoformat(updated_text)
+                        if (date.today() - updated).days > 90:
+                                print("WARNING: now.json updated date is more than 90 days old")
+                except (ValueError, TypeError):
+                        errors.append("now.json: updated must be a valid YYYY-MM-DD date when items exist")
+                for index, item in enumerate(now["items"], 1):
+                        if not isinstance(item, dict) or not all(isinstance(item.get(lang), str) and item[lang].strip() for lang in ("en", "fi")):
+                                errors.append(f"now.json item {index}: en and fi text are required")
 
 
 def warn_placeholders(files):
@@ -183,7 +243,7 @@ def build_page(lang, shared, text, experience, projects):
                 f'  <meta property="og:title" content="{esc(ui["meta_title"])}">', f'  <meta property="og:description" content="{esc(ui["meta_description"])}">', '  <meta property="og:type" content="website">', f'  <meta property="og:url" content="{esc(canonical)}">', f'  <meta property="og:locale" content="{esc(text["locale"])}">',
                 f'  <link rel="icon" href="{root}favicon.svg" type="image/svg+xml">', f'  <script src="{root}theme.js"></script>', f'  <link rel="stylesheet" href="{root}style.css">', '</head>',
                 '<body id="top">', f'  <a class="skip-link" href="#main">{esc(ui["skip"])}</a>', '  <header>', f'    <p class="terminal-prompt">$ {esc(hero["prompt"])}<span class="cursor" aria-hidden="true">_</span></p>', f'    <h1>{esc(shared["name"])}</h1>', f'    <p class="headline">{esc(text["headline"])}</p>', f'    <p class="hero-tagline">{esc(hero["tagline"])}</p>', f'    <ul class="hero-status">{status}</ul>', f'    <p class="summary">{esc(text["summary"])}</p>', '    <div class="topbar">', f'      <nav class="language-switch" aria-label="{"Kieli" if fi else "Language"}"><a href="{root}"{" aria-current=\"page\"" if not fi else ""}>EN</a><span aria-hidden="true">|</span><a href="{other}"{" aria-current=\"page\"" if fi else ""}>FI</a></nav>', f'      <button class="theme-toggle" type="button" aria-pressed="false" data-light-label="{esc(ui["themeToLight"])}" data-dark-label="{esc(ui["themeToDark"])}" aria-label="{esc(ui["themeToLight"])}">{esc(ui["themeToLight"])}</button>', '    </div>', '  </header>', '  <main id="main">', f'    <section id="projects">{heading(ui["sectionLabels"]["projects"],ui["projects"])}{"".join(project_groups)}</section>', f'    <section id="experience">{heading(ui["sectionLabels"]["experience"],ui["experience"])}{"".join(jobs)}</section>', f'    <section id="skills">{heading(ui["sectionLabels"]["skills"],ui["skills"])}<div class="skill-groups">{skills}</div></section>', f'    <section id="education">{heading(ui["sectionLabels"]["education"],ui["education"])}{education}{cert}</section>', f'    <section id="languages">{heading(ui["sectionLabels"]["languages"],ui["languages"])}<ul>{"".join(f"<li>{esc(v)}</li>" for v in text["languages"])}</ul></section>', f'    <section id="contact">{heading(ui["sectionLabels"]["contact"],ui["contact"])}<ul class="contact-list">{contacts}</ul></section>',
-                '  </main>', f'  <footer><p>{esc(text.get("footer", "[SIGN-OFF]"))}</p><p>© {date.today().year} {esc(shared["name"])}</p><a class="back-to-top" href="#top">{esc(ui["backToTop"])}</a></footer>', '</body>', '</html>', ''
+                '  </main>', f'  <footer><p>{esc(text.get("footer", "[SIGN-OFF]"))}</p><p>© {os.environ.get("CV_BUILD_YEAR", date.today().year)} {esc(shared["name"])}</p><a class="back-to-top" href="#top">{esc(ui["backToTop"])}</a></footer>', '</body>', '</html>', ''
         ])
 
 
@@ -192,24 +252,38 @@ def not_found(en, fi):
 
 
 def main():
-        parser=argparse.ArgumentParser(description="Generate and validate the bilingual CV website.")
-        parser.add_argument("--check",action="store_true",help="validate content without writing generated files")
-        args=parser.parse_args(); errors=[]
-        shared=load_object("shared.json",errors); en=load_object("en.json",errors); fi=load_object("fi.json",errors)
-        experience=load_list("experience.json",errors); projects=load_list("projects.json",errors)
-        validate(shared,en,fi,experience,projects,errors)
+        parser = argparse.ArgumentParser(description="Generate and validate the bilingual CV website.")
+        parser.add_argument("--check", action="store_true", help="validate content without writing generated files")
+        parser.add_argument("--preview-sample", action="store_true", help="write sample-only layout pages to preview/")
+        parser.add_argument("--output-dir", help=argparse.SUPPRESS)
+        args = parser.parse_args()
+        errors = []
+        shared = load_object("shared.json", errors)
+        en = load_object("en.json", errors)
+        fi = load_object("fi.json", errors)
+        experience = load_list("experience.json", errors)
+        projects = load_list("projects.json", errors)
+        site_info = load_object("site_info.json", errors)
+        quality = load_object("quality.json", errors)
+        changelog = load_list("changelog.json", errors)
+        now = load_object("now.json", errors)
+        validate(shared, en, fi, experience, projects, errors)
+        validate_extra(site_info, quality, changelog, now, errors)
         if errors:
-                for error in errors: print("ERROR: "+error,file=sys.stderr)
+                for error in errors:
+                        print("ERROR: " + error, file=sys.stderr)
                 return 1
-        warn_placeholders({"shared.json":shared,"en.json":en,"fi.json":fi,"experience.json":experience,"projects.json":projects})
+        warn_placeholders({"shared.json": shared, "en.json": en, "fi.json": fi,
+                           "experience.json": experience, "projects.json": projects,
+                           "site_info.json": site_info, "quality.json": quality,
+                           "changelog.json": changelog, "now.json": now})
         if args.check:
                 print("Content validation passed; no files written.")
                 return 0
-        (SITE/"fi").mkdir(parents=True,exist_ok=True)
-        en_html=build_page("en",shared,en,experience,projects); fi_html=build_page("fi",shared,fi,experience,projects)
-        files={SITE/"index.html":en_html,SITE/"fi"/"index.html":fi_html,SITE/"404.html":not_found(en,fi),SITE/"favicon.svg":f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="#8bd6ae"/><text x="32" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="30" font-weight="700" fill="#101614">{esc(shared["initials"])}</text></svg>',SITE/"sitemap.xml":f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{esc(shared["domain"].rstrip("/")+"/")}</loc></url><url><loc>{esc(shared["domain"].rstrip("/")+"/fi/")}</loc></url></urlset>\n',SITE/"robots.txt":f'User-agent: *\nAllow: /\nSitemap: {shared["domain"].rstrip("/")}/sitemap.xml\n'}
-        for path,content in files.items(): path.write_text(content,encoding="utf-8",newline="\n")
-        print("Generated: site/index.html, site/fi/index.html, site/404.html, site/favicon.svg, site/sitemap.xml, site/robots.txt")
+        from tools.sitebuilder import generate
+        output = ROOT / "preview" if args.preview_sample else args.output_dir
+        generate(ROOT, shared, en, fi, experience, projects, site_info, quality, changelog,
+                 now, output_dir=output, sample=args.preview_sample)
         return 0
 
 if __name__=="__main__":

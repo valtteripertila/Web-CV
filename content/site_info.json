@@ -1,0 +1,10 @@
+{
+  "intro": {
+    "en": "This bilingual CV is authored as structured JSON and rendered to static HTML by a Python standard-library build script.",
+    "fi": "Tämä kaksikielinen ansioluettelo kirjoitetaan rakenteisina JSON-tiedostoina ja muodostetaan staattiseksi HTML-sivustoksi Pythonin vakiokirjastolla."
+  },
+  "ai_note": {
+    "en": "",
+    "fi": ""
+  }
+}
