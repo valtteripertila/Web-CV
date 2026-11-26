@@ -43,7 +43,7 @@
     "contact": "yhteystiedot",
     "present": "nykyhetki",
     "backToTop": "Takaisin ylös",
-    "meta_title": "[FULL NAME] – [HEADLINE FI]",
+    "meta_title": "Valtteri Pertilä – [HEADLINE FI]",
     "meta_description": "[ONE SENTENCE PAGE DESCRIPTION FI]",
     "notFoundTitle": "Sivua ei löytynyt",
     "notFoundText": "Etsimääsi sivua ei ole olemassa.",
@@ -119,11 +119,11 @@
       },
       {
         "key": "looking_for",
-        "value": "[WHAT I AM LOOKING FOR FI]"
+        "value": "Etsin kesätyöpaikkaa"
       },
       {
         "key": "availability",
-        "value": "[AVAILABILITY FI]"
+        "value": "Käytettävissä 14.6.2027 alkaen"
       }
     ]
   }

@@ -43,7 +43,7 @@
     "contact": "contact",
     "present": "Present",
     "backToTop": "Back to top",
-    "meta_title": "[FULL NAME] – [HEADLINE EN]",
+    "meta_title": "Valtteri Pertilä – [HEADLINE EN]",
     "meta_description": "[ONE SENTENCE PAGE DESCRIPTION EN]",
     "notFoundTitle": "Page not found",
     "notFoundText": "The page you are looking for does not exist.",
@@ -119,11 +119,11 @@
       },
       {
         "key": "looking_for",
-        "value": "[WHAT I AM LOOKING FOR EN]"
+        "value": "Seeking a summer job"
       },
       {
         "key": "availability",
-        "value": "[AVAILABILITY EN]"
+        "value": "Available from 14 June 2027"
       }
     ]
   }
