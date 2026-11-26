@@ -101,7 +101,7 @@ def language_switch(lang, page, pages, ui):
             f'<a href="{rel_dir(current, pages[page]["fi"])}"{fi_mark}>FI</a></nav>')
 
 
-def footer_nav(lang, page, pages, text):
+def site_menu(lang, page, pages, text, sample=False):
     ui = text["ui"]
     labels = (("home", ui["navHome"]), ("now", ui["navNow"]), ("how", ui["navHow"]), ("changelog", ui["navChangelog"]))
     items = []
@@ -109,7 +109,9 @@ def footer_nav(lang, page, pages, text):
         if key not in pages:
             continue
         items.append(f'<a href="{rel_dir(pages[page][lang], pages[key][lang])}">{esc(label)}</a>')
-    return f'<nav class="footer-nav" aria-label="{esc(ui["mainNav"])}">{"".join(items)}</nav>'
+    prefix = "SAMPLE " if sample else ""
+    return (f'<details class="site-menu"><summary aria-label="{esc(ui["navMenu"])}">{esc(prefix + ui["navMenu"])}</summary>'
+            f'<nav aria-label="{esc(ui["mainNav"])}">{"".join(items)}</nav></details>')
 
 
 def structured_data(page, lang, shared, text, experience, projects, domain, pages):
@@ -340,7 +342,7 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
     og = ""
     if (root / "site" / "og.png").exists():
         og = '<meta property="og:image" content="' + esc(clean_url(domain) + "og.png") + '"><meta name="twitter:card" content="summary_large_image">'
-    nav = footer_nav(lang, page, pages, text)
+    menu = site_menu(lang, page, pages, text, sample)
     fact = size_line(lang, ui, sizes[lang], sizes["external"], contrast_pass, sizes.get("quality"))
     title = page_title if real(page_title) else ui["navHome"]
     if page == "home":
@@ -363,7 +365,7 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
     if sample:
         fact = "SAMPLE " + fact
         switch = switch.replace(">EN<", ">SAMPLE EN<").replace(">FI<", ">SAMPLE FI<")
-    footer = (f'<footer><p>{"SAMPLE " if sample else ""}© {build_year()} {esc(shared["name"])}</p>{nav}'
+    footer = (f'<footer><p>{"SAMPLE " if sample else ""}© {build_year()} {esc(shared["name"])}</p>'
               f'<a class="build-facts" href="{rel_dir(directory, pages["how"][lang])}#automated-checks">{esc(fact)}</a>'
               f'<a class="back-to-top" href="#top">{esc(ui["backToTop"])}</a></footer>')
     prefix = "SAMPLE " if sample else ""
@@ -380,7 +382,7 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
         '</head><body id="top">', f'  <a class="skip-link" href="#main">{esc(ui["skip"])}</a>',
         '  <header>', f'    <p class="terminal-prompt">$ {prompt}<span class="cursor" aria-hidden="true">_</span></p>',
         f'    <h1>{header_h1}</h1>', page_intro,
-        f'    <div class="topbar">{switch}{toggle}</div>', '  </header>', f'  <main id="main">{body}</main>', f'  {footer}', '</body></html>', ""
+        f'    <div class="topbar">{switch}{menu}{toggle}</div>', '  </header>', f'  <main id="main">{body}</main>', f'  {footer}', '</body></html>', ""
     ])
 
 
@@ -520,10 +522,7 @@ def generate(root, shared, en, fi, experience, projects, site_info, quality, cha
 def not_found(shared, en, fi, pages, sizes, contrast_pass, sample=False):
     en_ui, fi_ui = en["ui"], fi["ui"]
     sample_prefix = "SAMPLE " if sample else ""
-    nav_items = []
-    for key, label in (("how", en_ui["navHow"]), ("changelog", en_ui["navChangelog"]), ("now", en_ui["navNow"])):
-        if key in pages:
-            nav_items.append(f'<a href="{rel_dir("", pages[key]["en"])}">{esc(sample_prefix + label)}</a>')
+    menu = site_menu("en", "home", pages, en, sample)
     facts = []
     for lang, ui in (("en", en_ui), ("fi", fi_ui)):
         href = rel_dir("", pages["how"][lang]) + "#automated-checks"
@@ -531,6 +530,6 @@ def not_found(shared, en, fi, pages, sizes, contrast_pass, sample=False):
     return "\n".join(["<!doctype html>", '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#101614">',
         f'<title>{esc(en["ui"]["notFoundTitle"])} / {esc(fi["ui"]["notFoundTitle"])}</title>',
         '<script src="theme.js"></script><link rel="stylesheet" href="style.css"></head><body id="top">',
-        f'<a class="skip-link" href="#main">{esc(sample_prefix + en["ui"]["skip"])}</a><header><h1>{esc(sample_prefix + en["ui"]["notFoundTitle"])} / {esc(sample_prefix + fi["ui"]["notFoundTitle"])}</h1></header>',
+        f'<a class="skip-link" href="#main">{esc(sample_prefix + en["ui"]["skip"])}</a><header><h1>{esc(sample_prefix + en["ui"]["notFoundTitle"])} / {esc(sample_prefix + fi["ui"]["notFoundTitle"])}</h1><div class="topbar">{menu}</div></header>',
         f'<main id="main" class="not-found"><p lang="en">{esc(sample_prefix + en["ui"]["notFoundText"])}</p><p lang="fi">{esc(sample_prefix + fi["ui"]["notFoundText"])}</p><p><a href="index.html">{sample_prefix}EN</a> · <a href="fi/">{sample_prefix}FI</a></p></main>',
-        f'<footer><p>{sample_prefix}© {build_year()} {esc(shared["name"])}</p><nav class="footer-nav" aria-label="{esc(en_ui["mainNav"])}">{"".join(nav_items)}</nav>{"".join(facts)}</footer>', '</body></html>', ""])
+        f'<footer><p>{sample_prefix}© {build_year()} {esc(shared["name"])}</p>{"".join(facts)}</footer>', '</body></html>', ""])
