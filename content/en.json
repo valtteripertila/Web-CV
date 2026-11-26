@@ -8,12 +8,12 @@
   },
   "headline": "[HEADLINE EN]",
   "summary": "[2-3 SENTENCE SUMMARY EN]",
-  "location": "[CITY], Finland",
+  "location": "Espoo, Finland",
   "education": [
     {
-      "degree": "[DEGREE EN]",
-      "school": "[SCHOOL]",
-      "years": "[YYYY–YYYY]"
+      "degree": "First-year Bachelor's student in Computer Science",
+      "school": "Aalto University",
+      "years": "2026–present"
     }
   ],
   "certifications": [
@@ -36,8 +36,8 @@
     }
   ],
   "languages": [
-    "[LANGUAGE EN, e.g. Finnish (native)]",
-    "[LANGUAGE EN, e.g. English (fluent)]"
+    "Finnish (native)",
+    "English (fluent)"
   ],
   "ui": {
     "skip": "Skip to content",
@@ -134,7 +134,7 @@
     "prompt": "whoami",
     "tagline": "[TAGLINE EN]",
     "status": [
-      "[CITY], Finland",
+      "Espoo, Finland",
       "[WHAT I AM LOOKING FOR EN]",
       "[AVAILABILITY EN]"
     ]

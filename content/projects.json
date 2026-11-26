@@ -2,24 +2,25 @@
   {
     "type": "hackathon",
     "featured": true,
-    "title": "[HACKATHON TITLE]",
-    "date": "[HACKATHON DATE]",
-    "event": "[HACKATHON EVENT]",
+    "title": "AaltoAI Hackathon: Data Sovereignty & Responsible AI",
+    "date": "18–20 September 2026",
+    "event": "Aalto Design Factory, Espoo · €10,000 prize pool · Partners: Microsoft, Verda, Norrin, Relex, IBM and Elisa",
     "result": {
-      "en": "[RESULT EN]",
-      "fi": "[RESULT FI]"
+      "en": "Won IBM Best Use of IBM Bob.",
+      "fi": "Voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta."
     },
     "role": {
-      "en": "[ROLE EN]",
-      "fi": "[ROLE FI]"
+      "en": "Data engineering and research in a team of five.",
+      "fi": "Data engineering ja tutkimus viiden hengen tiimissä."
     },
     "description": {
-      "en": "[HACKATHON DESCRIPTION EN]",
-      "fi": "[HACKATHON DESCRIPTION FI]"
+      "en": "Built a solution during a 48-hour sprint focused on data sovereignty and responsible AI. I contributed data engineering and research as part of a five-person team.",
+      "fi": "Rakensimme ratkaisua 48 tunnin sprintissä, jonka aiheina olivat datan suvereniteetti ja vastuullinen tekoäly. Vastasin tiimissä data engineeringistä ja tutkimuksesta."
     },
     "tags": [
-      "[TAG 1]",
-      "[TAG 2]"
+      "Data engineering",
+      "Responsible AI",
+      "Data sovereignty"
     ],
     "links": {
       "demo": "",

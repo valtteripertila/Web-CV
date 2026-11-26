@@ -8,12 +8,12 @@
   },
   "headline": "[HEADLINE FI]",
   "summary": "[2-3 SENTENCE SUMMARY FI]",
-  "location": "[CITY], Suomi",
+  "location": "Espoo, Suomi",
   "education": [
     {
-      "degree": "[DEGREE FI]",
-      "school": "[SCHOOL]",
-      "years": "[YYYY–YYYY]"
+      "degree": "Tietojenkäsittelytieteen kandidaattiopintojen 1. vuoden opiskelija",
+      "school": "Aalto-yliopisto",
+      "years": "2026–nykyinen"
     }
   ],
   "certifications": [
@@ -36,8 +36,8 @@
     }
   ],
   "languages": [
-    "[LANGUAGE FI, e.g. suomi (äidinkieli)]",
-    "[LANGUAGE FI, e.g. englanti (sujuva)]"
+    "Suomi (äidinkieli)",
+    "Englanti (sujuva)"
   ],
   "ui": {
     "skip": "Siirry sisältöön",
@@ -134,7 +134,7 @@
     "prompt": "whoami",
     "tagline": "[TAGLINE FI]",
     "status": [
-      "[CITY], Suomi",
+      "Espoo, Suomi",
       "[WHAT I AM LOOKING FOR FI]",
       "[AVAILABILITY FI]"
     ]
