@@ -105,6 +105,10 @@ footer p { margin: 0; }
 .code dd li::before { content: '"' / ""; color: var(--muted); }
 .code dd li::after { content: '"' / ""; color: var(--muted); }
 .code dd li + li::before { content: ', "' / ""; }
+.hackathon-code { overflow-x: hidden; }
+.hackathon-code dl, .hackathon-code .code-line { min-width: 0; }
+.hackathon-code .code-line dt { flex: 0 0 auto; }
+.hackathon-code .code-line dd { flex: 1 1 0; min-width: 0; overflow-wrap: anywhere; }
 .filters { display: none; flex-wrap: wrap; gap: .4rem; padding: 0; border: 0; margin: 0 0 var(--space-2); }
 html.timeline-filters-ready .filters { display: flex; }
 .filters legend { width: 100%; padding: 0; color: var(--muted); }
