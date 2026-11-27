@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <url><loc>https://Pertila-CV.pages.dev/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://Pertila-CV.pages.dev/" />
-    <xhtml:link rel="alternate" hreflang="fi" href="https://Pertila-CV.pages.dev/fi/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://Pertila-CV.pages.dev/" />
+  <url><loc>https://cv.valtteri-pertila.workers.dev/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://cv.valtteri-pertila.workers.dev/" />
+    <xhtml:link rel="alternate" hreflang="fi" href="https://cv.valtteri-pertila.workers.dev/fi/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cv.valtteri-pertila.workers.dev/" />
   </url>
-  <url><loc>https://Pertila-CV.pages.dev/fi/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://Pertila-CV.pages.dev/" />
-    <xhtml:link rel="alternate" hreflang="fi" href="https://Pertila-CV.pages.dev/fi/" />
+  <url><loc>https://cv.valtteri-pertila.workers.dev/fi/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://cv.valtteri-pertila.workers.dev/" />
+    <xhtml:link rel="alternate" hreflang="fi" href="https://cv.valtteri-pertila.workers.dev/fi/" />
   </url>
-  <url><loc>https://Pertila-CV.pages.dev/how-this-site-is-built/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://Pertila-CV.pages.dev/how-this-site-is-built/" />
-    <xhtml:link rel="alternate" hreflang="fi" href="https://Pertila-CV.pages.dev/fi/sivuston-rakenne/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://Pertila-CV.pages.dev/how-this-site-is-built/" />
+  <url><loc>https://cv.valtteri-pertila.workers.dev/how-this-site-is-built/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://cv.valtteri-pertila.workers.dev/how-this-site-is-built/" />
+    <xhtml:link rel="alternate" hreflang="fi" href="https://cv.valtteri-pertila.workers.dev/fi/sivuston-rakenne/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cv.valtteri-pertila.workers.dev/how-this-site-is-built/" />
   </url>
-  <url><loc>https://Pertila-CV.pages.dev/fi/sivuston-rakenne/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://Pertila-CV.pages.dev/how-this-site-is-built/" />
-    <xhtml:link rel="alternate" hreflang="fi" href="https://Pertila-CV.pages.dev/fi/sivuston-rakenne/" />
+  <url><loc>https://cv.valtteri-pertila.workers.dev/fi/sivuston-rakenne/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://cv.valtteri-pertila.workers.dev/how-this-site-is-built/" />
+    <xhtml:link rel="alternate" hreflang="fi" href="https://cv.valtteri-pertila.workers.dev/fi/sivuston-rakenne/" />
   </url>
-  <url><loc>https://Pertila-CV.pages.dev/changelog/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://Pertila-CV.pages.dev/changelog/" />
-    <xhtml:link rel="alternate" hreflang="fi" href="https://Pertila-CV.pages.dev/fi/muutosloki/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://Pertila-CV.pages.dev/changelog/" />
+  <url><loc>https://cv.valtteri-pertila.workers.dev/changelog/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://cv.valtteri-pertila.workers.dev/changelog/" />
+    <xhtml:link rel="alternate" hreflang="fi" href="https://cv.valtteri-pertila.workers.dev/fi/muutosloki/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cv.valtteri-pertila.workers.dev/changelog/" />
   </url>
-  <url><loc>https://Pertila-CV.pages.dev/fi/muutosloki/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://Pertila-CV.pages.dev/changelog/" />
-    <xhtml:link rel="alternate" hreflang="fi" href="https://Pertila-CV.pages.dev/fi/muutosloki/" />
+  <url><loc>https://cv.valtteri-pertila.workers.dev/fi/muutosloki/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://cv.valtteri-pertila.workers.dev/changelog/" />
+    <xhtml:link rel="alternate" hreflang="fi" href="https://cv.valtteri-pertila.workers.dev/fi/muutosloki/" />
   </url>
 </urlset>

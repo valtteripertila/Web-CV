@@ -98,7 +98,7 @@
     "changelogIntro": "Projektihistoriaan kirjatut muutokset.",
     "nowIntro": "Mihin keskityn tällä hetkellä.",
     "updated": "Päivitetty",
-    "buildChecked": "koostetarkistettu: {external} ulkoista pyyntöä · {size} kt{contrast}",
+    "buildChecked": "build-tarkistus: {external} ulkoista pyyntöä · {size} kB{contrast}",
     "contrastLabel": " · kontrasti AA",
     "lighthouseLabel": "Lighthouse",
     "lighthouseFooter": " · Lighthouse {performance}/{accessibility}/{best_practices}/{seo}",

@@ -1,8 +1,8 @@
-# Pertila-CV
+# Valtteri Pertilä CV
 
 A bilingual static CV site generated from structured English and Finnish content.
 
-[Live site](https://pertila-cv.pages.dev/) · [![CI](https://github.com/valtteripertila/Web-CV/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/valtteripertila/Web-CV/actions/workflows/ci.yml)
+[Live site](https://cv.valtteri-pertila.workers.dev) · [![CI](https://github.com/valtteripertila/Web-CV/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/valtteripertila/Web-CV/actions/workflows/ci.yml)
 
 ## Features
 

@@ -309,6 +309,18 @@ def contrast_check():
     return [] if passed else ["contrast thresholds failed: " + json.dumps(values, sort_keys=True)]
 
 
+def og_lock_check():
+    from tools.make_og import LOCK, input_hash
+    try:
+        locked = LOCK.read_text(encoding="utf-8").strip()
+    except OSError:
+        locked = ""
+    current = input_hash()
+    if locked != current:
+        return [f"WARNING: Open Graph images are stale or have no input lock; run `py -3 tools/make_og.py` to regenerate site/og.png, site/og-fi.png and tools/og.lock (current input hash: {current})."]
+    return []
+
+
 def privacy_check():
     errors = []
     phone_pattern = re.compile(r"(?<![\w])(?:\+?\d[\s().-]*){9,}(?![\w])")
@@ -363,6 +375,7 @@ CHECKS = [
     ("topbar", "Every page has one top bar with valid language and menu links.", "Jokaisella sivulla on yksi yläpalkki ja toimivat kieli- ja valikkolinkit.", topbar_check),
     ("external", "HTML and CSS load no external resources.", "HTML ja CSS eivät lataa ulkoisia resursseja.", external_resource_check),
     ("contrast", "Both theme palettes pass measured contrast thresholds.", "Molempien teemojen värit läpäisevät mitatut kontrastirajat.", contrast_check),
+    ("og-lock", "Open Graph images match their source inputs.", "Open Graph -kuvat vastaavat lähdesisältöään.", og_lock_check),
     ("privacy", "No private contact details are included.", "Yksityisiä yhteystietoja ei ole lisätty.", privacy_check),
     ("freshness", "Committed site files match a fresh temporary build.", "Julkaistut sivutiedostot vastaavat väliaikaista uutta koostetta.", freshness_check),
 ]

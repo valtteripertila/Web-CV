@@ -31,6 +31,12 @@ def localized_text(value, lang):
     return value if isinstance(value, str) else ""
 
 
+def profile_key(value):
+    transliteration = str.maketrans({"ä": "a", "ö": "o", "å": "a"})
+    normalized = value.lower().translate(transliteration)
+    return re.sub(r"[^a-z0-9]+", "_", normalized).strip("_") or "skills"
+
+
 def rel_dir(source, target):
     path = posixpath.relpath(target or ".", source or ".")
     return ("./" if path == "." else path.rstrip("/") + "/")
@@ -287,7 +293,7 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
     if cards: result.append(f'<section id="timeline">{heading(ui["timeline"])}{filters}<div class="timeline">{"".join(cards)}</div></section>')
     profile=[]
     for group in text.get("skills",[]):
-        key=re.sub(r"[^a-zA-Z0-9]+","_",group.get("group","")).strip("_").lower() or "skills"
+        key=profile_key(group.get("group", ""))
         vals=[v for v in group.get("items",[]) if filled(v)]
         if vals: profile.append((key,vals))
     education=[" · ".join(str(x.get(k,"")) for k in ("degree","school","years") if filled(x.get(k))) for x in text.get("education",[])]
@@ -383,7 +389,10 @@ def external_request_count(document, stylesheet, script, favicon):
 
 def size_line(lang, ui, byte_count, external, contrast_pass, quality=None):
     contrast = ui["contrastLabel"] if contrast_pass else ""
-    value = ui["buildChecked"].format(external=external, size=f"{byte_count / 1000:.1f}", contrast=contrast)
+    size = f"{byte_count / 1000:.1f}"
+    if lang == "fi":
+        size = size.replace(".", ",")
+    value = ui["buildChecked"].format(external=external, size=size, contrast=contrast)
     quality = quality or {}
     if valid_lighthouse(quality.get("lighthouse", {})):
         value += ui["lighthouseFooter"].format(**quality["lighthouse"])
@@ -424,9 +433,10 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
     depth_path = asset_prefix
     structured = structured_data(page, lang, shared, text, domain, pages)
     structured_tag = '<script type="application/ld+json">' + json_ld(structured) + "</script>"
+    og_image = "og.png" if lang == "en" else "og-fi.png"
     og = ""
-    if not sample and (root / "site" / "og.png").exists():
-        og = '<meta property="og:image" content="' + esc(clean_url(domain) + "og.png") + '"><meta name="twitter:card" content="summary_large_image">'
+    if not sample and (root / "site" / og_image).exists():
+        og = '<meta property="og:image" content="' + esc(clean_url(domain) + og_image) + '"><meta name="twitter:card" content="summary_large_image">'
     bar = top_bar(lang, page, pages, shared, text, sample)
     fact = size_line(lang, ui, sizes[lang], sizes["external"], contrast_pass, sizes.get("quality"))
     title = page_title if real(page_title) else ui["navHome"]
@@ -452,7 +462,7 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
         f'  <title>{esc(title_tag)}</title>', f'  <meta name="description" content="{esc(description)}">',
         '  <meta name="color-scheme" content="dark light">', '  <meta name="theme-color" content="#101614">',
         f'  <link rel="canonical" href="{esc(canonical)}">', f'  {lang_alts}',
-        f'  <meta property="og:title" content="{esc(title)}">', f'  <meta property="og:description" content="{esc(description)}">',
+        f'  <meta property="og:title" content="{esc(title_tag)}">', f'  <meta property="og:locale" content="{esc(text.get("locale", "en_US" if lang == "en" else "fi_FI"))}">', f'  <meta property="og:description" content="{esc(description)}">',
         f'  <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}">{og}',
         f'  <link rel="icon" href="{depth_path}favicon.svg" type="image/svg+xml">',
         f'  <script src="{depth_path}theme.js"></script>', f'  <link rel="stylesheet" href="{depth_path}style.css">', f'  {structured_tag}',
@@ -600,7 +610,7 @@ def generate(root, shared, en, fi, timeline, site_info, quality, changelog, now,
         sitemap.append("  </url>")
     sitemap.append("</urlset>")
     (out / "sitemap.xml").write_text("\n".join(sitemap) + "\n", encoding="utf-8", newline="\n")
-    (out / "404.html").write_text(not_found(shared, en, fi, pages, size, contrast_pass, sample), encoding="utf-8", newline="\n")
+    (out / "404.html").write_text(not_found(shared, en, fi, pages, size, contrast_pass, domain, sample), encoding="utf-8", newline="\n")
     if sample:
         shutil.copy2(root / "site" / "style.css", out / "style.css")
         shutil.copy2(root / "site" / "theme.js", out / "theme.js")
@@ -609,15 +619,17 @@ def generate(root, shared, en, fi, timeline, site_info, quality, changelog, now,
     return out_files
 
 
-def not_found(shared, en, fi, pages, sizes, contrast_pass, sample=False):
+def not_found(shared, en, fi, pages, sizes, contrast_pass, domain, sample=False):
     en_ui, fi_ui = en["ui"], fi["ui"]
     sample_prefix = "SAMPLE " if sample else ""
     bar = top_bar("en", "home", pages, shared, en, sample)
     facts = []
     for lang, ui in (("en", en_ui), ("fi", fi_ui)):
         facts.append(f'<span class="build-facts">{esc(sample_prefix + size_line(lang, ui, sizes[lang], sizes["external"], contrast_pass, sizes.get("quality")))}</span>')
+    not_found_title = f'{en["ui"]["notFoundTitle"]} / {fi["ui"]["notFoundTitle"]}'
+    og_image = clean_url(domain) + "og.png"
     return "\n".join(["<!doctype html>", '<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="theme-color" content="#101614">',
-        f'<title>{esc(en["ui"]["notFoundTitle"])} / {esc(fi["ui"]["notFoundTitle"])}</title>',
+        f'<title>{esc(not_found_title)}</title>', f'<meta property="og:title" content="{esc(not_found_title)}"><meta property="og:locale" content="en_US"><meta property="og:image" content="{esc(og_image)}"><meta name="twitter:card" content="summary_large_image">',
         '<script src="theme.js"></script><link rel="stylesheet" href="style.css"></head><body id="top">',
         f'<a class="skip-link" href="#main">{esc(sample_prefix + en["ui"]["skip"])}</a>{bar}',
         f'<main id="main" class="not-found"><section class="hero"><h1>{esc(sample_prefix + en["ui"]["notFoundTitle"])} / {esc(sample_prefix + fi["ui"]["notFoundTitle"])}</h1></section><p lang="en">{esc(sample_prefix + en["ui"]["notFoundText"])}</p><p lang="fi">{esc(sample_prefix + fi["ui"]["notFoundText"])}</p></main>',

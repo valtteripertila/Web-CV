@@ -300,6 +300,12 @@ def validate_timeline(entries, errors, site_root=SITE):
 
 def validate(shared, en, fi, timeline, errors, site_root=SITE):
         require(shared, ["name", "initials", "email", "linkedin", "github", "domain", "repo", "heroStatusKeys"], "shared.json", errors)
+        domain = shared.get("domain", "")
+        parsed_domain = urlsplit(domain) if isinstance(domain, str) else None
+        if (parsed_domain is None or parsed_domain.scheme != "https" or not parsed_domain.netloc
+                or parsed_domain.path or parsed_domain.query or parsed_domain.fragment
+                or domain.endswith("/") or domain != domain.lower()):
+                errors.append("shared.json field domain: must be a lowercase https:// origin with no path or trailing slash")
         status_keys = shared.get("heroStatusKeys", [])
         if not isinstance(status_keys, list) or any(not isinstance(key, str) or not re.fullmatch(r"[a-z_][a-z0-9_]*", key) for key in status_keys):
                 errors.append("shared.json field heroStatusKeys: expected unique code-style keys")

@@ -2,14 +2,14 @@
 
 Computer Science student building with Python, web and AI
 First-year Computer Science student in Espoo who builds data and web projects at hackathons. My team placed 1st and 3rd in two challenge tracks at Junction 2026, and we won IBM's Best Use of IBM Bob prize at the AaltoAI hackathon.
-- [EN CV](https://Pertila-CV.pages.dev/)
-- [How this site is built](https://Pertila-CV.pages.dev/how-this-site-is-built/)
-- [Changelog](https://Pertila-CV.pages.dev/changelog/)
+- [EN CV](https://cv.valtteri-pertila.workers.dev/)
+- [How this site is built](https://cv.valtteri-pertila.workers.dev/how-this-site-is-built/)
+- [Changelog](https://cv.valtteri-pertila.workers.dev/changelog/)
 Tietojenkäsittelytieteen opiskelija, joka rakentaa Pythonilla, webillä ja tekoälyllä
 Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa data- ja web-projekteja hackathoneissa. Tiimini sijoittui Junction 2026 -tapahtumassa ensimmäiseksi ja kolmanneksi kahdella haasteraidalla, ja voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta AaltoAI-hackathonissa.
-- [FI CV](https://Pertila-CV.pages.dev/fi/)
-- [Sivuston rakenne](https://Pertila-CV.pages.dev/fi/sivuston-rakenne/)
-- [Muutosloki](https://Pertila-CV.pages.dev/fi/muutosloki/)
+- [FI CV](https://cv.valtteri-pertila.workers.dev/fi/)
+- [Sivuston rakenne](https://cv.valtteri-pertila.workers.dev/fi/sivuston-rakenne/)
+- [Muutosloki](https://cv.valtteri-pertila.workers.dev/fi/muutosloki/)
 - GitHub: https://github.com/valtteripertila
 - LinkedIn: https://www.linkedin.com/in/valtteri-pertil%C3%A4-43729b434/
 
