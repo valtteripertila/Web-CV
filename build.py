@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent
 CONTENT = ROOT / "content"
 SITE = ROOT / "site"
 UI_KEYS = [
-        "skip", "contact", "present", "demo", "repo", "writeup", "github", "linkedin", "backToTop",
+        "skip", "contact", "present", "demo", "repo", "myCommits", "writeup", "github", "linkedin", "backToTop",
         "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText",
         "navNow", "navHome", "navHow", "navChangelog", "languageNav", "mainNav", "navMenu", "menuAbout",
         "menuMore", "overview", "architecture", "contentModel", "automatedChecks", "constraints", "source",
@@ -61,6 +61,30 @@ def require(data, keys, filename, errors, prefix=""):
 
 def value_present(value):
         return isinstance(value, str) and bool(value.strip())
+
+
+def validate_localized_text(value, filename, number, field, errors, required=False):
+        if isinstance(value, str):
+                if required and not value_present(value):
+                        errors.append(f"{filename} entry {number} field {field}: required")
+                return
+        if isinstance(value, dict):
+                validate_bilingual(value, filename, number, field, errors)
+                if required and any(not value_present(value.get(lang)) for lang in ("en", "fi")):
+                        errors.append(f"{filename} entry {number} field {field}: English and Finnish text are required")
+                return
+        errors.append(f"{filename} entry {number} field {field}: must be a string or an object with en and fi")
+
+
+def validate_tags(value, number, field, errors):
+        if not isinstance(value, list):
+                errors.append(f"timeline.json entry {number} field {field}: must be a list")
+                return
+        for index, tag in enumerate(value):
+                if isinstance(tag, dict):
+                        validate_bilingual(tag, "timeline.json", number, f"{field}[{index}]", errors)
+                elif not isinstance(tag, str):
+                        errors.append(f"timeline.json entry {number} field {field}[{index}]: must be a string or bilingual object")
 
 
 def parse_date_key(value):
@@ -116,8 +140,10 @@ def validate_urls(links, number, errors):
         if not isinstance(links, dict):
                 errors.append(f"timeline.json entry {number} field links: must be an object")
                 return
-        for key in ("demo", "code", "writeup"):
+        for key in ("demo", "code", "commits", "writeup"):
                 if key not in links:
+                        if key == "commits":
+                                continue
                         errors.append(f"timeline.json entry {number} field links.{key}: missing")
                         continue
                 value = links[key]
@@ -229,8 +255,7 @@ def validate_timeline(entries, errors, site_root=SITE):
                         if not isinstance(project, dict):
                                 errors.append(f"timeline.json entry {number} field project: must be an object")
                                 project = {}
-                        if not value_present(project.get("title")):
-                                errors.append(f"timeline.json entry {number} field project.title: required")
+                        validate_localized_text(project.get("title"), "timeline.json", number, "project.title", errors, required=True)
                         team = item.get("team", {})
                         if not isinstance(team, dict):
                                 errors.append(f"timeline.json entry {number} field team: must be an object")
@@ -247,18 +272,15 @@ def validate_timeline(entries, errors, site_root=SITE):
                                         validate_bilingual(project.get(field, {"en": "", "fi": ""}), "timeline.json", number, f"project.{field}", errors)
                                 validate_urls(project.get("links"), number, errors)
                                 validate_media(project.get("media"), number, "project.media", site_root, errors)
-                                if not isinstance(project.get("tags"), list):
-                                        errors.append(f"timeline.json entry {number} field project.tags: must be a list")
+                                validate_tags(project.get("tags"), number, "project.tags", errors)
                 elif kind == "project":
                         parsed = validate_iso_field(item, number, "date", True, errors)
                         if parsed is None and "[" in str(item.get("date", "")):
                                 print(f"WARNING: timeline.json entry {number} field date: unparseable placeholder sorts last")
-                        if not value_present(item.get("title")):
-                                errors.append(f"timeline.json entry {number} field title: required")
+                        validate_localized_text(item.get("title"), "timeline.json", number, "title", errors, required=True)
                         validate_urls(item.get("links"), number, errors)
                         validate_media(item.get("media"), number, "media", site_root, errors)
-                        if not isinstance(item.get("tags"), list):
-                                errors.append(f"timeline.json entry {number} field tags: must be a list")
+                        validate_tags(item.get("tags"), number, "tags", errors)
                 else:
                         parsed = validate_iso_field(item, number, "start", True, errors)
                         if parsed is None and "[" in str(item.get("start", "")):

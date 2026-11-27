@@ -1,12 +1,12 @@
 # Valtteri Pertilä
 
-Computer Science student at Aalto University
-First-year Computer Science student in Espoo who builds data and web projects at hackathons. At Junction 2026 my team placed 1st in the Oxylabs tech track and 3rd in the Hostinger main track; in September we won IBM's Best Use of IBM Bob prize at the AaltoAI hackathon. I use AI coding assistants as part of how I build.
+Computer Science student building with Python, web and AI
+First-year Computer Science student in Espoo who builds data and web projects at hackathons. My team placed 1st and 3rd in two challenge tracks at Junction 2026, and we won IBM's Best Use of IBM Bob prize at the AaltoAI hackathon.
 - [EN CV](https://Pertila-CV.pages.dev/)
 - [How this site is built](https://Pertila-CV.pages.dev/how-this-site-is-built/)
 - [Changelog](https://Pertila-CV.pages.dev/changelog/)
-Tietojenkäsittelytieteen opiskelija, Aalto-yliopisto
-Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa data- ja web-projekteja hackathoneissa. Junction 2026 -tapahtumassa tiimini sijoittui ensimmäiseksi Oxylabsin teknologiaraidalla ja kolmanneksi Hostingerin pääkilpailuraidalla; syyskuussa voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta AaltoAI-hackathonissa. Käytän tekoälyavustajia osana rakentamistani.
+Tietojenkäsittelytieteen opiskelija, joka rakentaa Pythonilla, webillä ja tekoälyllä
+Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa data- ja web-projekteja hackathoneissa. Tiimini sijoittui Junction 2026 -tapahtumassa ensimmäiseksi ja kolmanneksi kahdella haasteraidalla, ja voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta AaltoAI-hackathonissa.
 - [FI CV](https://Pertila-CV.pages.dev/fi/)
 - [Sivuston rakenne](https://Pertila-CV.pages.dev/fi/sivuston-rakenne/)
 - [Muutosloki](https://Pertila-CV.pages.dev/fi/muutosloki/)
@@ -14,6 +14,6 @@ Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa
 - LinkedIn: https://www.linkedin.com/in/valtteri-pertil%C3%A4-43729b434/
 
 ## Projects
-- Junction 2026 — https://noise-radar.srv2159172.hstgr.cloud, https://github.com/JustinasLa/gemini-4-braincells
-- This CV site — https://pertila-cv.pages.dev/, https://github.com/valtteripertila/Web-CV
-- AaltoAI Hackathon: Data Sovereignty & Responsible AI — https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026
+- Junction 2026 — https://noise-radar.srv2159172.hstgr.cloud, https://github.com/JustinasLa/gemini-4-braincells, https://github.com/JustinasLa/gemini-4-braincells/commits?author=valtteripertila
+- This CV site — https://cv.valtteri-pertila.workers.dev/, https://github.com/valtteripertila/Web-CV
+- AaltoAI Hackathon: Data Sovereignty & Responsible AI — https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026, https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026/commits?author=valtteripertila

@@ -19,7 +19,7 @@
     "team": { "name": "", "size": 4 },
     "role": {
       "en": "Built the media-evidence pipeline (a Nemotron vision-model client and background worker, with tests), the evidence dashboard, mobile layout fixes and a lookup fix for Bluesky posts. Several of my commits were co-authored with GitHub Copilot.",
-      "fi": "Rakensin mediatodisteiden analyysiputken (Nemotron-näkökielimallin asiakas ja taustatyöntekijä testeineen), todisteiden näyttöpaneelin, mobiilinäkymän korjauksia sekä Bluesky-julkaisujen hakutoiminnon korjauksen. Useat commitini kirjoitettiin GitHub Copilotin kanssa."
+      "fi": "Rakensin mediatodisteiden analyysiputken (Nemotron-näkökielimallin asiakas ja taustatyöntekijä testeineen), todisteiden näyttöpaneelin, mobiilinäkymän korjauksia sekä Bluesky-julkaisujen hakutoiminnon korjauksen. Useat commitini tein GitHub Copilotin avustuksella."
     },
     "result": {
       "en": "Hostinger main track — 3rd place\nOxylabs tech track — 1st place",
@@ -28,13 +28,14 @@
     "project": {
       "title": "Shill or Chill",
       "description": {
-        "en": "Traces memes back to their earliest source and spots coordinated spreading. Images and screenshots are read by NVIDIA's Nemotron vision-language model, and a Gemini-based agent searches the web and explains each verdict with sources. The team used AI coding agents (OpenAI Codex) throughout the build.",
-        "fi": "Jäljittää meemit alkuperäiseen lähteeseensä ja tunnistaa koordinoidun levityksen. NVIDIAn Nemotron-näkökielimalli lukee kuvat ja kuvakaappaukset, ja Gemini-pohjainen agentti hakee verkosta tietoa ja perustelee jokaisen arvion lähteillä. Tiimi käytti tekoälyagentteja (OpenAI Codex) koko rakennusprosessin ajan."
+        "en": "Traces memes back to their earliest source and spots coordinated spreading. Images and screenshots are read by NVIDIA's Nemotron vision-language model, and a Gemini-based agent searches the web and explains each verdict with sources.",
+        "fi": "Jäljittää meemit alkuperäiseen lähteeseensä ja tunnistaa koordinoidun levityksen. NVIDIAn Nemotron-näkökielimalli lukee kuvat ja kuvakaappaukset, ja Gemini-pohjainen agentti hakee verkosta tietoa ja perustelee jokaisen arvion lähteillä."
       },
-      "tags": ["Python", "TypeScript", "Vision-language models", "LLM agents", "Web"],
+      "tags": ["Python", "TypeScript", {"en":"Vision-language models","fi":"Näkökielimallit"}, {"en":"LLM agents","fi":"LLM-agentit"}, "Web"],
       "links": {
         "demo": "https://noise-radar.srv2159172.hstgr.cloud",
         "code": "https://github.com/JustinasLa/gemini-4-braincells",
+        "commits": "https://github.com/JustinasLa/gemini-4-braincells/commits?author=valtteripertila",
         "writeup": ""
       },
       "media": []
@@ -44,7 +45,7 @@
   {
     "type": "project",
     "date": "2026-11",
-    "title": "This CV site",
+    "title": {"en":"This CV site","fi":"Tämä CV-sivusto"},
     "role": {
       "en": "Designed the content model, layout and quality checks; implemented with AI coding assistants.",
       "fi": "Suunnittelin sisältömallin, ulkoasun ja laatutarkistukset; toteutus tehtiin tekoälyavustajilla."
@@ -53,9 +54,9 @@
       "en": "A bilingual (EN/FI) static CV generated from structured JSON by a dependency-free Python script. Automated checks cover links, language parity, colour contrast and external requests, and the site is deployed to Cloudflare Pages through GitHub.",
       "fi": "Kaksikielinen (EN/FI) staattinen CV, jonka riippuvuudeton Python-skripti generoi rakenteisesta JSON-sisällöstä. Automaattiset tarkistukset kattavat linkit, kieliversioiden vastaavuuden, värikontrastin ja ulkoiset pyynnöt, ja sivusto julkaistaan GitHubin kautta Cloudflare Pagesiin."
     },
-    "tags": ["Python", "HTML/CSS", "GitHub Actions", "Cloudflare Pages", "Accessibility"],
+    "tags": ["Python", "HTML/CSS", "GitHub Actions", "Cloudflare Pages", {"en":"Accessibility","fi":"Saavutettavuus"}],
     "links": {
-      "demo": "https://pertila-cv.pages.dev/",
+      "demo": "https://cv.valtteri-pertila.workers.dev/",
       "code": "https://github.com/valtteripertila/Web-CV",
       "writeup": ""
     },
@@ -76,7 +77,7 @@
     "team": { "name": "", "size": 5 },
     "role": {
       "en": "Data engineering and research in a team of five. Added the mouse-movement and keystroke training datasets to the team repository (two pull requests).",
-      "fi": "Data engineering ja tutkimus viiden hengen tiimissä. Lisäsin hiiren liikkeen ja näppäilyn opetusdatat tiimin repositorioon (kaksi pull requestia)."
+      "fi": "Data engineering ja tutkimus viiden hengen tiimissä. Lisäsin hiiren liikkeen ja näppäilyn opetusdatat tiimin repositorioon (kaksi pull request -pyyntöä)."
     },
     "result": {
       "en": "IBM Best Use of IBM Bob — Winner",
@@ -88,10 +89,11 @@
         "en": "Prototype of a continuous authentication system that recognises a user by how they move the mouse and type. Browser telemetry becomes 32 statistical features, a Siamese neural network encodes them, and a LightGBM model scores anomalies that can trigger 2FA or lockout.",
         "fi": "Prototyyppi jatkuvasta tunnistautumisesta, joka tunnistaa käyttäjän hiiren liikkeen ja kirjoitustavan perusteella. Selaimen telemetriasta lasketaan 32 tilastollista piirrettä, Siamese-neuroverkko koodaa ne ja LightGBM-malli pisteyttää poikkeamat, jotka voivat laukaista kaksivaiheisen tunnistuksen tai lukituksen."
       },
-      "tags": ["Python", "Machine learning", "Behavioral biometrics", "Data engineering"],
+      "tags": ["Python", {"en":"Machine learning","fi":"Koneoppiminen"}, {"en":"Behavioral biometrics","fi":"Käyttäytymisbiometria"}, "Data engineering"],
       "links": {
         "demo": "",
         "code": "https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026",
+        "commits": "https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026/commits?author=valtteripertila",
         "writeup": ""
       },
       "media": []

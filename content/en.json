@@ -6,8 +6,8 @@
     "changelog": "changelog",
     "now": "now"
   },
-  "headline": "Computer Science student at Aalto University",
-  "summary": "First-year Computer Science student in Espoo who builds data and web projects at hackathons. At Junction 2026 my team placed 1st in the Oxylabs tech track and 3rd in the Hostinger main track; in September we won IBM's Best Use of IBM Bob prize at the AaltoAI hackathon. I use AI coding assistants as part of how I build.",
+  "headline": "Computer Science student building with Python, web and AI",
+  "summary": "First-year Computer Science student in Espoo who builds data and web projects at hackathons. My team placed 1st and 3rd in two challenge tracks at Junction 2026, and we won IBM's Best Use of IBM Bob prize at the AaltoAI hackathon.",
   "education": [
     {
       "degree": "First-year Bachelor's student in Computer Science",
@@ -52,7 +52,7 @@
     "contact": "contact",
     "present": "Present",
     "backToTop": "Back to top",
-    "meta_title": "Valtteri Pertilä – Computer Science student at Aalto University",
+    "meta_title": "Valtteri Pertilä – Computer Science student building with Python, web and AI",
     "meta_description": "Bilingual CV of first-year Computer Science student Valtteri Pertilä at Aalto University, featuring projects, hackathons and experience.",
     "notFoundTitle": "Page not found",
     "notFoundText": "The page you are looking for does not exist.",
@@ -115,6 +115,7 @@
     "hackathon": "hackathon",
     "role": "role",
     "repo": "repo",
+    "myCommits": "my commits",
     "teamSize": "{count} people",
     "github": "GitHub",
     "linkedin": "LinkedIn"
@@ -132,7 +133,7 @@
       },
       {
         "key": "availability",
-        "value": "[AVAILABILITY EN]"
+        "value": "From 26 April 2027, after Aalto's period IV ends"
       }
     ]
   }

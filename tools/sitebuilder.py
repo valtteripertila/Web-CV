@@ -25,6 +25,12 @@ def filled(value):
     return isinstance(value, str) and bool(value.strip())
 
 
+def localized_text(value, lang):
+    if isinstance(value, dict):
+        value = value.get(lang, "")
+    return value if isinstance(value, str) else ""
+
+
 def rel_dir(source, target):
     path = posixpath.relpath(target or ".", source or ".")
     return ("./" if path == "." else path.rstrip("/") + "/")
@@ -186,7 +192,7 @@ def display_date(item, lang):
     y, m = int(value[:4]), int(value[5:7])
     months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
     months_fi = ("tammi", "helmi", "maalis", "huhti", "touko", "kesä", "heinä", "elo", "syys", "loka", "marras", "joulu")
-    if len(value) == 7: return f"{months_fi[m-1]} {y}" if lang == "fi" else f"{months[m-1]} {y}"
+    if len(value) == 7: return f"{m:02d}/{y}" if lang == "fi" else f"{months[m-1]} {y}"
     d = int(value[8:10])
     if lang == "fi": return f"{d}.–{int(end[8:10])}.{m}.{y}" if len(end) == 10 and end[:7] == value[:7] else f"{d}.{m}.{y}"
     return f"{d}–{int(end[8:10])} {months[m-1]} {y}" if len(end) == 10 and end[:7] == value[:7] else f"{d} {months[m-1]} {y}"
@@ -237,8 +243,9 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
                 figures.append(f'<figure><a href="{esc(src)}"><img src="{esc(src)}" alt="{esc(alt)}"{dimensions} loading="lazy" decoding="async"></a>{f"<figcaption>{esc(caption_text)}</figcaption>" if caption_text else ""}</figure>')
         if figures: media=f'<div class="media-gallery">{"".join(figures)}</div>'
         tagrows=item.get("project",{}).get("tags",[]) if kind=="hackathon" else item.get("tags",[])
-        tags="".join(f'<span>{("SAMPLE #"+esc(t[7:] if t.startswith("SAMPLE ") else t)) if sample else "#"+esc(t)}</span>' for t in tagrows if filled(t))
-        linkrows=" ".join(filter(None,(link(links.get("demo"),ui["demo"]),link(links.get("code"),ui["repo"]),link(links.get("writeup"),ui["writeup"]))))
+        tag_values=[localized_text(tag,lang) for tag in tagrows]
+        tags="".join(f'<span>{("SAMPLE #"+esc(t[7:] if t.startswith("SAMPLE ") else t)) if sample else "#"+esc(t)}</span>' for t in tag_values if filled(t))
+        linkrows=" ".join(filter(None,(link(links.get("demo"),ui["demo"]),link(links.get("code"),ui["repo"]),link(links.get("commits"),ui["myCommits"]),link(links.get("writeup"),ui["writeup"]))))
         if kind=="role":
             points=item.get("points",{}).get(lang,[]); role=item.get("role",{}).get(lang,"")
             content=f'<span class="entry-kind">{esc(ui["role"])} · {esc(item.get("employer",""))}</span><h3>{esc(role)}</h3>{"<ul>"+"".join(f"<li>{esc(p)}</li>" for p in points)+"</ul>" if points else ""}'
@@ -261,7 +268,7 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
             result_lines=[line.strip() for line in resultval.splitlines() if line.strip()] if isinstance(resultval,str) else []
             result_items="".join("<li class=\"result-panel\">"+esc(line)+"</li>" for line in result_lines)
             results_html=f'<ul class="result-panels">{result_items}</ul>' if result_lines else ""
-            project_title=p.get("title",""); project_description=p.get("description",{}).get(lang,"")
+            project_title=localized_text(p.get("title", ""),lang); project_description=p.get("description",{}).get(lang,"")
             title_html=f"<h4>{esc(project_title)}</h4>" if project_title else ""
             description_html=f"<p>{esc(project_description)}</p>" if project_description else ""
             event=esc(item.get("event", ""))
@@ -270,7 +277,7 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
             what_built=("SAMPLE // "+esc(ui["whatBuilt"][7:])) if sample and ui["whatBuilt"].startswith("SAMPLE ") else "// "+esc(ui["whatBuilt"])
             content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{results_html}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{description_html}{media}{learned_html}'
         else:
-            title=item.get("title",""); role=item.get("role",{}).get(lang,""); desc=item.get("description",{}).get(lang,"")
+            title=localized_text(item.get("title", ""),lang); role=item.get("role",{}).get(lang,""); desc=item.get("description",{}).get(lang,"")
             learned_value=item.get("learned",{}).get(lang,"")
             learned_html=f'<details><summary>{esc(ui["learned"])}</summary><p>{esc(learned_value)}</p></details>' if learned_value else ""
             content=f'<span class="entry-kind">{ui["project"]}</span>{f"<h3>{esc(title)}</h3>" if title else ""}{f"<p class=project-role>{esc(role)}</p>" if role else ""}{f"<p>{esc(desc)}</p>" if desc else ""}{media}{learned_html}'
@@ -470,13 +477,13 @@ def make_llms(shared, en, fi, timeline, pages, domain):
     for label, value in (("GitHub", shared.get("github")), ("LinkedIn", shared.get("linkedin"))):
         if real(value):
             lines.append(f"- {label}: {value}")
-    named = [(item.get("event") if item.get("type")=="hackathon" else item.get("title"), item) for item in timeline]
+    named = [(item.get("event") if item.get("type")=="hackathon" else localized_text(item.get("title"),"en"), item) for item in timeline]
     named = [(name,item) for name,item in named if real(name)]
     if named:
         lines.extend(["", "## Projects"])
         for name, item in named:
             links = item.get("project",{}).get("links",{}) if item.get("type")=="hackathon" else item.get("links", {})
-            destinations = [links[key] for key in ("demo", "code", "writeup") if real(links.get(key))]
+            destinations = [links[key] for key in ("demo", "code", "commits", "writeup") if real(links.get(key))]
             suffix = " — " + ", ".join(destinations) if destinations else ""
             lines.append(f"- {name}{suffix}")
     return "\n".join(lines) + "\n"

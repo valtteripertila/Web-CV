@@ -6,8 +6,8 @@
     "changelog": "muutosloki",
     "now": "nyt"
   },
-  "headline": "Tietojenkäsittelytieteen opiskelija, Aalto-yliopisto",
-  "summary": "Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa data- ja web-projekteja hackathoneissa. Junction 2026 -tapahtumassa tiimini sijoittui ensimmäiseksi Oxylabsin teknologiaraidalla ja kolmanneksi Hostingerin pääkilpailuraidalla; syyskuussa voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta AaltoAI-hackathonissa. Käytän tekoälyavustajia osana rakentamistani.",
+  "headline": "Tietojenkäsittelytieteen opiskelija, joka rakentaa Pythonilla, webillä ja tekoälyllä",
+  "summary": "Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa data- ja web-projekteja hackathoneissa. Tiimini sijoittui Junction 2026 -tapahtumassa ensimmäiseksi ja kolmanneksi kahdella haasteraidalla, ja voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta AaltoAI-hackathonissa.",
   "education": [
     {
       "degree": "Tietojenkäsittelytieteen kandidaattiopintojen 1. vuoden opiskelija",
@@ -52,7 +52,7 @@
     "contact": "yhteystiedot",
     "present": "nykyhetki",
     "backToTop": "Takaisin ylös",
-    "meta_title": "Valtteri Pertilä – Tietojenkäsittelytieteen opiskelija, Aalto-yliopisto",
+    "meta_title": "Valtteri Pertilä – Tietojenkäsittelytieteen opiskelija, joka rakentaa Pythonilla, webillä ja tekoälyllä",
     "meta_description": "Kaksikielinen ansioluettelo: Aalto-yliopiston ensimmäisen vuoden tietojenkäsittelytieteen opiskelija Valtteri Pertilä, projektit, hackathonit ja työkokemus.",
     "notFoundTitle": "Sivua ei löytynyt",
     "notFoundText": "Etsimääsi sivua ei ole olemassa.",
@@ -114,7 +114,8 @@
     "filterRoles": "roolit",
     "hackathon": "hackathon",
     "role": "rooli",
-    "repo": "repo",
+    "repo": "Koodi",
+    "myCommits": "omat commitit",
     "teamSize": "{count} henkilöä",
     "github": "GitHub",
     "linkedin": "LinkedIn"
@@ -132,7 +133,7 @@
       },
       {
         "key": "availability",
-        "value": "[SAATAVUUS]"
+        "value": "26.4.2027 alkaen, kun Aalto-yliopiston periodi IV päättyy"
       }
     ]
   }
