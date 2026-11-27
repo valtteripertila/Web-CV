@@ -6,8 +6,8 @@
     "changelog": "changelog",
     "now": "now"
   },
-  "headline": "[HEADLINE EN]",
-  "summary": "[2-3 SENTENCE SUMMARY EN]",
+  "headline": "Computer Science student at Aalto University",
+  "summary": "First-year Computer Science student in Espoo who builds data and web projects at hackathons. At Junction 2026 my team placed 1st in the Oxylabs tech track and 3rd in the Hostinger main track; in September we won IBM's Best Use of IBM Bob prize at the AaltoAI hackathon. I use AI coding assistants as part of how I build.",
   "education": [
     {
       "degree": "First-year Bachelor's student in Computer Science",
@@ -15,22 +15,31 @@
       "years": "2026–present"
     }
   ],
-  "certifications": [
-    "[CERTIFICATION EN]"
-  ],
+  "certifications": [],
   "skills": [
     {
-      "group": "[SKILL GROUP EN]",
+      "group": "Programming languages",
       "items": [
-        "[SKILL]",
-        "[SKILL]"
+        "Python",
+        "TypeScript / JavaScript",
+        "HTML / CSS"
       ]
     },
     {
-      "group": "[SKILL GROUP EN]",
+      "group": "Tools and practice",
       "items": [
-        "[SKILL]",
-        "[SKILL]"
+        "Git and GitHub",
+        "GitHub Actions",
+        "Cloudflare Pages",
+        "Automated testing",
+        "AI coding assistants (Codex, Copilot)"
+      ]
+    },
+    {
+      "group": "Data and AI",
+      "items": [
+        "LLM and vision-model APIs",
+        "Dataset preparation"
       ]
     }
   ],
@@ -43,8 +52,8 @@
     "contact": "contact",
     "present": "Present",
     "backToTop": "Back to top",
-    "meta_title": "Valtteri Pertilä – [HEADLINE EN]",
-    "meta_description": "[ONE SENTENCE PAGE DESCRIPTION EN]",
+    "meta_title": "Valtteri Pertilä – Computer Science student at Aalto University",
+    "meta_description": "Bilingual CV of first-year Computer Science student Valtteri Pertilä at Aalto University, featuring projects, hackathons and experience.",
     "notFoundTitle": "Page not found",
     "notFoundText": "The page you are looking for does not exist.",
     "themeToLight": "Switch to light theme",
@@ -119,11 +128,11 @@
       },
       {
         "key": "looking_for",
-        "value": "Seeking a summer job"
+        "value": "Summer job or internship in software development"
       },
       {
         "key": "availability",
-        "value": "Available from 14 June 2027"
+        "value": "[AVAILABILITY EN]"
       }
     ]
   }

@@ -1,6 +1,69 @@
 [
   {
     "type": "hackathon",
+    "date_start": "2026-11-13",
+    "date_end": "2026-11-15",
+    "event": "Junction 2026",
+    "what": {
+      "en": "48-hour hackathon billed as Europe's biggest, with around 2,000 builders from over 100 countries and €100,000 in prizes.",
+      "fi": "48 tunnin hackathon, jota markkinoidaan Euroopan suurimpana: noin 2 000 osallistujaa yli 100 maasta ja 100 000 euron palkinnot."
+    },
+    "where": {
+      "en": "Hype Areena, Kivenlahti, Espoo",
+      "fi": "Hype Areena, Kivenlahti, Espoo"
+    },
+    "theme": {
+      "en": "European Tech Renaissance",
+      "fi": "European Tech Renaissance"
+    },
+    "team": { "name": "", "size": 4 },
+    "role": {
+      "en": "Built the media-evidence pipeline (a Nemotron vision-model client and background worker, with tests), the evidence dashboard, mobile layout fixes and a lookup fix for Bluesky posts. Several of my commits were co-authored with GitHub Copilot.",
+      "fi": "Rakensin mediatodisteiden analyysiputken (Nemotron-näkökielimallin asiakas ja taustatyöntekijä testeineen), todisteiden näyttöpaneelin, mobiilinäkymän korjauksia sekä Bluesky-julkaisujen hakutoiminnon korjauksen. Useat commitini kirjoitettiin GitHub Copilotin kanssa."
+    },
+    "result": {
+      "en": "3rd place in the Hostinger main track and 1st place in the Oxylabs tech track.",
+      "fi": "3. sija Hostingerin pääkilpailuraidalla ja 1. sija Oxylabsin teknologiaraidalla."
+    },
+    "project": {
+      "title": "Shill or Chill",
+      "description": {
+        "en": "Traces memes back to their earliest source and spots coordinated spreading. Images and screenshots are read by NVIDIA's Nemotron vision-language model, and a Gemini-based agent searches the web and explains each verdict with sources. The team used AI coding agents (OpenAI Codex) throughout the build.",
+        "fi": "Jäljittää meemit alkuperäiseen lähteeseensä ja tunnistaa koordinoidun levityksen. NVIDIAn Nemotron-näkökielimalli lukee kuvat ja kuvakaappaukset, ja Gemini-pohjainen agentti hakee verkosta tietoa ja perustelee jokaisen arvion lähteillä. Tiimi käytti tekoälyagentteja (OpenAI Codex) koko rakennusprosessin ajan."
+      },
+      "tags": ["Python", "TypeScript", "Vision-language models", "LLM agents", "Web"],
+      "links": {
+        "demo": "https://noise-radar.srv2159172.hstgr.cloud",
+        "code": "https://github.com/JustinasLa/gemini-4-braincells",
+        "writeup": ""
+      },
+      "media": []
+    },
+    "learned": { "en": "", "fi": "" }
+  },
+  {
+    "type": "project",
+    "date": "2026-11",
+    "title": "This CV site",
+    "role": {
+      "en": "Designed the content model, layout and quality checks; implemented with AI coding assistants.",
+      "fi": "Suunnittelin sisältömallin, ulkoasun ja laatutarkistukset; toteutus tehtiin tekoälyavustajilla."
+    },
+    "description": {
+      "en": "A bilingual (EN/FI) static CV generated from structured JSON by a dependency-free Python script. Automated checks cover links, language parity, colour contrast and external requests, and the site is deployed to Cloudflare Pages through GitHub.",
+      "fi": "Kaksikielinen (EN/FI) staattinen CV, jonka riippuvuudeton Python-skripti generoi rakenteisesta JSON-sisällöstä. Automaattiset tarkistukset kattavat linkit, kieliversioiden vastaavuuden, värikontrastin ja ulkoiset pyynnöt, ja sivusto julkaistaan GitHubin kautta Cloudflare Pagesiin."
+    },
+    "tags": ["Python", "HTML/CSS", "GitHub Actions", "Cloudflare Pages", "Accessibility"],
+    "links": {
+      "demo": "https://pertila-cv.pages.dev/",
+      "code": "https://github.com/valtteripertila/Web-CV",
+      "writeup": ""
+    },
+    "media": [],
+    "learned": { "en": "", "fi": "" }
+  },
+  {
+    "type": "hackathon",
     "date_start": "2026-09-18",
     "date_end": "2026-09-20",
     "event": "AaltoAI Hackathon: Data Sovereignty & Responsible AI",
@@ -8,116 +71,79 @@
       "en": "48-hour build sprint; €10,000 prize pool; partners: Microsoft, Verda, Norrin, Relex, IBM and Elisa.",
       "fi": "48 tunnin rakennussprintti; 10 000 euron palkintopotti; kumppanit: Microsoft, Verda, Norrin, Relex, IBM ja Elisa."
     },
-    "where": {
-      "en": "Aalto Design Factory, Espoo",
-      "fi": "Aalto Design Factory, Espoo"
-    },
-    "theme": {
-      "en": "Data sovereignty and responsible AI",
-      "fi": "Datan suvereniteetti ja vastuullinen tekoäly"
-    },
-    "team": {
-      "name": "",
-      "size": 5
-    },
+    "where": { "en": "Aalto Design Factory, Espoo", "fi": "Aalto Design Factory, Espoo" },
+    "theme": { "en": "Data sovereignty and responsible AI", "fi": "Datan suvereniteetti ja vastuullinen tekoäly" },
+    "team": { "name": "", "size": 5 },
     "role": {
-      "en": "Data engineering and research in a team of five.",
-      "fi": "Data engineering ja tutkimus viiden hengen tiimissä."
+      "en": "Data engineering and research in a team of five. Added the mouse-movement and keystroke training datasets to the team repository (two pull requests).",
+      "fi": "Data engineering ja tutkimus viiden hengen tiimissä. Lisäsin hiiren liikkeen ja näppäilyn opetusdatat tiimin repositorioon (kaksi pull requestia)."
     },
     "result": {
       "en": "Won IBM Best Use of IBM Bob.",
       "fi": "Voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta."
     },
     "project": {
-      "title": "[PROJECT TITLE]",
+      "title": "AI-Powered Continuous Behavioral Biometrics",
       "description": {
-        "en": "Built a solution during a 48-hour sprint focused on data sovereignty and responsible AI. I contributed data engineering and research as part of a five-person team.",
-        "fi": "Rakensimme ratkaisua 48 tunnin sprintissä, jonka aiheina olivat datan suvereniteetti ja vastuullinen tekoäly. Vastasin tiimissä data engineeringistä ja tutkimuksesta."
+        "en": "Prototype of a continuous authentication system that recognises a user by how they move the mouse and type. Browser telemetry becomes 32 statistical features, a Siamese neural network encodes them, and a LightGBM model scores anomalies that can trigger 2FA or lockout.",
+        "fi": "Prototyyppi jatkuvasta tunnistautumisesta, joka tunnistaa käyttäjän hiiren liikkeen ja kirjoitustavan perusteella. Selaimen telemetriasta lasketaan 32 tilastollista piirrettä, Siamese-neuroverkko koodaa ne ja LightGBM-malli pisteyttää poikkeamat, jotka voivat laukaista kaksivaiheisen tunnistuksen tai lukituksen."
       },
-      "tags": [
-        "Data engineering",
-        "Responsible AI",
-        "Data sovereignty"
-      ],
+      "tags": ["Python", "Machine learning", "Behavioral biometrics", "Data engineering"],
       "links": {
         "demo": "",
-        "code": "",
+        "code": "https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026",
         "writeup": ""
       },
       "media": []
     },
-    "learned": {
-      "en": "",
-      "fi": ""
-    }
+    "learned": { "en": "", "fi": "" }
   },
   {
-    "type": "project",
-    "date": "[PERSONAL PROJECT DATE]",
-    "title": "[PERSONAL PROJECT TITLE]",
-    "role": {
-      "en": "[ROLE EN]",
-      "fi": "[ROLE FI]"
-    },
-    "description": {
-      "en": "[PERSONAL PROJECT DESCRIPTION EN]",
-      "fi": "[PERSONAL PROJECT DESCRIPTION FI]"
-    },
-    "tags": [
-      "[TAG 1]",
-      "[TAG 2]"
-    ],
-    "links": {
-      "demo": "",
-      "code": "",
-      "writeup": ""
-    },
-    "media": [],
-    "learned": {
-      "en": "",
-      "fi": ""
-    }
-  },
-  {
-    "type": "role",
-    "start": "[MM/YYYY]",
-    "end": "",
-    "employer": "[EMPLOYER 1]",
-    "role": {
-      "en": "[ROLE 1 EN]",
-      "fi": "[ROLE 1 FI]"
-    },
+    "type": "role", "start": "2024-01", "end": "", "employer": "Art Zenter Academy",
+    "role": { "en": "Junior Instructor", "fi": "Junioriohjaaja" },
     "points": {
-      "en": [
-        "[ACHIEVEMENT 1 EN]",
-        "[ACHIEVEMENT 2 EN]",
-        "[ACHIEVEMENT 3 EN]"
-      ],
-      "fi": [
-        "[ACHIEVEMENT 1 FI]",
-        "[ACHIEVEMENT 2 FI]",
-        "[ACHIEVEMENT 3 FI]"
-      ]
+      "en": ["Independently led children's hobby activities, in English"],
+      "fi": ["Alaikäisten lasten harrastustoiminnan itsenäinen ohjaaminen englanniksi"]
     }
   },
   {
-    "type": "role",
-    "start": "[MM/YYYY]",
-    "end": "",
-    "employer": "[EMPLOYER 2]",
-    "role": {
-      "en": "[ROLE 2 EN]",
-      "fi": "[ROLE 2 FI]"
-    },
+    "type": "role", "start": "2023-07", "end": "2023-07", "employer": "Espoo Catering Oy",
+    "role": { "en": "Food service worker (summer job)", "fi": "Ruokapalvelutyöntekijä (kesätyö)" },
     "points": {
-      "en": [
-        "[ACHIEVEMENT 1 EN]",
-        "[ACHIEVEMENT 2 EN]"
-      ],
-      "fi": [
-        "[ACHIEVEMENT 1 FI]",
-        "[ACHIEVEMENT 2 FI]"
-      ]
+      "en": ["Prepared side dishes", "Kept the kitchen clean"],
+      "fi": ["Lisukkeiden valmistaminen", "Keittiön puhtaanapito"]
+    }
+  },
+  {
+    "type": "role", "start": "2022-06", "end": "2022-06", "employer": "Espoo Cathedral Parish",
+    "role": { "en": "Camp assistant, Isonen (summer job)", "fi": "Isonen, leiriavustaja (kesätyö)" },
+    "points": {
+      "en": ["Assisted at a confirmation camp"],
+      "fi": ["Leiriavustajana rippileirillä"]
+    }
+  },
+  {
+    "type": "role", "start": "2022-06", "end": "2022-06", "employer": "Art Zenter Academy",
+    "role": { "en": "Assistant Instructor (summer job)", "fi": "Assistant Instructor (kesätyö)" },
+    "points": {
+      "en": ["Led a group of primary-school-age children"],
+      "fi": ["Alakouluikäisten lasten ryhmän ohjaaminen"]
+    }
+  },
+  {
+    "type": "role", "start": "2021-09", "end": "2021-10", "employer": "Ravintola Madison",
+    "role": { "en": "Kitchen assistant (work-experience placement)", "fi": "Keittiöapulainen (TET-harjoittelu)" },
+    "points": {
+      "en": ["Worked the cash register", "Served customers", "Kept the restaurant clean"],
+      "fi": ["Kassalla toimiminen", "Asiakaspalvelu", "Ravintolan puhtaanapito"]
+    }
+  },
+  {
+    "type": "role", "start": "2021-08", "end": "2021-08", "employer": "Forward Forever",
+    "role": { "en": "Summer job: creating an application", "fi": "Kesätyö: sovelluksen luominen" },
+    "points": {
+      "en": ["Created an application independently", "Checked instructions"],
+      "fi": ["Sovelluksen itsenäinen luominen", "Ohjeiden tarkastaminen"]
     }
   }
 ]

@@ -6,8 +6,8 @@
     "changelog": "muutosloki",
     "now": "nyt"
   },
-  "headline": "[HEADLINE FI]",
-  "summary": "[2-3 SENTENCE SUMMARY FI]",
+  "headline": "Tietojenkäsittelytieteen opiskelija, Aalto-yliopisto",
+  "summary": "Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa data- ja web-projekteja hackathoneissa. Junction 2026 -tapahtumassa tiimini sijoittui ensimmäiseksi Oxylabsin teknologiaraidalla ja kolmanneksi Hostingerin pääkilpailuraidalla; syyskuussa voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta AaltoAI-hackathonissa. Käytän tekoälyavustajia osana rakentamistani.",
   "education": [
     {
       "degree": "Tietojenkäsittelytieteen kandidaattiopintojen 1. vuoden opiskelija",
@@ -15,22 +15,31 @@
       "years": "2026–nykyinen"
     }
   ],
-  "certifications": [
-    "[CERTIFICATION FI]"
-  ],
+  "certifications": [],
   "skills": [
     {
-      "group": "[SKILL GROUP FI]",
+      "group": "Ohjelmointikielet",
       "items": [
-        "[SKILL]",
-        "[SKILL]"
+        "Python",
+        "TypeScript / JavaScript",
+        "HTML / CSS"
       ]
     },
     {
-      "group": "[SKILL GROUP FI]",
+      "group": "Työkalut ja käytännöt",
       "items": [
-        "[SKILL]",
-        "[SKILL]"
+        "Git ja GitHub",
+        "GitHub Actions",
+        "Cloudflare Pages",
+        "Automaattinen testaus",
+        "Tekoälyavustajat (Codex, Copilot)"
+      ]
+    },
+    {
+      "group": "Data ja tekoäly",
+      "items": [
+        "LLM- ja näkökielimalli-rajapinnat",
+        "Datasettien valmistelu"
       ]
     }
   ],
@@ -43,8 +52,8 @@
     "contact": "yhteystiedot",
     "present": "nykyhetki",
     "backToTop": "Takaisin ylös",
-    "meta_title": "Valtteri Pertilä – [HEADLINE FI]",
-    "meta_description": "[ONE SENTENCE PAGE DESCRIPTION FI]",
+    "meta_title": "Valtteri Pertilä – Tietojenkäsittelytieteen opiskelija, Aalto-yliopisto",
+    "meta_description": "Kaksikielinen ansioluettelo: Aalto-yliopiston ensimmäisen vuoden tietojenkäsittelytieteen opiskelija Valtteri Pertilä, projektit, hackathonit ja työkokemus.",
     "notFoundTitle": "Sivua ei löytynyt",
     "notFoundText": "Etsimääsi sivua ei ole olemassa.",
     "themeToLight": "Vaihda vaaleaan teemaan",
@@ -119,11 +128,11 @@
       },
       {
         "key": "looking_for",
-        "value": "Etsin kesätyöpaikkaa"
+        "value": "Kesätyö tai harjoittelu ohjelmistokehityksessä"
       },
       {
         "key": "availability",
-        "value": "Käytettävissä 14.6.2027 alkaen"
+        "value": "[SAATAVUUS]"
       }
     ]
   }

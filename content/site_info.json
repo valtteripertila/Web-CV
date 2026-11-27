@@ -4,7 +4,7 @@
     "fi": "Tämä kaksikielinen ansioluettelo kirjoitetaan rakenteisina JSON-tiedostoina ja muodostetaan staattiseksi HTML-sivustoksi Pythonin vakiokirjastolla."
   },
   "ai_note": {
-    "en": "",
-    "fi": ""
+    "en": "Much of the code in my projects and on this site was written with AI coding assistants (GitHub Copilot, OpenAI Codex and Claude). I direct the work and verify it with automated tests and checks before it is published.",
+    "fi": "Suuri osa projektieni ja tämän sivuston koodista on kirjoitettu tekoälyavustajilla (GitHub Copilot, OpenAI Codex ja Claude). Ohjaan työtä ja varmistan sen automaattisilla testeillä ja tarkistuksilla ennen julkaisua."
   }
 }

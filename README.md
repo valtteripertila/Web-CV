@@ -158,3 +158,7 @@ For each update, edit the content or code, run `py -3 build.py`, run `py -3 tool
 - The CSP restricts resource sources to the same origin.
 - Content stays separate from page rendering code.
 - English and Finnish entries are stored together where they describe the same item.
+
+## Content sources
+
+See [docs/CONTENT_SOURCES.md](docs/CONTENT_SOURCES.md) for the sources behind CV content.
