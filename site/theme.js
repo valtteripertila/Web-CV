@@ -8,6 +8,24 @@
 
   // Keep the control hidden until it is ready to work.
   document.addEventListener("DOMContentLoaded", function () {
+    var timeline = document.querySelector("#timeline");
+    if (timeline) {
+      var filterInputs = timeline.querySelectorAll('.filters input[name="timeline-filter"]');
+      var entries = timeline.querySelectorAll(".timeline-entry");
+      if (filterInputs.length && entries.length) {
+        function applyTimelineFilter() {
+          var selected = timeline.querySelector('.filters input[name="timeline-filter"]:checked');
+          var kind = selected ? selected.id.slice(2) : "all";
+          entries.forEach(function (entry) {
+            entry.hidden = kind !== "all" && entry.getAttribute("data-kind") !== kind;
+          });
+        }
+        filterInputs.forEach(function (input) { input.addEventListener("change", applyTimelineFilter); });
+        root.classList.add("timeline-filters-ready");
+        applyTimelineFilter();
+      }
+    }
+
     var button = document.querySelector(".theme-toggle");
     if (!button) return;
     function update() {

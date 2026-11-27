@@ -22,8 +22,8 @@
       "fi": "Rakensin mediatodisteiden analyysiputken (Nemotron-näkökielimallin asiakas ja taustatyöntekijä testeineen), todisteiden näyttöpaneelin, mobiilinäkymän korjauksia sekä Bluesky-julkaisujen hakutoiminnon korjauksen. Useat commitini kirjoitettiin GitHub Copilotin kanssa."
     },
     "result": {
-      "en": "3rd place in the Hostinger main track and 1st place in the Oxylabs tech track.",
-      "fi": "3. sija Hostingerin pääkilpailuraidalla ja 1. sija Oxylabsin teknologiaraidalla."
+      "en": "Hostinger main track — 3rd place\nOxylabs tech track — 1st place",
+      "fi": "Hostingerin pääkilpailuraidalla — 3. sija\nOxylabsin teknologiaraidalla — 1. sija"
     },
     "project": {
       "title": "Shill or Chill",
@@ -79,8 +79,8 @@
       "fi": "Data engineering ja tutkimus viiden hengen tiimissä. Lisäsin hiiren liikkeen ja näppäilyn opetusdatat tiimin repositorioon (kaksi pull requestia)."
     },
     "result": {
-      "en": "Won IBM Best Use of IBM Bob.",
-      "fi": "Voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta."
+      "en": "IBM Best Use of IBM Bob — Winner",
+      "fi": "IBM Best Use of IBM Bob — Voittaja"
     },
     "project": {
       "title": "AI-Powered Continuous Behavioral Biometrics",

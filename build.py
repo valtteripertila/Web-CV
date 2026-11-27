@@ -132,8 +132,6 @@ def validate_media(media, number, field, site_root, errors):
         if not isinstance(media, list):
                 errors.append(f"timeline.json entry {number} field {field}: must be a list")
                 return
-        if len(media) > 4:
-                print(f"WARNING: timeline.json entry {number} field {field}: only the first 4 of {len(media)} media items are displayed")
         root = Path(site_root) / "img"
         seen = set()
         for media_number, item in enumerate(media, 1):

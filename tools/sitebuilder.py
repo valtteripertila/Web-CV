@@ -183,9 +183,11 @@ def display_date(item, lang):
     value = item.get("date_start") or item.get("start") or item.get("date", "")
     end = item.get("date_end", "")
     if not re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", str(value)): return str(value)
-    if len(value) == 7: return value
-    y, m, d = int(value[:4]), int(value[5:7]), int(value[8:10])
+    y, m = int(value[:4]), int(value[5:7])
     months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    months_fi = ("tammi", "helmi", "maalis", "huhti", "touko", "kesä", "heinä", "elo", "syys", "loka", "marras", "joulu")
+    if len(value) == 7: return f"{months_fi[m-1]} {y}" if lang == "fi" else f"{months[m-1]} {y}"
+    d = int(value[8:10])
     if lang == "fi": return f"{d}.–{int(end[8:10])}.{m}.{y}" if len(end) == 10 and end[:7] == value[:7] else f"{d}.{m}.{y}"
     return f"{d}–{int(end[8:10])} {months[m-1]} {y}" if len(end) == 10 and end[:7] == value[:7] else f"{d} {months[m-1]} {y}"
 
@@ -206,7 +208,9 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
     hero = text.get("hero", {})
     status = [(row.get("key", ""), row.get("value", "")) for row in hero.get("status", []) if filled(row.get("value"))]
     result.append(f'<section class="hero"><p class="shell-prompt">$ {esc(hero.get("prompt", "whoami"))}</p><h1>{esc(shared.get("name", ""))}</h1><p class="headline">{esc(text.get("headline", ""))}</p><p class="summary">{esc(text.get("summary", ""))}</p>{code_panel(status,"hero-code")}</section>')
-    items = sorted(enumerate(timeline), key=timeline_sort_key, reverse=True)
+    visible_items = [(index, item) for index, item in enumerate(timeline)
+                     if item.get("type") != "role" or item.get("employer") == "Forward Forever"]
+    items = sorted(visible_items, key=timeline_sort_key, reverse=True)
     entries = [item for _, item in items]
     kinds = [k for k in ("hackathon", "project", "role") if any(x.get("type")==k for x in entries)]
     filters = ""
@@ -219,7 +223,7 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
         if kind == "hackathon": links=item.get("project",{}).get("links",{})
         media_rows=item.get("project",{}).get("media",[]) if kind=="hackathon" else item.get("media",[])
         figures=[]
-        for media_index, m in enumerate(media_rows[:4], 1):
+        for media_index, m in enumerate(media_rows, 1):
             src=("../" if lang=="fi" else "")+"img/"+m.get("file",""); alt=m.get("alt",{}).get(lang,"")
             if src!="img/" and alt:
                 base=(root/"preview"/"img" if sample else root/"site"/"img") if root else Path()
@@ -231,37 +235,40 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
                 caption=m.get("caption",{}).get(lang,"")
                 caption_text=("SAMPLE " if sample else "")+f"fig.{media_index} — {caption}" if caption else ""
                 figures.append(f'<figure><a href="{esc(src)}"><img src="{esc(src)}" alt="{esc(alt)}"{dimensions} loading="lazy" decoding="async"></a>{f"<figcaption>{esc(caption_text)}</figcaption>" if caption_text else ""}</figure>')
-        if len(figures)==1: media=f'<div class="media-gallery media-one">{figures[0]}</div>'
-        elif len(figures)==2: media=f'<div class="media-gallery media-two">{"".join(figures)}</div>'
-        elif figures: media=f'<div class="media-gallery media-many"><div class="media-main">{figures[0]}</div><div class="media-side">{"".join(figures[1:])}</div></div>'
+        if figures: media=f'<div class="media-gallery">{"".join(figures)}</div>'
         tagrows=item.get("project",{}).get("tags",[]) if kind=="hackathon" else item.get("tags",[])
         tags="".join(f'<span>{("SAMPLE #"+esc(t[7:] if t.startswith("SAMPLE ") else t)) if sample else "#"+esc(t)}</span>' for t in tagrows if filled(t))
         linkrows=" ".join(filter(None,(link(links.get("demo"),ui["demo"]),link(links.get("code"),ui["repo"]),link(links.get("writeup"),ui["writeup"]))))
         if kind=="role":
             points=item.get("points",{}).get(lang,[]); role=item.get("role",{}).get(lang,"")
-            content=f'<p class="employer">{esc(item.get("employer",""))}</p><h3>{esc(role)}</h3>{"<ul>"+"".join(f"<li>{esc(p)}</li>" for p in points)+"</ul>" if points else ""}'
+            content=f'<span class="entry-kind">{esc(ui["role"])} · {esc(item.get("employer",""))}</span><h3>{esc(role)}</h3>{"<ul>"+"".join(f"<li>{esc(p)}</li>" for p in points)+"</ul>" if points else ""}'
             end_value=item.get("end","")
-            end=display_date({"date":end_value},lang) if end_value else ui["present"]
-            date_text += f" – {end}" if end else ""
+            if end_value:
+                end=display_date({"date":end_value},lang)
+                if end_value != item.get("start",""): date_text += f" – {end}"
+            else:
+                date_text += f" – {ui['present']}"
         elif kind=="hackathon":
             p=item.get("project",{}); info=[]
             for key in ("what","where","theme"):
                 value=item.get(key,{}).get(lang,"")
                 if value: info.append((key,value))
-            info.insert(1,("when",date_text)); size=item.get("team",{}).get("size")
+            size=item.get("team",{}).get("size")
             if size: info.append(("team",ui["teamSize"].format(count=size)))
             role=item.get("role",{}).get(lang,"")
             if role: info.append(("my_role",role))
             resultval=item.get("result",{}).get(lang,"")
+            result_lines=[line.strip() for line in resultval.splitlines() if line.strip()] if isinstance(resultval,str) else []
+            result_items="".join("<li class=\"result-panel\">"+esc(line)+"</li>" for line in result_lines)
+            results_html=f'<ul class="result-panels">{result_items}</ul>' if result_lines else ""
             project_title=p.get("title",""); project_description=p.get("description",{}).get(lang,"")
             title_html=f"<h4>{esc(project_title)}</h4>" if project_title else ""
             description_html=f"<p>{esc(project_description)}</p>" if project_description else ""
-            badge=f"<p class=result-badge>{esc(resultval)}</p>" if resultval else ""
             event=esc(item.get("event", ""))
             learned_value=item.get("learned",{}).get(lang,"")
             learned_html=f'<details><summary>{esc(ui["learned"])}</summary><p>{esc(learned_value)}</p></details>' if learned_value else ""
             what_built=("SAMPLE // "+esc(ui["whatBuilt"][7:])) if sample and ui["whatBuilt"].startswith("SAMPLE ") else "// "+esc(ui["whatBuilt"])
-            content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{badge}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{description_html}{media}{learned_html}'
+            content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{results_html}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{description_html}{media}{learned_html}'
         else:
             title=item.get("title",""); role=item.get("role",{}).get(lang,""); desc=item.get("description",{}).get(lang,"")
             learned_value=item.get("learned",{}).get(lang,"")
