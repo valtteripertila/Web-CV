@@ -14,7 +14,7 @@ CONTENT = ROOT / "content"
 SITE = ROOT / "site"
 UI_KEYS = [
         "skip", "contact", "present", "demo", "repo", "myCommits", "writeup", "github", "linkedin", "backToTop",
-        "themeToLight", "themeToDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText",
+        "themeToLight", "themeToDark", "themeLabelLight", "themeLabelDark", "meta_title", "meta_description", "notFoundTitle", "notFoundText",
         "navNow", "navHome", "navHow", "navChangelog", "languageNav", "mainNav", "navMenu", "menuAbout",
         "menuMore", "overview", "architecture", "contentModel", "automatedChecks", "constraints", "source",
         "aiAssisted", "pageIntro", "contentDescriptions", "contentFile", "contentHolds", "cspLabel", "buildFacts",

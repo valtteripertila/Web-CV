@@ -153,8 +153,9 @@ def top_bar(lang, page, pages, shared, text, sample=False):
     if sample:
         switch = switch.replace(">EN<", ">SAMPLE EN<").replace(">FI<", ">SAMPLE FI<")
     toggle = (f'<button class="theme-toggle" type="button" aria-pressed="false" '
-              f'data-light-label="{esc(ui["themeToLight"])}" data-dark-label="{esc(ui["themeToDark"])}" '
-              f'aria-label="{esc(ui["themeToLight"])}">{esc(ui["themeToLight"])}</button>')
+              f'data-light-label="{esc(ui["themeLabelLight"])}" data-dark-label="{esc(ui["themeLabelDark"])}" '
+              f'data-light-aria="{esc(ui["themeToLight"])}" data-dark-aria="{esc(ui["themeToDark"])}" '
+              f'aria-label="{esc(ui["themeToLight"])}">{esc(ui["themeLabelLight"])}</button>')
     return f'<header class="topbar">{brand}<div class="topbar-controls">{switch}{toggle}{menu}</div></header>'
 
 
@@ -219,7 +220,9 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
     result = []
     hero = text.get("hero", {})
     status = [(row.get("key", ""), row.get("value", "")) for row in hero.get("status", []) if filled(row.get("value"))]
-    result.append(f'<section class="hero"><p class="shell-prompt">$ {esc(hero.get("prompt", "whoami"))}</p><h1>{esc(shared.get("name", ""))}</h1><p class="headline">{esc(text.get("headline", ""))}</p><p class="summary">{esc(text.get("summary", ""))}</p>{code_panel(status,"hero-code")}</section>')
+    hero_links = " ".join(filter(None, (link(shared.get("github"), ui["github"]), link(shared.get("linkedin"), ui["linkedin"]))))
+    hero_links_html = f'<div class="contact-buttons hero-links">{hero_links}</div>' if hero_links else ""
+    result.append(f'<section class="hero"><p class="shell-prompt">$ {esc(hero.get("prompt", "whoami"))}</p><h1>{esc(shared.get("name", ""))}</h1><p class="headline">{esc(text.get("headline", ""))}</p><p class="summary">{esc(text.get("summary", ""))}</p>{code_panel(status,"hero-code")}{hero_links_html}</section>')
     visible_items = [(index, item) for index, item in enumerate(timeline)
                      if item.get("type") != "role" or item.get("employer") == "Forward Forever"]
     items = sorted(visible_items, key=timeline_sort_key, reverse=True)

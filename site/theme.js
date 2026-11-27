@@ -31,7 +31,7 @@
     function update() {
       var light = root.dataset.theme === "light";
       button.setAttribute("aria-pressed", light ? "true" : "false");
-      button.setAttribute("aria-label", light ? button.getAttribute("data-dark-label") : button.getAttribute("data-light-label"));
+      button.setAttribute("aria-label", light ? button.getAttribute("data-dark-aria") : button.getAttribute("data-light-aria"));
       button.textContent = light ? button.getAttribute("data-dark-label") : button.getAttribute("data-light-label");
     }
     button.addEventListener("click", function () {

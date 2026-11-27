@@ -58,6 +58,8 @@
     "notFoundText": "The page you are looking for does not exist.",
     "themeToLight": "Switch to light theme",
     "themeToDark": "Switch to dark theme",
+    "themeLabelLight": "light",
+    "themeLabelDark": "dark",
     "demo": "Demo",
     "writeup": "Write-up",
     "navNow": "Now",

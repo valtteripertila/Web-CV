@@ -58,6 +58,8 @@
     "notFoundText": "Etsimääsi sivua ei ole olemassa.",
     "themeToLight": "Vaihda vaaleaan teemaan",
     "themeToDark": "Vaihda tummaan teemaan",
+    "themeLabelLight": "vaalea",
+    "themeLabelDark": "tumma",
     "demo": "Demo",
     "writeup": "Projektikuvaus",
     "navNow": "Nyt",
