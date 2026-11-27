@@ -357,7 +357,7 @@ def changelog_body(lang, text, changelog):
         value = item.get(lang, "")
         if real(value):
             entries.append(f'<li><time datetime="{esc(item["date"])}">{esc(item["date"])}</time> — {esc(value)}</li>')
-    return f'<section id="entries">{heading(ui["navChangelog"])}<p>{esc(ui["changelogIntro"])}</p><ol class="changelog-list">{"".join(entries)}</ol></section>'
+    return f'<section id="entries"><p>{esc(ui["changelogIntro"])}</p><ol class="changelog-list">{"".join(entries)}</ol></section>'
 
 
 def now_body(lang, text, now):

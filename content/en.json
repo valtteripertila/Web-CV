@@ -97,7 +97,7 @@
     "siteBytes": "uncompressed page assets",
     "contrastPass": "contrast check passed",
     "contrastFail": "contrast check did not pass",
-    "changelogIntro": "Changes recorded in the project history.",
+    "changelogIntro": "Notable changes to this site.",
     "nowIntro": "What I am focused on now.",
     "updated": "Updated",
     "buildChecked": "build-checked: {external} external requests · {size} KB{contrast}",

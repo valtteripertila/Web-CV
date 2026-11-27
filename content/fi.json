@@ -97,7 +97,7 @@
     "siteBytes": "pakkaamattomat sivutiedostot",
     "contrastPass": "kontrastitarkistus läpäisty",
     "contrastFail": "kontrastitarkistus ei läpäissyt",
-    "changelogIntro": "Projektihistoriaan kirjatut muutokset.",
+    "changelogIntro": "Merkittäviä muutoksia tähän sivustoon.",
     "nowIntro": "Mihin keskityn tällä hetkellä.",
     "updated": "Päivitetty",
     "buildChecked": "build-tarkistus: {external} ulkoista pyyntöä · {size} kB{contrast}",
