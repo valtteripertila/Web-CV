@@ -141,8 +141,69 @@ class BuildTests(unittest.TestCase):
     def test_date_formatting_and_chronological_sort(self):
         self.assertEqual("18–20 Sep 2026", sitebuilder.display_date({"date_start":"2026-09-18","date_end":"2026-09-20"},"en"))
         self.assertEqual("18.–20.9.2026", sitebuilder.display_date({"date_start":"2026-09-18","date_end":"2026-09-20"},"fi"))
+        self.assertEqual("11/2026", sitebuilder.display_date({"date":"2026-11"},"fi"))
+        self.assertEqual("08/2021", sitebuilder.display_date({"date":"2021-08"},"fi"))
+        self.assertEqual("Nov 2026", sitebuilder.display_date({"date":"2026-11"},"en"))
         rows=list(enumerate([{"date":"[DATE]"},{"date":"2025-01"},{"date":"2026-02"}]))
         self.assertEqual([2,1,0],[i for i,_ in sorted(rows,key=sitebuilder.timeline_sort_key,reverse=True)])
+
+    def test_finnish_profile_groups_transliterate_to_ascii_keys(self):
+        self.assertEqual("tyokalut_ja_kaytannot", sitebuilder.profile_key("Työkalut ja käytännöt"))
+        self.assertEqual("data_ja_tekoaly", sitebuilder.profile_key("Data ja tekoäly"))
+        self.assertEqual("a", sitebuilder.profile_key("Å"))
+
+    def test_localized_titles_and_tags_are_backward_compatible(self):
+        project={"type":"project","date":"2026-11","title":{"en":"This CV site","fi":"Tämä CV-sivusto"},"role":{"en":"","fi":""},"description":{"en":"Description","fi":"Kuvaus"},"tags":[{"en":"Accessibility","fi":"Saavutettavuus"},"Python"],"links":{"demo":"","code":"","writeup":""},"media":[],"learned":{"en":"","fi":""}}
+        errors=[]
+        build.validate_timeline([project],errors)
+        self.assertEqual([],errors)
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        output=sitebuilder.home_sections("fi",{},fi,[project],fi["ui"])
+        self.assertIn("Tämä CV-sivusto",output)
+        self.assertIn("#Saavutettavuus",output)
+        self.assertIn("#Python",output)
+        legacy=dict(project,title="Legacy title",tags=["Legacy tag"])
+        legacy_errors=[]
+        build.validate_timeline([legacy],legacy_errors)
+        self.assertEqual([],legacy_errors)
+
+    def test_optional_commits_link_renders_after_demo_and_repo(self):
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        project={"type":"project","date":"2026-11","title":"Project","role":{"en":"","fi":""},"description":{"en":"Description","fi":"Kuvaus"},"tags":[],"links":{"demo":"https://example.com/demo","code":"https://example.com/repo","commits":"https://example.com/commits","writeup":""},"media":[],"learned":{"en":"","fi":""}}
+        output=sitebuilder.home_sections("en",{},en,[project],en["ui"])
+        positions=[output.index('href="https://example.com/'+part+'"') for part in ("demo","repo","commits")]
+        self.assertEqual(sorted(positions),positions)
+        self.assertIn('rel="noopener noreferrer">my commits</a>',output)
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        fi_output=sitebuilder.home_sections("fi",{},fi,[project],fi["ui"])
+        self.assertIn('rel="noopener noreferrer">Koodi</a>',fi_output)
+        self.assertIn('rel="noopener noreferrer">omat commitit</a>',fi_output)
+
+    def test_domain_validation_rejects_uppercase_path_and_trailing_slash(self):
+        shared=json.loads((ROOT/"content/shared.json").read_text(encoding="utf-8"))
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        timeline=json.loads((ROOT/"content/timeline.json").read_text(encoding="utf-8"))
+        for invalid in ("https://Example.com", "https://example.com/path", "https://example.com/"):
+            with self.subTest(domain=invalid):
+                candidate=dict(shared,domain=invalid)
+                errors=[]
+                build.validate(candidate,en,fi,timeline,errors)
+                self.assertTrue(any("domain: must be a lowercase https:// origin" in issue for issue in errors))
+
+    def test_generated_site_urls_and_open_graph_lock_are_consistent(self):
+        self.assertEqual([],check.domain_consistency_check())
+        self.assertEqual([],check.og_lock_check())
+        self.assertEqual([],check.code_overflow_check())
+        self.assertEqual([],check.changelog_heading_check())
+        self.assertEqual((1200,630),image_dimensions(ROOT/"site/og.png"))
+        self.assertEqual((1200,630),image_dimensions(ROOT/"site/og-fi.png"))
+
+    def test_open_graph_lock_reports_regeneration_command_when_stale(self):
+        with patch("tools.make_og.input_hash", return_value="stale"):
+            errors=check.og_lock_check()
+        self.assertTrue(errors)
+        self.assertIn("py -3 tools/make_og.py",errors[0])
 
     def test_tokens_meet_aa_on_panel_surface(self):
         passed, report=quality.contrast_report((ROOT/"site/style.css").read_text(encoding="utf-8"))

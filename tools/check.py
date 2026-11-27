@@ -8,6 +8,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -321,6 +322,130 @@ def og_lock_check():
     return []
 
 
+class PageMetadata(html.parser.HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.title = ""
+        self.in_title = False
+        self.links = []
+        self.meta = {}
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        if tag == "title":
+            self.in_title = True
+        elif tag == "link":
+            self.links.append(values)
+        elif tag == "meta":
+            key = values.get("property") or values.get("name")
+            if key:
+                self.meta[key] = values.get("content", "")
+
+    def handle_endtag(self, tag):
+        if tag == "title":
+            self.in_title = False
+
+    def handle_data(self, data):
+        if self.in_title:
+            self.title += data
+
+
+def domain_consistency_check(site_root=SITE):
+    errors = []
+    shared = json.loads((ROOT / "content/shared.json").read_text(encoding="utf-8"))
+    domain = shared["domain"]
+    expected_origin = (urlsplit(domain).scheme, urlsplit(domain).netloc)
+
+    def same_origin(value):
+        parsed = urlsplit(value)
+        return (parsed.scheme, parsed.netloc) == expected_origin and bool(parsed.path.startswith("/"))
+
+    root = Path(site_root)
+    text_extensions = {".html", ".xml", ".txt", ".json", ".css", ".js", ".svg"}
+    stale_host = ".".join(("pages", "dev"))
+    for file in root.rglob("*"):
+        if file.is_file() and file.suffix.lower() in text_extensions:
+            if stale_host in file.read_text(encoding="utf-8", errors="replace").lower():
+                errors.append(f"{file.relative_to(root)}: stale site-domain reference")
+
+    for page in sorted(root.rglob("*.html")):
+        parser = PageMetadata()
+        parser.feed(page.read_text(encoding="utf-8"))
+        relative = page.relative_to(root)
+        label = relative.as_posix()
+        locale = "fi_FI" if relative.parts and relative.parts[0] == "fi" else "en_US"
+        if parser.title != parser.meta.get("og:title"):
+            errors.append(f"{label}: og:title does not equal the page title")
+        if parser.meta.get("og:locale") != locale:
+            errors.append(f"{label}: wrong or missing og:locale")
+        for key in (("og:image",) if label == "404.html" else ("og:url", "og:image")):
+            if not same_origin(parser.meta.get(key, "")):
+                errors.append(f"{label}: {key} does not use {domain}")
+        if label == "404.html":
+            continue
+        canonicals = [item.get("href", "") for item in parser.links if item.get("rel") == "canonical"]
+        alternates = [item.get("href", "") for item in parser.links if item.get("rel") == "alternate"]
+        if len(canonicals) != 1 or not same_origin(canonicals[0]):
+            errors.append(f"{label}: canonical does not use {domain}")
+        if not alternates or any(not same_origin(value) for value in alternates):
+            errors.append(f"{label}: hreflang links do not use {domain}")
+
+    sitemap = root / "sitemap.xml"
+    try:
+        tree = ET.parse(sitemap)
+        sitemap_urls = [node.text or "" for node in tree.iter() if node.tag.endswith("}loc")]
+        sitemap_urls.extend(node.attrib.get("href", "") for node in tree.iter() if node.tag.endswith("}link"))
+        if not sitemap_urls or any(not same_origin(value) for value in sitemap_urls):
+            errors.append("sitemap.xml: a page or alternate URL does not use the configured domain")
+    except (OSError, ET.ParseError) as error:
+        errors.append(f"sitemap.xml: cannot parse: {error}")
+
+    robots = root / "robots.txt"
+    if not any(line.strip() == f"Sitemap: {domain}/sitemap.xml" for line in robots.read_text(encoding="utf-8").splitlines()):
+        errors.append("robots.txt: sitemap URL does not use the configured domain")
+    llms = (root / "llms.txt").read_text(encoding="utf-8")
+    own_links = re.findall(r"\[[^\]]+\]\((https?://[^)]+)\)", llms)
+    if not own_links or any(not same_origin(value) for value in own_links):
+        errors.append("llms.txt: a CV page link does not use the configured domain")
+    return errors
+
+
+def code_overflow_check():
+    css = (SITE / "style.css").read_text(encoding="utf-8")
+    if re.search(r"overflow-x\s*:\s*(?:auto|scroll)\b", css, re.I):
+        return ["style.css: horizontal auto/scroll overflow is enabled on a page element"]
+    return []
+
+
+def changelog_heading_check(site_root=SITE):
+    en = json.loads((ROOT / "content/en.json").read_text(encoding="utf-8"))
+    path = Path(site_root) / en["slugs"]["changelog"] / "index.html"
+
+    class Headings(html.parser.HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.current = None
+            self.values = []
+
+        def handle_starttag(self, tag, attrs):
+            if tag in ("h1", "h2"):
+                self.current = [tag, ""]
+
+        def handle_endtag(self, tag):
+            if self.current and tag == self.current[0]:
+                self.values.append(tuple(self.current))
+                self.current = None
+
+        def handle_data(self, data):
+            if self.current:
+                self.current[1] += data
+
+    parser = Headings()
+    parser.feed(path.read_text(encoding="utf-8"))
+    matches = [heading for heading in parser.values if heading[1].strip() == en["ui"]["navChangelog"]]
+    return [] if len(matches) == 1 else [f"{path.relative_to(site_root)}: expected one h1/h2 Changelog heading, found {len(matches)}"]
+
+
 def privacy_check():
     errors = []
     phone_pattern = re.compile(r"(?<![\w])(?:\+?\d[\s().-]*){9,}(?![\w])")
@@ -374,6 +499,9 @@ CHECKS = [
     ("html", "HTML tags, ids, headings and language attributes are valid.", "HTML-tunnisteet, tunnisteet, pääotsikot ja kielimerkinnät ovat kelvollisia.", html_sanity_check),
     ("topbar", "Every page has one top bar with valid language and menu links.", "Jokaisella sivulla on yksi yläpalkki ja toimivat kieli- ja valikkolinkit.", topbar_check),
     ("external", "HTML and CSS load no external resources.", "HTML ja CSS eivät lataa ulkoisia resursseja.", external_resource_check),
+    ("domain", "Canonical, alternate and social URLs use the site domain.", "Canonical-, kieli- ja someosoitteissa käytetään sivuston verkkotunnusta.", domain_consistency_check),
+    ("code-overflow", "Code panels have no horizontal auto/scroll overflow.", "Koodipaneeleissa ei ole vaakasuuntaista vieritystä.", code_overflow_check),
+    ("changelog-heading", "The changelog has one page heading.", "Muutoslokissa on vain yksi sivuotsikko.", changelog_heading_check),
     ("contrast", "Both theme palettes pass measured contrast thresholds.", "Molempien teemojen värit läpäisevät mitatut kontrastirajat.", contrast_check),
     ("og-lock", "Open Graph images match their source inputs.", "Open Graph -kuvat vastaavat lähdesisältöään.", og_lock_check),
     ("privacy", "No private contact details are included.", "Yksityisiä yhteystietoja ei ole lisätty.", privacy_check),

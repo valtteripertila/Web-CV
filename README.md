@@ -107,10 +107,10 @@ The following JSON snippets are README-only illustrations with invented example 
   "role": {"en": "SAMPLE role", "fi": "SAMPLE tehtävä"},
   "result": {"en": "", "fi": ""},
   "project": {
-    "title": "SAMPLE build",
+    "title": {"en": "SAMPLE build", "fi": "SAMPLE toteutus"},
     "description": {"en": "SAMPLE description", "fi": "SAMPLE kuvaus"},
-    "tags": [],
-    "links": {"demo": "", "code": "", "writeup": ""},
+    "tags": [{"en": "SAMPLE tag", "fi": "SAMPLE tunniste"}],
+    "links": {"demo": "", "code": "", "commits": "", "writeup": ""},
     "media": []
   },
   "learned": {"en": "", "fi": ""}
@@ -123,19 +123,23 @@ The following JSON snippets are README-only illustrations with invented example 
 {
   "type": "project",
   "date": "2025-03",
-  "title": "SAMPLE project",
+  "title": {"en": "SAMPLE project", "fi": "SAMPLE projekti"},
   "role": {"en": "", "fi": ""},
   "description": {"en": "SAMPLE description", "fi": "SAMPLE kuvaus"},
-  "tags": [],
-  "links": {"demo": "", "code": "", "writeup": ""},
+  "tags": [{"en": "SAMPLE tag", "fi": "SAMPLE tunniste"}],
+  "links": {"demo": "", "code": "", "commits": "", "writeup": ""},
   "media": [],
   "learned": {"en": "", "fi": ""}
 }
 ```
 
+Project titles and individual tags accept either a string (used in both languages) or an `{ "en": "...", "fi": "..." }` object. `links.commits` is optional; when present, it renders after the demo and repository links as “my commits” / “omat commitit”. Demo and repository links are labelled “Demo” and “Koodi” in Finnish.
+
 ## Checks and CI
 
 Run `python3 tools/check.py` locally. It runs content validation, unit tests, local link and fragment resolution, language parity, HTML checks, external-resource and contrast checks, privacy-pattern checks and a temporary-build freshness comparison. The GitHub Actions workflow runs the checks and a Lighthouse audit for both home pages. Actions are not run locally.
+
+Regenerate the English and Finnish Open Graph images from the current name and headlines with `python3 tools/make_og.py`. This uses an already available headless browser; do not install one as part of the build. The tool writes `tools/og.lock`, and `tools/check.py` reports a stale image input hash with the regeneration command.
 
 The Lighthouse report is an audit result, not a score claim for this site. To record a measurement, run the `lighthouse` job in GitHub Actions and use its uploaded report artifact. In `content/quality.json`, add a `lighthouse` object with the report's `performance`, `accessibility`, `best_practices` and `seo` scores from 0 to 100, the actual `measured_on` date and a short `source` note naming the workflow run. The footer displays these values only when every field is valid; do not enter estimates or reuse the configured minimum thresholds as results.
 

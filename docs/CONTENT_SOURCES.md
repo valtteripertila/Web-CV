@@ -6,6 +6,7 @@ Checked 2026-11-27
 |---|---|
 | Availability from 26 April 2027 (Aalto Period IV ends 25 April 2027) | https://www.aalto.fi/en/student-guide/academic-calendar; https://www.aalto.fi/en/programme-directors-handbook/teaching-periods |
 | Current site address | https://cv.valtteri-pertila.workers.dev |
+| “My commits” links | GitHub commit histories filtered by `author=valtteripertila`; only commits linked to that GitHub account appear |
 | Junction 2026 dates, venue, theme, participant count, prizes, team size limit | https://2026.hackjunction.com/ |
 | Junction placements (3rd in Hostinger main track, 1st in Oxylabs tech track) | Reported by the author |
 | Shill or Chill description and tech stack | README of github.com/JustinasLa/gemini-4-braincells |

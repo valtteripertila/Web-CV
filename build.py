@@ -304,6 +304,7 @@ def validate(shared, en, fi, timeline, errors, site_root=SITE):
         parsed_domain = urlsplit(domain) if isinstance(domain, str) else None
         if (parsed_domain is None or parsed_domain.scheme != "https" or not parsed_domain.netloc
                 or parsed_domain.path or parsed_domain.query or parsed_domain.fragment
+                or parsed_domain.username or parsed_domain.password or re.search(r"\s", domain)
                 or domain.endswith("/") or domain != domain.lower()):
                 errors.append("shared.json field domain: must be a lowercase https:// origin with no path or trailing slash")
         status_keys = shared.get("heroStatusKeys", [])
