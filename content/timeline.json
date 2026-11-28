@@ -53,7 +53,19 @@
         "commits": "https://github.com/JustinasLa/gemini-4-braincells/commits?author=valtteripertila",
         "writeup": ""
       },
-      "media": []
+      "media": [
+        {
+          "file": "shill-or-chill/demo.png",
+          "alt": {
+            "en": "Dashboard for Shill or Chill showing the verdict “Shill · Coordinated spread,” 31 accounts, 41 posts, and Replay, Explore, and Search controls.",
+            "fi": "Shill or Chill -hallintanäkymä, jossa näkyy tulos ”Shill · Coordinated spread”, 31 tiliä ja 41 julkaisua sekä Replay-, Explore- ja Search-toiminnot."
+          },
+          "caption": {
+            "en": "Simulated demo: a satirical 2021 headline spread by 31 days-old accounts within 94 seconds. Verdict: coordinated spread, 91% confidence. Fictional accounts.",
+            "fi": "Simuloitu demo: satiirinen vuoden 2021 otsikko levisi 94 sekunnissa 31 tilin kautta, jotka olivat olleet olemassa vasta joitakin päiviä. Tulos: koordinoitu levitys, 91 %:n luottamus. Tilit ovat fiktiivisiä."
+          }
+        }
+      ]
     },
     "learned": {
       "en": "",
@@ -171,7 +183,19 @@
         "commits": "https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026/commits?author=valtteripertila",
         "writeup": ""
       },
-      "media": []
+      "media": [
+        {
+          "file": "trace/demo.webp",
+          "alt": {
+            "en": "Mock course site showing the tRACE step-up challenge at 48/100, an inconclusive outcome, and the request for a second factor.",
+            "fi": "Kurssisivuston mallinäkymä, jossa tRACE-lisätunnistushaaste saa tuloksen 48/100 ja pyytää toista tunnistustekijää."
+          },
+          "caption": {
+            "en": "Mock course site with the tRACE panel: a step-up challenge ended inconclusive at 48/100, so a second factor would be requested. Calibrated on 12 demo runs; the genuine-user distribution is assumed, so this is a working decision layer, not a validated one.",
+            "fi": "Kurssisivuston mallinäkymässä tRACE-paneelin lisätunnistushaaste päättyy epäselvään tulokseen (48/100), joten käyttäjältä pyydettäisiin toista tunnistustekijää. Kalibrointi perustuu 12 demokierrokseen; aitojen käyttäjien jakauma on oletettu, joten kyseessä on toimiva mutta validoimaton päätöksentekokerros."
+          }
+        }
+      ]
     },
     "learned": {
       "en": "",
