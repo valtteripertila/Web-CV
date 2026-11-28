@@ -279,6 +279,8 @@ def validate_timeline(entries, errors, site_root=SITE):
                                 for required_field in ("title", "description", "tags", "links", "media"):
                                         if required_field not in project:
                                                 errors.append(f"timeline.json entry {number} field project.{required_field}: missing")
+                                if "subtitle" in project:
+                                        validate_bilingual(project["subtitle"], "timeline.json", number, "project.subtitle", errors)
                                 for field in ("description",):
                                         validate_bilingual(project.get(field, {"en": "", "fi": ""}), "timeline.json", number, f"project.{field}", errors)
                                 validate_urls(project.get("links"), number, errors)

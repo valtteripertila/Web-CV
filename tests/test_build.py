@@ -167,6 +167,20 @@ class BuildTests(unittest.TestCase):
         build.validate_timeline([legacy],legacy_errors)
         self.assertEqual([],legacy_errors)
 
+    def test_trace_title_and_subtitle_render_without_changing_contribution(self):
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        timeline=json.loads((ROOT/"content/timeline.json").read_text(encoding="utf-8"))
+        trace=next(item for item in timeline if item.get("event","").startswith("AaltoAI"))
+        errors=[]; build.validate_timeline([trace],errors)
+        self.assertEqual([],errors)
+        en_html=sitebuilder.home_sections("en",{},en,[trace],en["ui"])
+        fi_html=sitebuilder.home_sections("fi",{},fi,[trace],fi["ui"])
+        self.assertIn("<h4>tRACE</h4><p class=\"project-subtitle\">AI-powered continuous behavioral biometrics</p>",en_html)
+        self.assertIn("<h4>tRACE</h4><p class=\"project-subtitle\">Tekoälypohjainen jatkuvan käyttäytymisbiometrian järjestelmä</p>",fi_html)
+        self.assertIn("two pull requests",en_html)
+        self.assertNotIn("I built the model",en_html)
+
     def test_junction_challenges_render_bilingually_in_a_code_panel(self):
         en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
         fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))

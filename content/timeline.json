@@ -160,7 +160,10 @@
       "fi": "IBM Best Use of IBM Bob — Voittaja"
     },
     "project": {
-      "title": "AI-Powered Continuous Behavioral Biometrics",
+      "title": {
+        "en": "tRACE",
+        "fi": "tRACE"
+      },
       "description": {
         "en": "Prototype of a continuous authentication system that recognises a user by how they move the mouse and type. Browser telemetry becomes 32 statistical features, a Siamese neural network encodes them, and a LightGBM model scores anomalies that can trigger 2FA or lockout.",
         "fi": "Prototyyppi jatkuvasta tunnistautumisesta, joka tunnistaa käyttäjän hiiren liikkeen ja kirjoitustavan perusteella. Selaimen telemetriasta lasketaan 32 tilastollista piirrettä, Siamese-neuroverkko koodaa ne ja LightGBM-malli pisteyttää poikkeamat, jotka voivat laukaista kaksivaiheisen tunnistuksen tai lukituksen."
@@ -195,7 +198,11 @@
             "fi": "Kurssisivuston mallinäkymässä tRACE-paneelin lisätunnistushaaste päättyy epäselvään tulokseen (48/100), joten käyttäjältä pyydettäisiin toista tunnistustekijää. Kalibrointi perustuu 12 demokierrokseen; aitojen käyttäjien jakauma on oletettu, joten kyseessä on toimiva mutta validoimaton päätöksentekokerros."
           }
         }
-      ]
+      ],
+      "subtitle": {
+        "en": "AI-powered continuous behavioral biometrics",
+        "fi": "Tekoälypohjainen jatkuvan käyttäytymisbiometrian järjestelmä"
+      }
     },
     "learned": {
       "en": "",

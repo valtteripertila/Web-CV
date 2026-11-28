@@ -281,13 +281,15 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
                               for challenge in item.get("challenges", []) if isinstance(challenge, dict)]
             challenges_html = code_panel(challenge_rows, "challenge-code")
             project_title=localized_text(p.get("title", ""),lang); project_description=p.get("description",{}).get(lang,"")
+            project_subtitle=p.get("subtitle",{}).get(lang,"") if isinstance(p.get("subtitle"),dict) else ""
             title_html=f"<h4>{esc(project_title)}</h4>" if project_title else ""
+            subtitle_html=f'<p class="project-subtitle">{esc(project_subtitle)}</p>' if project_subtitle else ""
             description_html=f"<p>{esc(project_description)}</p>" if project_description else ""
             event=esc(item.get("event", ""))
             learned_value=item.get("learned",{}).get(lang,"")
             learned_html=f'<details><summary>{esc(ui["learned"])}</summary><p>{esc(learned_value)}</p></details>' if learned_value else ""
             what_built=("SAMPLE // "+esc(ui["whatBuilt"][7:])) if sample and ui["whatBuilt"].startswith("SAMPLE ") else "// "+esc(ui["whatBuilt"])
-            content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{results_html}{challenges_html}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{description_html}{media}{learned_html}'
+            content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{results_html}{challenges_html}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{subtitle_html}{description_html}{media}{learned_html}'
         else:
             title=localized_text(item.get("title", ""),lang); role=item.get("role",{}).get(lang,""); desc=item.get("description",{}).get(lang,"")
             learned_value=item.get("learned",{}).get(lang,"")
