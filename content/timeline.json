@@ -16,7 +16,10 @@
       "en": "European Tech Renaissance",
       "fi": "European Tech Renaissance"
     },
-    "team": { "name": "", "size": 4 },
+    "team": {
+      "name": "",
+      "size": 4
+    },
     "role": {
       "en": "Built the media-evidence pipeline (a Nemotron vision-model client and background worker, with tests), the evidence dashboard, mobile layout fixes and a lookup fix for Bluesky posts. Several of my commits were co-authored with GitHub Copilot.",
       "fi": "Rakensin mediatodisteiden analyysiputken (Nemotron-näkökielimallin asiakas ja taustatyöntekijä testeineen), todisteiden näyttöpaneelin, mobiilinäkymän korjauksia sekä Bluesky-julkaisujen hakutoiminnon korjauksen. Useat commitini tein GitHub Copilotin avustuksella."
@@ -31,7 +34,19 @@
         "en": "Traces memes back to their earliest source and spots coordinated spreading. Images and screenshots are read by NVIDIA's Nemotron vision-language model, and a Gemini-based agent searches the web and explains each verdict with sources.",
         "fi": "Jäljittää meemit alkuperäiseen lähteeseensä ja tunnistaa koordinoidun levityksen. NVIDIAn Nemotron-näkökielimalli lukee kuvat ja kuvakaappaukset, ja Gemini-pohjainen agentti hakee verkosta tietoa ja perustelee jokaisen arvion lähteillä."
       },
-      "tags": ["Python", "TypeScript", {"en":"Vision-language models","fi":"Näkökielimallit"}, {"en":"LLM agents","fi":"LLM-agentit"}, "Web"],
+      "tags": [
+        "Python",
+        "TypeScript",
+        {
+          "en": "Vision-language models",
+          "fi": "Näkökielimallit"
+        },
+        {
+          "en": "LLM agents",
+          "fi": "LLM-agentit"
+        },
+        "Web"
+      ],
       "links": {
         "demo": "https://noise-radar.srv2159172.hstgr.cloud",
         "code": "https://github.com/JustinasLa/gemini-4-braincells",
@@ -40,12 +55,18 @@
       },
       "media": []
     },
-    "learned": { "en": "", "fi": "" }
+    "learned": {
+      "en": "",
+      "fi": ""
+    }
   },
   {
     "type": "project",
     "date": "2026-11",
-    "title": {"en":"This CV site","fi":"Tämä CV-sivusto"},
+    "title": {
+      "en": "This CV site",
+      "fi": "Tämä CV-sivusto"
+    },
     "role": {
       "en": "Designed the content model, layout and quality checks; implemented with AI coding assistants.",
       "fi": "Suunnittelin sisältömallin, ulkoasun ja laatutarkistukset; toteutus tehtiin tekoälyavustajilla."
@@ -54,14 +75,26 @@
       "en": "A bilingual (EN/FI) static CV generated from structured JSON by a dependency-free Python script. Automated checks cover links, language parity, colour contrast and external requests, and the site is deployed to Cloudflare Pages through GitHub.",
       "fi": "Kaksikielinen (EN/FI) staattinen CV, jonka riippuvuudeton Python-skripti generoi rakenteisesta JSON-sisällöstä. Automaattiset tarkistukset kattavat linkit, kieliversioiden vastaavuuden, värikontrastin ja ulkoiset pyynnöt, ja sivusto julkaistaan GitHubin kautta Cloudflare Pagesiin."
     },
-    "tags": ["Python", "HTML/CSS", "GitHub Actions", "Cloudflare Pages", {"en":"Accessibility","fi":"Saavutettavuus"}],
+    "tags": [
+      "Python",
+      "HTML/CSS",
+      "GitHub Actions",
+      "Cloudflare Pages",
+      {
+        "en": "Accessibility",
+        "fi": "Saavutettavuus"
+      }
+    ],
     "links": {
       "demo": "https://cv.valtteri-pertila.workers.dev/",
       "code": "https://github.com/valtteripertila/Web-CV",
       "writeup": ""
     },
     "media": [],
-    "learned": { "en": "", "fi": "" }
+    "learned": {
+      "en": "",
+      "fi": ""
+    }
   },
   {
     "type": "hackathon",
@@ -72,9 +105,18 @@
       "en": "48-hour build sprint; €10,000 prize pool; partners: Microsoft, Verda, Norrin, Relex, IBM and Elisa.",
       "fi": "48 tunnin rakennussprintti; 10 000 euron palkintopotti; kumppanit: Microsoft, Verda, Norrin, Relex, IBM ja Elisa."
     },
-    "where": { "en": "Aalto Design Factory, Espoo", "fi": "Aalto Design Factory, Espoo" },
-    "theme": { "en": "Data sovereignty and responsible AI", "fi": "Datan suvereniteetti ja vastuullinen tekoäly" },
-    "team": { "name": "", "size": 5 },
+    "where": {
+      "en": "Aalto Design Factory, Espoo",
+      "fi": "Aalto Design Factory, Espoo"
+    },
+    "theme": {
+      "en": "Data sovereignty and responsible AI",
+      "fi": "Datan suvereniteetti ja vastuullinen tekoäly"
+    },
+    "team": {
+      "name": "",
+      "size": 5
+    },
     "role": {
       "en": "Data engineering and research in a team of five. Added the mouse-movement and keystroke training datasets to the team repository (two pull requests).",
       "fi": "Data engineering ja tutkimus viiden hengen tiimissä. Lisäsin hiiren liikkeen ja näppäilyn opetusdatat tiimin repositorioon (kaksi pull request -pyyntöä)."
@@ -89,7 +131,18 @@
         "en": "Prototype of a continuous authentication system that recognises a user by how they move the mouse and type. Browser telemetry becomes 32 statistical features, a Siamese neural network encodes them, and a LightGBM model scores anomalies that can trigger 2FA or lockout.",
         "fi": "Prototyyppi jatkuvasta tunnistautumisesta, joka tunnistaa käyttäjän hiiren liikkeen ja kirjoitustavan perusteella. Selaimen telemetriasta lasketaan 32 tilastollista piirrettä, Siamese-neuroverkko koodaa ne ja LightGBM-malli pisteyttää poikkeamat, jotka voivat laukaista kaksivaiheisen tunnistuksen tai lukituksen."
       },
-      "tags": ["Python", {"en":"Machine learning","fi":"Koneoppiminen"}, {"en":"Behavioral biometrics","fi":"Käyttäytymisbiometria"}, "Data engineering"],
+      "tags": [
+        "Python",
+        {
+          "en": "Machine learning",
+          "fi": "Koneoppiminen"
+        },
+        {
+          "en": "Behavioral biometrics",
+          "fi": "Käyttäytymisbiometria"
+        },
+        "Data engineering"
+      ],
       "links": {
         "demo": "",
         "code": "https://github.com/SiroogaTheProgrammer/IBM_hackathon_2026",
@@ -98,54 +151,127 @@
       },
       "media": []
     },
-    "learned": { "en": "", "fi": "" }
-  },
-  {
-    "type": "role", "start": "2024-01", "end": "", "employer": "Art Zenter Academy",
-    "role": { "en": "Junior Instructor", "fi": "Junioriohjaaja" },
-    "points": {
-      "en": ["Independently led children's hobby activities, in English"],
-      "fi": ["Alaikäisten lasten harrastustoiminnan itsenäinen ohjaaminen englanniksi"]
+    "learned": {
+      "en": "",
+      "fi": ""
     }
   },
   {
-    "type": "role", "start": "2023-07", "end": "2023-07", "employer": "Espoo Catering Oy",
-    "role": { "en": "Food service worker (summer job)", "fi": "Ruokapalvelutyöntekijä (kesätyö)" },
+    "type": "role",
+    "start": "2024-01",
+    "end": "",
+    "employer": "Art Zenter Academy",
+    "role": {
+      "en": "Junior Instructor",
+      "fi": "Junioriohjaaja"
+    },
     "points": {
-      "en": ["Prepared side dishes", "Kept the kitchen clean"],
-      "fi": ["Lisukkeiden valmistaminen", "Keittiön puhtaanapito"]
+      "en": [
+        "Independently led children's hobby activities, in English"
+      ],
+      "fi": [
+        "Alaikäisten lasten harrastustoiminnan itsenäinen ohjaaminen englanniksi"
+      ]
     }
   },
   {
-    "type": "role", "start": "2022-06", "end": "2022-06", "employer": "Espoo Cathedral Parish",
-    "role": { "en": "Camp assistant, Isonen (summer job)", "fi": "Isonen, leiriavustaja (kesätyö)" },
+    "type": "role",
+    "start": "2023-07",
+    "end": "2023-07",
+    "employer": "Espoo Catering Oy",
+    "role": {
+      "en": "Food service worker (summer job)",
+      "fi": "Ruokapalvelutyöntekijä (kesätyö)"
+    },
     "points": {
-      "en": ["Assisted at a confirmation camp"],
-      "fi": ["Leiriavustajana rippileirillä"]
+      "en": [
+        "Prepared side dishes",
+        "Kept the kitchen clean"
+      ],
+      "fi": [
+        "Lisukkeiden valmistaminen",
+        "Keittiön puhtaanapito"
+      ]
     }
   },
   {
-    "type": "role", "start": "2022-06", "end": "2022-06", "employer": "Art Zenter Academy",
-    "role": { "en": "Assistant Instructor (summer job)", "fi": "Assistant Instructor (kesätyö)" },
+    "type": "role",
+    "start": "2022-06",
+    "end": "2022-06",
+    "employer": "Espoo Cathedral Parish",
+    "role": {
+      "en": "Camp assistant, Isonen (summer job)",
+      "fi": "Isonen, leiriavustaja (kesätyö)"
+    },
     "points": {
-      "en": ["Led a group of primary-school-age children"],
-      "fi": ["Alakouluikäisten lasten ryhmän ohjaaminen"]
+      "en": [
+        "Assisted at a confirmation camp"
+      ],
+      "fi": [
+        "Leiriavustajana rippileirillä"
+      ]
     }
   },
   {
-    "type": "role", "start": "2021-09", "end": "2021-10", "employer": "Ravintola Madison",
-    "role": { "en": "Kitchen assistant (work-experience placement)", "fi": "Keittiöapulainen (TET-harjoittelu)" },
+    "type": "role",
+    "start": "2022-06",
+    "end": "2022-06",
+    "employer": "Art Zenter Academy",
+    "role": {
+      "en": "Assistant Instructor (summer job)",
+      "fi": "Assistant Instructor (kesätyö)"
+    },
     "points": {
-      "en": ["Worked the cash register", "Served customers", "Kept the restaurant clean"],
-      "fi": ["Kassalla toimiminen", "Asiakaspalvelu", "Ravintolan puhtaanapito"]
+      "en": [
+        "Led a group of primary-school-age children"
+      ],
+      "fi": [
+        "Alakouluikäisten lasten ryhmän ohjaaminen"
+      ]
     }
   },
   {
-    "type": "role", "start": "2021-08", "end": "2021-08", "employer": "Forward Forever",
-    "role": { "en": "Summer job: creating an application", "fi": "Kesätyö: sovelluksen luominen" },
+    "type": "role",
+    "start": "2021-09",
+    "end": "2021-10",
+    "employer": "Ravintola Madison",
+    "role": {
+      "en": "Kitchen assistant (work-experience placement)",
+      "fi": "Keittiöapulainen (TET-harjoittelu)"
+    },
     "points": {
-      "en": ["Created an application independently", "Checked instructions"],
-      "fi": ["Sovelluksen itsenäinen luominen", "Ohjeiden tarkastaminen"]
+      "en": [
+        "Worked the cash register",
+        "Served customers",
+        "Kept the restaurant clean"
+      ],
+      "fi": [
+        "Kassalla toimiminen",
+        "Asiakaspalvelu",
+        "Ravintolan puhtaanapito"
+      ]
+    }
+  },
+  {
+    "type": "role",
+    "start": "2021-08",
+    "end": "2021-08",
+    "employer": "Forward Forever",
+    "role": {
+      "en": "Summer job: creating an application",
+      "fi": "Kesätyö: sovelluksen luominen"
+    },
+    "points": {
+      "en": [
+        "Built a working mobile application by hand using Microsoft Power Platform tools",
+        "Verified coding instructions that were later sent to a school for teaching coding",
+        "Learned Power BI in general"
+      ],
+      "fi": [
+        "Rakensin toimivan mobiilisovelluksen käsin Power Platform -työkaluilla",
+        "Tarkastin ohjeet, jotka lähetettiin myöhemmin koulun käyttöön ohjelmoinnin opetukseen",
+        "Opettelin Power BI:n perusteita"
+      ]
     }
   }
 ]

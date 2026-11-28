@@ -18,3 +18,4 @@ Checked 2026-11-28
 | Dataset contributions (two pull requests, 18 Sep 2026) | Commit history of the same repository |
 | This CV site description | README of github.com/valtteripertila/Web-CV |
 | Past jobs and dates | Author's CV (2024 version) |
+| Forward Forever role details | Stated by the user |
