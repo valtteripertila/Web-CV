@@ -58,7 +58,29 @@
     "learned": {
       "en": "",
       "fi": ""
-    }
+    },
+    "challenges": [
+      {
+        "track": {
+          "en": "Hostinger main track",
+          "fi": "Hostingerin pääkilpailuraidalla"
+        },
+        "description": {
+          "en": "Build a live tool on Hostinger with a public URL to detect coordinated propaganda, bot-driven amplification, or other bad-actor behavior. Judges prioritized sound detection and honest false-positive handling over interface polish. The live demo ran on Hostinger infrastructure.",
+          "fi": "Rakenna Hostingerissä julkiseen URL-osoitteeseen avautuva työkalu, joka tunnistaa koordinoitua propagandaa, bottien levitystä tai muuta haitallista toimintaa. Arvioinnissa painotettiin perusteltua tunnistusta ja väärien positiivisten rehellistä käsittelyä käyttöliittymän viimeistelyn sijaan. Live-demo toimi Hostingerin palvelimella."
+        }
+      },
+      {
+        "track": {
+          "en": "Oxylabs tech track",
+          "fi": "Oxylabsin teknologiaraidalla"
+        },
+        "description": {
+          "en": "Use the Oxylabs Web API at runtime to search current sources, read pages, and answer with citations instead of stale training data. The submission reused the team's repository and demo and included a short note explaining which API endpoints were used and why.",
+          "fi": "Käytä Oxylabs Web API:a ajon aikana ajantasaisten lähteiden etsimiseen ja lukemiseen sekä vastaa lähdeviitteiden kanssa vanhentuneen koulutusdatan sijaan. Palautus hyödynsi tiimin repositoriota ja demoa sekä sisälsi lyhyen selvityksen käytetyistä API-päätepisteistä ja niiden valintaperusteista."
+        }
+      }
+    ]
   },
   {
     "type": "project",

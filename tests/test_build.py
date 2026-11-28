@@ -167,6 +167,22 @@ class BuildTests(unittest.TestCase):
         build.validate_timeline([legacy],legacy_errors)
         self.assertEqual([],legacy_errors)
 
+    def test_junction_challenges_render_bilingually_in_a_code_panel(self):
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        timeline=json.loads((ROOT/"content/timeline.json").read_text(encoding="utf-8"))
+        junction=next(item for item in timeline if item.get("event")=="Junction 2026")
+        errors=[]; build.validate_timeline([junction],errors)
+        self.assertEqual([],errors)
+        en_html=sitebuilder.home_sections("en",{},en,[junction],en["ui"])
+        fi_html=sitebuilder.home_sections("fi",{},fi,[junction],fi["ui"])
+        self.assertIn('class="code challenge-code"',en_html)
+        self.assertIn("Hostinger main track",en_html)
+        self.assertIn("Oxylabs tech track",en_html)
+        self.assertIn("Hostingerin pääkilpailuraidalla",fi_html)
+        self.assertIn("Oxylabsin teknologiaraidalla",fi_html)
+        self.assertNotIn("serp",en_html.lower())
+
     def test_optional_commits_link_renders_after_demo_and_repo(self):
         en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
         project={"type":"project","date":"2026-11","title":"Project","role":{"en":"","fi":""},"description":{"en":"Description","fi":"Kuvaus"},"tags":[],"links":{"demo":"https://example.com/demo","code":"https://example.com/repo","commits":"https://example.com/commits","writeup":""},"media":[],"learned":{"en":"","fi":""}}

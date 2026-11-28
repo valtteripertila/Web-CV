@@ -277,6 +277,9 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
             result_lines=[line.strip() for line in resultval.splitlines() if line.strip()] if isinstance(resultval,str) else []
             result_items="".join("<li class=\"result-panel\">"+esc(line)+"</li>" for line in result_lines)
             results_html=f'<ul class="result-panels">{result_items}</ul>' if result_lines else ""
+            challenge_rows = [(localized_text(challenge.get("track", ""), lang), challenge.get("description", {}).get(lang, ""))
+                              for challenge in item.get("challenges", []) if isinstance(challenge, dict)]
+            challenges_html = code_panel(challenge_rows, "challenge-code")
             project_title=localized_text(p.get("title", ""),lang); project_description=p.get("description",{}).get(lang,"")
             title_html=f"<h4>{esc(project_title)}</h4>" if project_title else ""
             description_html=f"<p>{esc(project_description)}</p>" if project_description else ""
@@ -284,7 +287,7 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
             learned_value=item.get("learned",{}).get(lang,"")
             learned_html=f'<details><summary>{esc(ui["learned"])}</summary><p>{esc(learned_value)}</p></details>' if learned_value else ""
             what_built=("SAMPLE // "+esc(ui["whatBuilt"][7:])) if sample and ui["whatBuilt"].startswith("SAMPLE ") else "// "+esc(ui["whatBuilt"])
-            content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{results_html}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{description_html}{media}{learned_html}'
+            content=f'<span class="entry-kind">{ui["hackathon"]}</span><h3>{event}</h3>{results_html}{challenges_html}{code_panel(info,"hackathon-code")}<p class="what-built">{what_built}</p>{title_html}{description_html}{media}{learned_html}'
         else:
             title=localized_text(item.get("title", ""),lang); role=item.get("role",{}).get(lang,""); desc=item.get("description",{}).get(lang,"")
             learned_value=item.get("learned",{}).get(lang,"")

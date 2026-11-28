@@ -9,6 +9,7 @@ Checked 2026-11-28
 | “My commits” links | GitHub commit histories filtered by `author=valtteripertila`; only commits linked to that GitHub account appear |
 | Junction 2026 dates, venue, theme, participant count, prizes, team size limit | https://2026.hackjunction.com/ |
 | Junction placements (3rd in Hostinger main track, 1st in Oxylabs tech track) | Reported by the author |
+| Junction challenge context | Facts supplied by the user; Oxylabs endpoint details still need checking against the project README |
 | Shill or Chill description and tech stack | README of github.com/JustinasLa/gemini-4-braincells |
 | Team of 4 at Junction | Same README, "Credits" |
 | Media pipeline, dashboard, mobile fixes, Bluesky lookup fix; Copilot co-authorship | Commit history of github.com/JustinasLa/gemini-4-braincells (identities "Valtteri Pertila" and "Junction Espoo seat (Valtteri)"; "Co-authored-by: Copilot" trailers) |

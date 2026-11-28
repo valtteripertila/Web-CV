@@ -256,6 +256,17 @@ def validate_timeline(entries, errors, site_root=SITE):
                                 errors.append(f"timeline.json entry {number} field project: must be an object")
                                 project = {}
                         validate_localized_text(project.get("title"), "timeline.json", number, "project.title", errors, required=True)
+                        challenges = item.get("challenges", [])
+                        if not isinstance(challenges, list):
+                                errors.append(f"timeline.json entry {number} field challenges: must be a list")
+                        else:
+                                for challenge_index, challenge in enumerate(challenges):
+                                        prefix = f"challenges[{challenge_index}]"
+                                        if not isinstance(challenge, dict):
+                                                errors.append(f"timeline.json entry {number} field {prefix}: must be an object")
+                                                continue
+                                        validate_bilingual(challenge.get("track"), "timeline.json", number, f"{prefix}.track", errors)
+                                        validate_bilingual(challenge.get("description"), "timeline.json", number, f"{prefix}.description", errors)
                         team = item.get("team", {})
                         if not isinstance(team, dict):
                                 errors.append(f"timeline.json entry {number} field team: must be an object")
