@@ -145,3 +145,5 @@ html.timeline-filters-ready .filters { display: flex; }
 @media (min-width: 640px) { body { padding-right: var(--space-3); padding-left: var(--space-3); } .topbar { margin-right: calc(-1 * var(--space-3)); margin-left: calc(-1 * var(--space-3)); padding-right: var(--space-3); padding-left: var(--space-3); } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition: none !important; } .hero .shell-prompt::after { animation: none; } }
 @media print { :root { color-scheme: light; --background: #fff; --surface: #fff; --text: #000; --muted: #333; --border: #aaa; --accent: #000; --tok-key: #005a9c; --tok-str: #765000; } body { max-width: none; padding: 0; color: #000; background: #fff; font-size: 11pt; } .topbar, .skip-link, .language-switch, .theme-toggle, .back-to-top { display: none !important; } a { color: #000; } .timeline-entry, .entry-card { break-inside: avoid; } }
+
+.skill-proof { text-underline-offset: .18em; }

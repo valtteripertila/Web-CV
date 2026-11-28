@@ -92,7 +92,8 @@
           "fi": "Käytä Oxylabs Web API:a ajon aikana ajantasaisten lähteiden etsimiseen ja lukemiseen sekä vastaa lähdeviitteiden kanssa vanhentuneen koulutusdatan sijaan. Palautus hyödynsi tiimin repositoriota ja demoa sekä sisälsi lyhyen selvityksen käytetyistä API-päätepisteistä ja niiden valintaperusteista."
         }
       }
-    ]
+    ],
+    "id": "junction-2026"
   },
   {
     "type": "project",
@@ -128,7 +129,8 @@
     "learned": {
       "en": "",
       "fi": ""
-    }
+    },
+    "id": "this-cv-site"
   },
   {
     "type": "hackathon",
@@ -207,7 +209,8 @@
     "learned": {
       "en": "",
       "fi": ""
-    }
+    },
+    "id": "trace"
   },
   {
     "type": "role",
@@ -325,6 +328,7 @@
         "Tarkastin ohjeet, jotka lähetettiin myöhemmin koulun käyttöön ohjelmoinnin opetukseen",
         "Opettelin Power BI:n perusteita"
       ]
-    }
+    },
+    "id": "forward-forever"
   }
 ]

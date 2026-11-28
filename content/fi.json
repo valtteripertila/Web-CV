@@ -20,28 +20,64 @@
     {
       "group": "Ohjelmointikielet",
       "items": [
-        "Python",
-        "TypeScript / JavaScript",
-        "HTML / CSS"
+        {
+          "label": "Python",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "TypeScript / JavaScript",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "HTML / CSS",
+          "proof": "#junction-2026"
+        }
       ]
     },
     {
       "group": "Työkalut ja käytännöt",
       "items": [
-        "Git ja GitHub",
-        "GitHub Actions",
-        "Cloudflare Pages",
-        "Automaattinen testaus",
-        "Tekoälyavustajat (Codex, Copilot)",
-        "Power Platform",
-        "Power BI"
+        {
+          "label": "Git ja GitHub",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "GitHub Actions",
+          "proof": "#this-cv-site"
+        },
+        {
+          "label": "Cloudflare Pages",
+          "proof": "#this-cv-site"
+        },
+        {
+          "label": "Automaattinen testaus",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "Tekoälyavustajat (Codex, Copilot)",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "Power Platform",
+          "proof": "#forward-forever"
+        },
+        {
+          "label": "Power BI",
+          "proof": "#forward-forever"
+        }
       ]
     },
     {
       "group": "Data ja tekoäly",
       "items": [
-        "LLM- ja näkökielimalli-rajapinnat",
-        "Datasettien valmistelu"
+        {
+          "label": "LLM- ja näkökielimalli-rajapinnat",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "Datasettien valmistelu",
+          "proof": "#trace"
+        }
       ]
     }
   ],
@@ -122,7 +158,8 @@
     "myCommits": "omat commitit",
     "teamSize": "{count} henkilöä",
     "github": "GitHub",
-    "linkedin": "LinkedIn"
+    "linkedin": "LinkedIn",
+    "proofSkill": "Katso näyttö taidosta {skill}"
   },
   "hero": {
     "prompt": "whoami",

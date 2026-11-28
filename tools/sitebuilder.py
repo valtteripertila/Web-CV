@@ -168,7 +168,9 @@ def structured_data(page, lang, shared, text, domain, pages):
     if same_as:
         person["sameAs"] = same_as
     skills = [entry.get("group", "") for entry in text.get("skills", []) if real(entry.get("group"))]
-    skills.extend(item for entry in text.get("skills", []) for item in entry.get("items", []) if real(item))
+    skills.extend(item.get("label", "") if isinstance(item, dict) else item
+                  for entry in text.get("skills", []) for item in entry.get("items", [])
+                  if real(item.get("label", "") if isinstance(item, dict) else item))
     if skills:
         person["knowsAbout"] = skills
     if page == "home":
@@ -181,12 +183,20 @@ def structured_data(page, lang, shared, text, domain, pages):
         {"@type": "ListItem", "position": 2, "name": text["ui"].get("navHow" if page == "how" else "navChangelog" if page == "changelog" else "navNow"), "item": current_url}]}
 
 
-def code_panel(lines, cls=""):
+def code_panel(lines, cls="", ui=None):
     if not lines: return ""
     rows = []
     for key, vals in lines:
         if isinstance(vals, list):
-            rows.append(f'<div class="code-line"><dt>{esc(key)}</dt><dd class="array"><ul>{"".join(f"<li>{esc(v)}</li>" for v in vals)}</ul></dd></div>')
+            items = []
+            for value in vals:
+                if isinstance(value, dict) and value.get("proof"):
+                    label = value.get("label", "")
+                    aria = (ui or {}).get("proofSkill", "See proof for {skill}").format(skill=label)
+                    items.append(f'<li><a class="skill-proof" href="{esc(value["proof"])}" aria-label="{esc(aria)}">{esc(label)}</a></li>')
+                else:
+                    items.append(f"<li>{esc(value.get('label', '') if isinstance(value, dict) else value)}</li>")
+            rows.append(f'<div class="code-line"><dt>{esc(key)}</dt><dd class="array"><ul>{"".join(items)}</ul></dd></div>')
         else:
             rows.append(f'<div class="code-line"><dt>{esc(key)}</dt><dd>{esc(vals)}</dd></div>')
     return f'<div class="code {cls}"><dl>{"".join(rows)}</dl></div>'
@@ -297,12 +307,13 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
             content=f'<span class="entry-kind">{ui["project"]}</span>{f"<h3>{esc(title)}</h3>" if title else ""}{f"<p class=project-role>{esc(role)}</p>" if role else ""}{f"<p>{esc(desc)}</p>" if desc else ""}{media}{learned_html}'
         content+=f'<p class="project-tags">{tags}</p>' if tags else ""
         content+=f'<p class="project-links">{linkrows}</p>' if linkrows else ""
-        cards.append(f'<article class="timeline-entry" data-kind="{kind}"><div class="entry-date">{esc(date_text)}</div><div class="entry-card">{content}</div></article>')
+        entry_id = f' id="{esc(item["id"])}"' if item.get("id") else ""
+        cards.append(f'<article{entry_id} class="timeline-entry" data-kind="{kind}"><div class="entry-date">{esc(date_text)}</div><div class="entry-card">{content}</div></article>')
     if cards: result.append(f'<section id="timeline">{heading(ui["timeline"])}{filters}<div class="timeline">{"".join(cards)}</div></section>')
     profile=[]
     for group in text.get("skills",[]):
         key=profile_key(group.get("group", ""))
-        vals=[v for v in group.get("items",[]) if filled(v)]
+        vals=[v for v in group.get("items",[]) if filled(v.get("label", "") if isinstance(v, dict) else v)]
         if vals: profile.append((key,vals))
     education=[" · ".join(str(x.get(k,"")) for k in ("degree","school","years") if filled(x.get(k))) for x in text.get("education",[])]
     if any(education): profile.append(("education",[v for v in education if v]))
@@ -310,7 +321,7 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
     if certs: profile.append(("certifications",certs))
     langs=[v for v in text.get("languages",[]) if filled(v)]
     if langs: profile.append(("spoken",langs))
-    if profile: result.append(f'<section id="profile">{heading(ui["profile"])}{code_panel(profile,"profile-code")}</section>')
+    if profile: result.append(f'<section id="profile">{heading(ui["profile"])}{code_panel(profile,"profile-code",ui)}</section>')
     email=shared.get("email",""); contact=f'<p class="mail-line">$ mail {link("mailto:"+email,email)}</p>' if email else ""
     socials=" ".join(filter(None,(link(shared.get("github"),ui["github"]),link(shared.get("linkedin"),ui["linkedin"]))))
     if contact or socials: result.append(f'<section id="contact">{heading(ui["contact"])}{contact}{f"<div class=contact-buttons>{socials}</div>" if socials else ""}</section>')

@@ -20,28 +20,64 @@
     {
       "group": "Programming languages",
       "items": [
-        "Python",
-        "TypeScript / JavaScript",
-        "HTML / CSS"
+        {
+          "label": "Python",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "TypeScript / JavaScript",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "HTML / CSS",
+          "proof": "#junction-2026"
+        }
       ]
     },
     {
       "group": "Tools and practice",
       "items": [
-        "Git and GitHub",
-        "GitHub Actions",
-        "Cloudflare Pages",
-        "Automated testing",
-        "AI coding assistants (Codex, Copilot)",
-        "Power Platform",
-        "Power BI"
+        {
+          "label": "Git and GitHub",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "GitHub Actions",
+          "proof": "#this-cv-site"
+        },
+        {
+          "label": "Cloudflare Pages",
+          "proof": "#this-cv-site"
+        },
+        {
+          "label": "Automated testing",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "AI coding assistants (Codex, Copilot)",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "Power Platform",
+          "proof": "#forward-forever"
+        },
+        {
+          "label": "Power BI",
+          "proof": "#forward-forever"
+        }
       ]
     },
     {
       "group": "Data and AI",
       "items": [
-        "LLM and vision-model APIs",
-        "Dataset preparation"
+        {
+          "label": "LLM and vision-model APIs",
+          "proof": "#junction-2026"
+        },
+        {
+          "label": "Dataset preparation",
+          "proof": "#trace"
+        }
       ]
     }
   ],
@@ -122,7 +158,8 @@
     "myCommits": "my commits",
     "teamSize": "{count} people",
     "github": "GitHub",
-    "linkedin": "LinkedIn"
+    "linkedin": "LinkedIn",
+    "proofSkill": "See proof for {skill}"
   },
   "hero": {
     "prompt": "whoami",

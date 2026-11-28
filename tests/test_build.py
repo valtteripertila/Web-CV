@@ -167,6 +167,17 @@ class BuildTests(unittest.TestCase):
         build.validate_timeline([legacy],legacy_errors)
         self.assertEqual([],legacy_errors)
 
+    def test_evidence_skills_link_to_existing_timeline_anchors_with_localized_aria(self):
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        timeline=json.loads((ROOT/"content/timeline.json").read_text(encoding="utf-8"))
+        en_html=sitebuilder.home_sections("en",{},en,timeline,en["ui"])
+        fi_html=sitebuilder.home_sections("fi",{},fi,timeline,fi["ui"])
+        self.assertIn('href="#junction-2026" aria-label="See proof for Python"',en_html)
+        self.assertIn('href="#trace" aria-label="Katso näyttö taidosta Datasettien valmistelu"',fi_html)
+        self.assertIn('href="#forward-forever" aria-label="See proof for Power BI"',en_html)
+        self.assertIn('id="junction-2026"',en_html)
+
     def test_trace_title_and_subtitle_render_without_changing_contribution(self):
         en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
         fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))

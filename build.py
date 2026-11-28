@@ -21,7 +21,7 @@ UI_KEYS = [
         "externalRequests", "siteBytes", "contrastPass", "contrastFail", "changelogIntro", "nowIntro", "updated",
         "buildChecked", "contrastLabel", "lighthouseLabel", "lighthouseFooter", "timeline", "profile", "whatBuilt",
         "learned", "filterLegend", "filterAll", "filterHackathons", "filterProjects", "filterRoles", "hackathon",
-        "project", "role", "teamSize"
+        "project", "role", "teamSize", "proofSkill"
 ]
 
 
@@ -226,10 +226,19 @@ def validate_timeline(entries, errors, site_root=SITE):
                 "project": ("role", "description", "learned"),
                 "role": ("role", "points"),
         }
+        seen_ids = set()
         for number, item in enumerate(entries, 1):
                 if not isinstance(item, dict):
                         errors.append(f"timeline.json entry {number}: must be an object")
                         continue
+                entry_id = item.get("id", "")
+                if entry_id:
+                        if not isinstance(entry_id, str) or not re.fullmatch(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*", entry_id):
+                                errors.append(f"timeline.json entry {number} field id: must be a lowercase HTML id")
+                        elif entry_id in seen_ids:
+                                errors.append(f"timeline.json entry {number} field id: duplicate {entry_id}")
+                        else:
+                                seen_ids.add(entry_id)
                 kind = item.get("type")
                 if kind not in ("hackathon", "project", "role"):
                         errors.append(f"timeline.json entry {number} field type: must be hackathon, project or role")
@@ -352,6 +361,22 @@ def validate(shared, en, fi, timeline, errors, site_root=SITE):
                 for field in ("education", "skills", "certifications", "languages"):
                         if not isinstance(data.get(field), list):
                                 errors.append(f"{lang}.json field {field}: must be a list")
+                for group_index, group in enumerate(data.get("skills", [])):
+                        if not isinstance(group, dict) or not isinstance(group.get("group"), str) or not isinstance(group.get("items"), list):
+                                errors.append(f"{lang}.json skills[{group_index}]: expected a group name and items list")
+                                continue
+                        for item_index, skill in enumerate(group["items"]):
+                                if isinstance(skill, str):
+                                        continue
+                                if not isinstance(skill, dict) or not value_present(skill.get("label")) or not re.fullmatch(r"#[a-z0-9]+(?:-[a-z0-9]+)*", str(skill.get("proof", ""))):
+                                        errors.append(f"{lang}.json skills[{group_index}].items[{item_index}]: expected text or a labeled proof link")
+        ids = {item.get("id") for item in timeline if isinstance(item, dict) and isinstance(item.get("id"), str)}
+        for lang, data in (("en", en), ("fi", fi)):
+                for group in data.get("skills", []):
+                        if isinstance(group, dict):
+                                for skill in group.get("items", []):
+                                        if isinstance(skill, dict) and isinstance(skill.get("proof"), str) and skill["proof"][1:] not in ids:
+                                                errors.append(f"{lang}.json skill {skill.get('label', '')}: proof target is missing from timeline")
         validate_timeline(timeline, errors, site_root)
 
 
