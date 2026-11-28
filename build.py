@@ -21,7 +21,7 @@ UI_KEYS = [
         "externalRequests", "siteBytes", "contrastPass", "contrastFail", "changelogIntro", "nowIntro", "updated",
         "buildChecked", "contrastLabel", "lighthouseLabel", "lighthouseFooter", "timeline", "profile", "whatBuilt",
         "learned", "filterLegend", "filterAll", "filterHackathons", "filterProjects", "filterRoles", "hackathon",
-        "project", "role", "teamSize", "proofSkill", "emailMe", "emailSubject"
+        "project", "role", "teamSize", "proofSkill", "emailMe", "emailSubject", "printVersion", "printAvailability", "printEducation", "printSkills", "printProjects", "printExperience"
 ]
 
 

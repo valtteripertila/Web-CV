@@ -105,7 +105,8 @@ def language_parity_check():
     now = json.loads((ROOT / "content/now.json").read_text(encoding="utf-8"))
     pairs = {"home": (SITE / "index.html", SITE / "fi/index.html"),
              "how": (SITE / en["slugs"]["how"] / "index.html", SITE / "fi" / fi["slugs"]["how"] / "index.html"),
-             "changelog": (SITE / en["slugs"]["changelog"] / "index.html", SITE / "fi" / fi["slugs"]["changelog"] / "index.html")}
+             "changelog": (SITE / en["slugs"]["changelog"] / "index.html", SITE / "fi" / fi["slugs"]["changelog"] / "index.html"),
+             "print": (SITE / "cv-print/index.html", SITE / "fi/cv-print/index.html")}
     if now.get("items"):
         pairs["now"] = (SITE / en["slugs"]["now"] / "index.html", SITE / "fi" / fi["slugs"]["now"] / "index.html")
     actual = {path.resolve() for path in SITE.rglob("*.html") if path.name != "404.html"}
@@ -446,6 +447,27 @@ def changelog_heading_check(site_root=SITE):
     return [] if len(matches) == 1 else [f"{path.relative_to(site_root)}: expected one h1/h2 Changelog heading, found {len(matches)}"]
 
 
+def print_cv_check():
+    errors = []
+    shared = json.loads((ROOT / "content/shared.json").read_text(encoding="utf-8"))
+    for lang in ("en", "fi"):
+        data = json.loads((ROOT / f"content/{lang}.json").read_text(encoding="utf-8"))
+        path = SITE / ("cv-print/index.html" if lang == "en" else "fi/cv-print/index.html")
+        if not path.exists():
+            errors.append(f"{path.relative_to(SITE)}: print CV is missing")
+            continue
+        document = html.unescape(path.read_text(encoding="utf-8"))
+        if '<meta name="robots" content="noindex">' not in document:
+            errors.append(f"{path.relative_to(SITE)}: missing noindex")
+        required = [shared["name"], data["hero"]["status"][-1]["value"]]
+        required.extend(" · ".join(item.get(key, "") for key in ("degree", "school", "years") if item.get(key)) for item in data.get("education", []))
+        required.extend(skill.get("label", "") if isinstance(skill, dict) else skill for group in data.get("skills", []) for skill in group.get("items", []))
+        for value in required:
+            if value and value not in document:
+                errors.append(f"{path.relative_to(SITE)}: missing content {value}")
+    return errors
+
+
 def privacy_check():
     errors = []
     phone_pattern = re.compile(r"(?<![\w])(?:\+?\d[\s().-]*){9,}(?![\w])")
@@ -477,7 +499,8 @@ def freshness_check():
         generated = ("index.html", "fi/index.html", "404.html", "favicon.svg", "sitemap.xml", "robots.txt", "llms.txt")
         for en_name, fi_name in (("how-this-site-is-built/index.html", "fi/sivuston-rakenne/index.html"),
                                  ("changelog/index.html", "fi/muutosloki/index.html"),
-                                 ("now/index.html", "fi/nyt/index.html")):
+                                 ("now/index.html", "fi/nyt/index.html"),
+                                 ("cv-print/index.html", "fi/cv-print/index.html")):
             for name in (en_name, fi_name):
                 if (SITE / name).exists() or (Path(temporary) / name).exists():
                     generated += (name,)
@@ -504,6 +527,7 @@ CHECKS = [
     ("changelog-heading", "The changelog has one page heading.", "Muutoslokissa on vain yksi sivuotsikko.", changelog_heading_check),
     ("contrast", "Both theme palettes pass measured contrast thresholds.", "Molempien teemojen värit läpäisevät mitatut kontrastirajat.", contrast_check),
     ("og-lock", "Open Graph images match their source inputs.", "Open Graph -kuvat vastaavat lähdesisältöään.", og_lock_check),
+    ("print", "Both print CVs include localized content and noindex.", "Molemmat tulostettavat CV:t sisältävät kieliversion ja noindex-merkinnän.", print_cv_check),
     ("privacy", "No private contact details are included.", "Yksityisiä yhteystietoja ei ole lisätty.", privacy_check),
     ("freshness", "Committed site files match a fresh temporary build.", "Julkaistut sivutiedostot vastaavat väliaikaista uutta koostetta.", freshness_check),
 ]

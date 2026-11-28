@@ -150,3 +150,24 @@ html.timeline-filters-ready .filters { display: flex; }
 
 .contact-buttons a.email-cta { color: var(--background); background: var(--accent); font-weight: 700; }
 .contact-buttons a.email-cta:hover { color: var(--background); }
+
+@media print {
+  @page { size: A4; margin: 10mm; }
+  body { font-size: 8.5pt; line-height: 1.2; }
+  body.print-cv-page #main { padding: 0; }
+  .cv-print { color: #000; background: #fff; }
+  .cv-print header { margin-bottom: 3mm; }
+  .cv-print h1 { font-size: 20pt; margin: 0 0 1mm; }
+  .cv-print h2 { font-size: 10pt; margin: 1.5mm 0 .6mm; }
+  .cv-print h2::before { content: none; }
+  .cv-print h3 { display: inline; font-size: 8.5pt; }
+  .cv-print p { margin: 0 0 .6mm; }
+  .cv-print .print-section { padding: 1mm 0; border: 0; }
+  .cv-print ul { margin: 0; padding-left: 4mm; }
+  .cv-print li + li { margin-top: 0; }
+  .cv-print .print-skills { columns: 2; }
+  .cv-print .print-project { break-inside: avoid; margin: 0 0 .8mm; }
+  .cv-print .print-project p { display: inline; }
+  .cv-print .print-result { margin-left: 1mm; }
+  .cv-print a { color: #000; }
+}

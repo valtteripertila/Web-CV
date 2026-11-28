@@ -161,7 +161,13 @@
     "linkedin": "LinkedIn",
     "proofSkill": "Katso näyttö taidosta {skill}",
     "emailMe": "Lähetä sähköpostia",
-    "emailSubject": "Kesätyö / harjoittelu"
+    "emailSubject": "Kesätyö / harjoittelu",
+    "printVersion": "Tulostettava / PDF-versio",
+    "printAvailability": "Saatavuus",
+    "printEducation": "Koulutus",
+    "printSkills": "Taidot",
+    "printProjects": "Projektit",
+    "printExperience": "Työkokemus"
   },
   "hero": {
     "prompt": "whoami",

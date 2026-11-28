@@ -167,6 +167,18 @@ class BuildTests(unittest.TestCase):
         build.validate_timeline([legacy],legacy_errors)
         self.assertEqual([],legacy_errors)
 
+    def test_print_cv_routes_include_localized_noindex_content_and_menu_links(self):
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        pages=sitebuilder.page_dirs(en,fi,False)
+        self.assertEqual({"en":"cv-print","fi":"fi/cv-print"},pages["print"])
+        self.assertEqual([],check.print_cv_check())
+        for path,label in ((ROOT/"site/cv-print/index.html","Print / PDF version"),(ROOT/"site/fi/cv-print/index.html","Tulostettava / PDF-versio")):
+            doc=path.read_text(encoding="utf-8")
+            self.assertIn('<meta name="robots" content="noindex">',doc)
+            self.assertIn(label,doc)
+            self.assertIn('size: A4', (ROOT/"site/style.css").read_text(encoding="utf-8"))
+
     def test_hero_email_cta_has_encoded_localized_subject_and_social_links(self):
         en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
         fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))

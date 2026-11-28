@@ -161,7 +161,13 @@
     "linkedin": "LinkedIn",
     "proofSkill": "See proof for {skill}",
     "emailMe": "Email me",
-    "emailSubject": "Summer job / internship enquiry"
+    "emailSubject": "Summer job / internship enquiry",
+    "printVersion": "Print / PDF version",
+    "printAvailability": "Availability",
+    "printEducation": "Education",
+    "printSkills": "Skills",
+    "printProjects": "Projects",
+    "printExperience": "Experience"
   },
   "hero": {
     "prompt": "whoami",

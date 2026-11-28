@@ -94,6 +94,7 @@ def page_dirs(en, fi, has_now):
              "changelog": {"en": en["slugs"]["changelog"], "fi": "fi/" + fi["slugs"]["changelog"]}}
     if has_now:
         pages["now"] = {"en": en["slugs"]["now"], "fi": "fi/" + fi["slugs"]["now"]}
+    pages["print"] = {"en": "cv-print", "fi": "fi/cv-print"}
     return pages
 
 
@@ -126,6 +127,8 @@ def site_menu(lang, page, pages, shared, text):
     groups = []
     about = [(key, ui[label]) for key, label in (("how", "navHow"), ("changelog", "navChangelog")) if key in pages]
     more = [("now", ui["navNow"])] if "now" in pages else []
+    if "print" in pages:
+        more.append(("print", ui["printVersion"]))
     more.extend((key, label) for key, label, url in (("github", "GitHub", shared.get("github")), ("linkedin", "LinkedIn", shared.get("linkedin"))) if real(url))
     for label, entries in ((ui["menuAbout"], about), (ui["menuMore"], more)):
         if not entries:
@@ -331,6 +334,49 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
     return "".join(result)
 
 
+def print_body(lang, shared, text, timeline):
+    ui = text["ui"]
+    availability = next((row.get("value", "") for row in text.get("hero", {}).get("status", []) if row.get("key") == "availability"), "")
+    contact = [link("mailto:" + shared.get("email", ""), shared.get("email", ""))]
+    contact.extend(filter(None, (link(shared.get("github"), ui["github"]), link(shared.get("linkedin"), ui["linkedin"]))))
+    contact_html = " · ".join(value for value in contact if value)
+    education = []
+    for item in text.get("education", []):
+        parts = [item.get(key, "") for key in ("degree", "school", "years") if filled(item.get(key))]
+        if parts:
+            education.append(" · ".join(parts))
+    skill_groups = []
+    for group in text.get("skills", []):
+        labels = [item.get("label", "") if isinstance(item, dict) else item for item in group.get("items", [])]
+        labels = [label for label in labels if filled(label)]
+        if labels:
+            skill_groups.append(f'<li><strong>{esc(group.get("group", ""))}:</strong> {esc(", ".join(labels))}</li>')
+    projects = []
+    visible = [(index, item) for index, item in enumerate(timeline) if item.get("type") in ("hackathon", "project")]
+    for _, item in sorted(visible, key=timeline_sort_key, reverse=True):
+        project = item.get("project", {}) if item.get("type") == "hackathon" else item
+        title = localized_text(project.get("title", ""), lang)
+        subtitle = project.get("subtitle", {}).get(lang, "") if isinstance(project.get("subtitle"), dict) else ""
+        description = project.get("description", {}).get(lang, "")
+        summary = subtitle or (description.split(". ", 1)[0].rstrip(".") + "." if description else "")
+        if not title:
+            continue
+        result = item.get("result", {}).get(lang, "") if item.get("type") == "hackathon" else ""
+        result = " · ".join(line.strip() for line in result.splitlines() if line.strip())
+        result_html = f'<p class="print-result"><strong>{esc(result)}</strong></p>' if result else ""
+        projects.append(f'<article class="print-project"><h3>{esc(title)}</h3><p>{esc(summary)}</p>{result_html}</article>')
+    role = next((item for item in timeline if item.get("type") == "role" and item.get("employer") == "Forward Forever"), None)
+    role_html = ""
+    if role:
+        points = role.get("points", {}).get(lang, [])
+        role_html = f'<section class="print-section" id="print-experience"><h2>{esc(ui["printExperience"])}</h2><h3>{esc(role.get("role", {}).get(lang, ""))} · Forward Forever</h3><ul>{"".join(f"<li>{esc(point)}</li>" for point in points)}</ul></section>'
+    return (f'<div class="cv-print"><header><h1>{esc(shared.get("name", ""))}</h1><p class="print-contact">{contact_html}</p>'
+            f'<p class="print-availability"><strong>{esc(ui["printAvailability"])}:</strong> {esc(availability)}</p></header>'
+            f'<section class="print-section" id="print-education"><h2>{esc(ui["printEducation"])}</h2><ul>{"".join(f"<li>{esc(item)}</li>" for item in education)}</ul></section>'
+            f'<section class="print-section" id="print-skills"><h2>{esc(ui["printSkills"])}</h2><ul class="print-skills">{"".join(skill_groups)}</ul></section>'
+            f'<section class="print-section" id="print-projects"><h2>{esc(ui["printProjects"])}</h2>{"".join(projects)}</section>{role_html}</div>')
+
+
 def how_body(lang, shared, text, site_info, quality, pages, sizes, contrast_pass, root, sample=False):
     ui = text["ui"]
     labels = ui
@@ -445,7 +491,7 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
     if asset_prefix == "./":
         asset_prefix = ""
     ui = text["ui"]
-    page_title = shared["name"] if page == "home" else ui["navHow"] if page == "how" else ui["navChangelog"] if page == "changelog" else ui["navNow"]
+    page_title = shared["name"] if page == "home" else ui["navHow"] if page == "how" else ui["navChangelog"] if page == "changelog" else ui["printVersion"] if page == "print" else ui["navNow"]
     description = text.get("ui", {}).get("meta_description", "")
     canonical = page_url(domain, directory)
     counterpart = page_url(domain, pages[page]["fi" if lang == "en" else "en"])
@@ -478,19 +524,21 @@ def render_document(page, lang, shared, text, body, pages, domain, sizes, contra
               f'<span class="build-facts">{esc(fact)}</span>'
               f'<a class="back-to-top" href="#top">{esc(ui["backToTop"])}</a></footer>')
     prefix = "SAMPLE " if sample else ""
+    body_class = ' class="print-cv-page"' if page == "print" else ""
     return "\n".join([
         "<!doctype html>", f'<html lang="{esc(lang)}"><head>',
         '  <meta charset="utf-8">', '  <meta name="viewport" content="width=device-width, initial-scale=1">',
         f'  <title>{esc(title_tag)}</title>', f'  <meta name="description" content="{esc(description)}">',
+        *(['  <meta name="robots" content="noindex">'] if page == "print" else []),
         '  <meta name="color-scheme" content="dark light">', '  <meta name="theme-color" content="#101614">',
         f'  <link rel="canonical" href="{esc(canonical)}">', f'  {lang_alts}',
         f'  <meta property="og:title" content="{esc(title_tag)}">', f'  <meta property="og:locale" content="{esc(text.get("locale", "en_US" if lang == "en" else "fi_FI"))}">', f'  <meta property="og:description" content="{esc(description)}">',
         f'  <meta property="og:type" content="website"><meta property="og:url" content="{esc(canonical)}">{og}',
         f'  <link rel="icon" href="{depth_path}favicon.svg" type="image/svg+xml">',
         f'  <script src="{depth_path}theme.js"></script>', f'  <link rel="stylesheet" href="{depth_path}style.css">', f'  {structured_tag}',
-        '</head><body id="top">', f'  <a class="skip-link" href="#main">{esc(ui["skip"])}</a>',
+        f'</head><body id="top"{body_class}>', f'  <a class="skip-link" href="#main">{esc(ui["skip"])}</a>',
         f'  {bar}',
-        f'  <main id="main">{("<section class=page-hero><p class=shell-prompt>$ cat "+esc(page)+"</p><h1>"+esc(title)+"</h1><p class=page-intro>"+esc(ui["pageIntro"])+"</p></section>" if page != "home" else "")}{body}</main>', f'  {footer}', '</body></html>', ""
+        f'  <main id="main">{("<section class=page-hero><p class=shell-prompt>$ cat "+esc(page)+"</p><h1>"+esc(title)+"</h1><p class=page-intro>"+esc(ui["pageIntro"])+"</p></section>" if page not in ("home", "print") else "")}{body}</main>', f'  {footer}', '</body></html>', ""
     ])
 
 
@@ -592,7 +640,7 @@ def generate(root, shared, en, fi, timeline, site_info, quality, changelog, now,
             total = updated
         size[lang] = total
     out_files = {}
-    for page in ("home", "how", "changelog", "now"):
+    for page in ("home", "how", "changelog", "now", "print"):
         if page not in pages:
             continue
         for lang, text in (("en", en), ("fi", fi)):
@@ -602,6 +650,8 @@ def generate(root, shared, en, fi, timeline, site_info, quality, changelog, now,
                 body = how_body(lang, shared, text, site_info, quality, pages, size, contrast_pass, root, sample)
             elif page == "changelog":
                 body = changelog_body(lang, text, changelog)
+            elif page == "print":
+                body = print_body(lang, shared, text, timeline)
             else:
                 body = now_body(lang, text, now)
             document = render_document(page, lang, shared, text, body, pages, domain, size, contrast_pass, root, sample)
@@ -623,6 +673,8 @@ def generate(root, shared, en, fi, timeline, site_info, quality, changelog, now,
     (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {domain.rstrip('/')}/sitemap.xml\n", encoding="utf-8", newline="\n")
     sitemap_urls = []
     for page, langs in pages.items():
+        if page == "print":
+            continue
         for lang in ("en", "fi"):
             sitemap_urls.append((page, lang, page_url(domain, langs[lang])))
     sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
