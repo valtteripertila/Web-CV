@@ -53,7 +53,7 @@
     "present": "Present",
     "backToTop": "Back to top",
     "meta_title": "Valtteri Pertilä – Computer Science student building with Python, web and AI",
-    "meta_description": "Bilingual CV of first-year Computer Science student Valtteri Pertilä at Aalto University, featuring projects, hackathons and experience.",
+    "meta_description": "Computer Science student at Aalto building with Python, web and AI; Junction 2026: 1st and 3rd in two tracks; IBM Bob prize winner; available until 6 Sep 2027.",
     "notFoundTitle": "Page not found",
     "notFoundText": "The page you are looking for does not exist.",
     "themeToLight": "Switch to light theme",
@@ -135,7 +135,7 @@
       },
       {
         "key": "availability",
-        "value": "From 26 April 2027, after Aalto's period IV ends"
+        "value": "Available until Aalto's period I starts on 6 September 2027 · open to discussing part time"
       }
     ]
   }

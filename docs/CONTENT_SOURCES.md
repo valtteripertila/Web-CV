@@ -1,10 +1,10 @@
 # Content sources
 
-Checked 2026-11-27
+Checked 2026-11-28
 
 | Fact | Source |
 |---|---|
-| Availability from 26 April 2027 (Aalto Period IV ends 25 April 2027) | https://www.aalto.fi/en/student-guide/academic-calendar; https://www.aalto.fi/en/programme-directors-handbook/teaching-periods |
+| Availability end date: user stated availability until Period I starts; Aalto Period I 2027–28 starts 6 September 2027, after orientation week 30 August–5 September 2027 (checked 2026-11-28) | User-stated availability; https://www.aalto.fi/en/student-guide/academic-calendar |
 | Current site address | https://cv.valtteri-pertila.workers.dev |
 | “My commits” links | GitHub commit histories filtered by `author=valtteripertila`; only commits linked to that GitHub account appear |
 | Junction 2026 dates, venue, theme, participant count, prizes, team size limit | https://2026.hackjunction.com/ |

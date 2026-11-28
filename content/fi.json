@@ -53,7 +53,7 @@
     "present": "nykyhetki",
     "backToTop": "Takaisin ylös",
     "meta_title": "Valtteri Pertilä – Tietojenkäsittelytieteen opiskelija, joka rakentaa Pythonilla, webillä ja tekoälyllä",
-    "meta_description": "Kaksikielinen ansioluettelo: Aalto-yliopiston ensimmäisen vuoden tietojenkäsittelytieteen opiskelija Valtteri Pertilä, projektit, hackathonit ja työkokemus.",
+    "meta_description": "Tietojenkäsittelytieteen opiskelija rakentaa Pythonilla, webillä ja tekoälyllä; Junction 2026:n 1. ja 3. sija, IBM Bob -voitto; käytettävissä 6.9.2027 asti.",
     "notFoundTitle": "Sivua ei löytynyt",
     "notFoundText": "Etsimääsi sivua ei ole olemassa.",
     "themeToLight": "Vaihda vaaleaan teemaan",
@@ -135,7 +135,7 @@
       },
       {
         "key": "availability",
-        "value": "26.4.2027 alkaen, kun Aalto-yliopiston periodi IV päättyy"
+        "value": "Vapaana 6.9.2027 asti, jolloin Aalto-yliopiston periodi I alkaa · avoin osa-aikatyölle"
       }
     ]
   }

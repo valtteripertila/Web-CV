@@ -2,11 +2,13 @@
 
 Computer Science student building with Python, web and AI
 First-year Computer Science student in Espoo who builds data and web projects at hackathons. My team placed 1st and 3rd in two challenge tracks at Junction 2026, and we won IBM's Best Use of IBM Bob prize at the AaltoAI hackathon.
+Availability: Available until Aalto's period I starts on 6 September 2027 · open to discussing part time
 - [EN CV](https://cv.valtteri-pertila.workers.dev/)
 - [How this site is built](https://cv.valtteri-pertila.workers.dev/how-this-site-is-built/)
 - [Changelog](https://cv.valtteri-pertila.workers.dev/changelog/)
 Tietojenkäsittelytieteen opiskelija, joka rakentaa Pythonilla, webillä ja tekoälyllä
 Tietojenkäsittelytieteen ensimmäisen vuoden opiskelija Espoosta, joka rakentaa data- ja web-projekteja hackathoneissa. Tiimini sijoittui Junction 2026 -tapahtumassa ensimmäiseksi ja kolmanneksi kahdella haasteraidalla, ja voitimme IBM:n palkinnon parhaasta IBM Bobin käyttötavasta AaltoAI-hackathonissa.
+Saatavuus: Vapaana 6.9.2027 asti, jolloin Aalto-yliopiston periodi I alkaa · avoin osa-aikatyölle
 - [FI CV](https://cv.valtteri-pertila.workers.dev/fi/)
 - [Sivuston rakenne](https://cv.valtteri-pertila.workers.dev/fi/sivuston-rakenne/)
 - [Muutosloki](https://cv.valtteri-pertila.workers.dev/fi/muutosloki/)

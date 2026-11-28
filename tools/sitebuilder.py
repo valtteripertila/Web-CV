@@ -482,6 +482,9 @@ def make_llms(shared, en, fi, timeline, pages, domain):
             lines.append(text["headline"])
         if real(text.get("summary")):
             lines.append(text["summary"])
+        availability = next((row.get("value", "") for row in text.get("hero", {}).get("status", []) if row.get("key") == "availability"), "")
+        if real(availability):
+            lines.append(("Availability: " if lang == "en" else "Saatavuus: ") + availability)
         lines.append(f"- [{lang.upper()} CV]({page_url(domain, pages['home'][lang])})")
         lines.append(f"- [{text['ui']['navHow']}]({page_url(domain, pages['how'][lang])})")
         lines.append(f"- [{text['ui']['navChangelog']}]({page_url(domain, pages['changelog'][lang])})")
