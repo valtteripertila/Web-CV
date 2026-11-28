@@ -8,11 +8,12 @@ Checked 2026-11-28
 | Current site address | https://cv.valtteri-pertila.workers.dev |
 | “My commits” links | GitHub commit histories filtered by `author=valtteripertila`; only commits linked to that GitHub account appear |
 | Junction 2026 dates, venue, theme, participant count, prizes, team size limit | https://2026.hackjunction.com/ |
-| Junction placements (3rd in Hostinger main track, 1st in Oxylabs tech track) | Reported by the author |
-| Junction challenge context | Facts supplied by the user; Oxylabs endpoint details still need checking against the project README |
+| Junction placements (3rd in Hostinger main track, 1st in Oxylabs tech track) | User-reported; award certificates stored under site/proofs/ |
+| Junction demo status | User report: the demo URL serves simulated proofs of concept; the main solution is offline |
+| Oxylabs endpoints | [sources/oxylabs.py](https://github.com/JustinasLa/gemini-4-braincells/blob/main/sources/oxylabs.py) calls /search for live web results and /scrape to fetch pages and extract facts |
 | Shill or Chill description and tech stack | README of github.com/JustinasLa/gemini-4-braincells |
 | Team of 4 at Junction | Same README, "Credits" |
-| Media pipeline, dashboard, mobile fixes, Bluesky lookup fix; Copilot co-authorship | Commit history of github.com/JustinasLa/gemini-4-braincells (identities "Valtteri Pertila" and "Junction Espoo seat (Valtteri)"; "Co-authored-by: Copilot" trailers) |
+| Media pipeline, dashboard, mobile fixes, Bluesky lookup fix; Copilot co-authorship | Commit history of github.com/JustinasLa/gemini-4-braincells (sample "Valtteri Pertila" author resolves to valtteripertila; sample "Junction Espoo seat (Valtteri)" author currently has no linked profile; ownership confirmation pending; Copilot co-author trailers) |
 | Use of AI coding agents by the Junction team | Same README, "Tech stack" (OpenAI Codex) |
 | AaltoAI Hackathon details, prize | Reported by the author |
 | Behavioral biometrics project description | `design_choices.txt` in github.com/SiroogaTheProgrammer/IBM_hackathon_2026 |

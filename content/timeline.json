@@ -53,6 +53,30 @@
         "commits": "https://github.com/JustinasLa/gemini-4-braincells/commits?author=valtteripertila",
         "writeup": ""
       },
+      "proofs": [
+        {
+          "result": {
+            "en": "Hostinger main track — 3rd place",
+            "fi": "Hostingerin pääkilpailuraidalla — 3. sija"
+          },
+          "file": "proofs/junction-2026-hostinger-3rd-place.pdf",
+          "label": {
+            "en": "View award certificate (PDF)",
+            "fi": "Avaa palkintotodistus (PDF)"
+          }
+        },
+        {
+          "result": {
+            "en": "Oxylabs tech track — 1st place",
+            "fi": "Oxylabsin teknologiaraidalla — 1. sija"
+          },
+          "file": "proofs/junction-2026-oxylabs-1st-place.pdf",
+          "label": {
+            "en": "View award certificate (PDF)",
+            "fi": "Avaa palkintotodistus (PDF)"
+          }
+        }
+      ],
       "media": [
         {
           "file": "shill-or-chill/demo.png",
@@ -78,8 +102,8 @@
           "fi": "Hostingerin pääkilpailuraidalla"
         },
         "description": {
-          "en": "Build a live tool on Hostinger with a public URL to detect coordinated propaganda, bot-driven amplification, or other bad-actor behavior. Judges prioritized sound detection and honest false-positive handling over interface polish. The live demo ran on Hostinger infrastructure.",
-          "fi": "Rakenna Hostingerissä julkiseen URL-osoitteeseen avautuva työkalu, joka tunnistaa koordinoitua propagandaa, bottien levitystä tai muuta haitallista toimintaa. Arvioinnissa painotettiin perusteltua tunnistusta ja väärien positiivisten rehellistä käsittelyä käyttöliittymän viimeistelyn sijaan. Live-demo toimi Hostingerin palvelimella."
+          "en": "Build a live tool on Hostinger with a public URL to detect coordinated propaganda, bot-driven amplification, or other bad-actor behavior. Judges prioritized sound detection and honest false-positive handling over interface polish. The Hostinger demo URL currently runs simulated proof-of-concept demos; the main solution is offline.",
+          "fi": "Rakenna Hostingerissä julkiseen URL-osoitteeseen avautuva työkalu, joka tunnistaa koordinoitua propagandaa, bottien levitystä tai muuta haitallista toimintaa. Arvioinnissa painotettiin perusteltua tunnistusta ja väärien positiivisten rehellistä käsittelyä käyttöliittymän viimeistelyn sijaan. Hostingerin demo-osoitteessa toimii tällä hetkellä simuloituja proof-of-concept-demoja; varsinainen ratkaisu on offline-tilassa."
         }
       },
       {
@@ -88,8 +112,8 @@
           "fi": "Oxylabsin teknologiaraidalla"
         },
         "description": {
-          "en": "Use the Oxylabs Web API at runtime to search current sources, read pages, and answer with citations instead of stale training data. The submission reused the team's repository and demo and included a short note explaining which API endpoints were used and why.",
-          "fi": "Käytä Oxylabs Web API:a ajon aikana ajantasaisten lähteiden etsimiseen ja lukemiseen sekä vastaa lähdeviitteiden kanssa vanhentuneen koulutusdatan sijaan. Palautus hyödynsi tiimin repositoriota ja demoa sekä sisälsi lyhyen selvityksen käytetyistä API-päätepisteistä ja niiden valintaperusteista."
+          "en": "Use the Oxylabs Web API at runtime to search current sources, read pages, and answer with citations instead of stale training data. The submission reused the team's repository and demo and included a short note explaining which API endpoints were used and why. In the source code, Oxylabs Web API /search finds web sources and /scrape fetches pages and extracts facts for citations.",
+          "fi": "Käytä Oxylabs Web API:a ajon aikana ajantasaisten lähteiden etsimiseen ja lukemiseen sekä vastaa lähdeviitteiden kanssa vanhentuneen koulutusdatan sijaan. Palautus hyödynsi tiimin repositoriota ja demoa sekä sisälsi lyhyen selvityksen käytetyistä API-päätepisteistä ja niiden valintaperusteista. Lähdekoodissa Oxylabs Web API:n /search hakee verkkolähteitä ja /scrape noutaa sivuja sekä poimii niistä lähteisiin perustuvia tietoja."
         }
       }
     ],

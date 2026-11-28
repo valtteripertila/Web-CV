@@ -132,6 +132,7 @@ html.timeline-filters-ready .filters { display: flex; }
 .media-gallery figure { min-width: 0; }
 .result-panels { display: grid; grid-template-columns: repeat(auto-fit,minmax(12rem,1fr)); gap: .5rem; list-style: none; margin: .75rem 0; padding: 0; }
 .result-panel { min-width: 0; margin: 0; padding: .55rem .7rem; border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: .2rem; background: var(--background); color: var(--text); overflow-wrap: anywhere; }
+.result-proof { display: block; width: fit-content; margin-top: .35rem; font-size: var(--font-small); }
 .media-gallery figcaption { margin-top: .25rem; color: var(--muted); font-size: var(--font-small); }
 .media-gallery figure { margin: 0; }
 .media-gallery img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: .2rem; }

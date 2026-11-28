@@ -291,7 +291,17 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
             if role: info.append(("my_role",role))
             resultval=item.get("result",{}).get(lang,"")
             result_lines=[line.strip() for line in resultval.splitlines() if line.strip()] if isinstance(resultval,str) else []
-            result_items="".join("<li class=\"result-panel\">"+esc(line)+"</li>" for line in result_lines)
+            proofs=p.get("proofs",[])
+            result_items=[]
+            for line in result_lines:
+                proof=next((row for row in proofs if localized_text(row.get("result",{}),lang)==line),None)
+                proof_html=""
+                if proof:
+                    href=("../" if lang=="fi" else "")+proof.get("file","")
+                    label=localized_text(proof.get("label",{}),lang)
+                    if label: proof_html=f'<a class="result-proof" href="{esc(href)}">{esc(label)}</a>'
+                result_items.append("<li class=\"result-panel\">"+esc(line)+proof_html+"</li>")
+            result_items="".join(result_items)
             results_html=f'<ul class="result-panels">{result_items}</ul>' if result_lines else ""
             challenge_rows = [(localized_text(challenge.get("track", ""), lang), challenge.get("description", {}).get(lang, ""))
                               for challenge in item.get("challenges", []) if isinstance(challenge, dict)]

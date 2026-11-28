@@ -1,8 +1,5 @@
 # TODO
 
-- Add a public proof link for the Junction 2026 placements.
 - Add relevant Aalto courses and grades.
-- Verify that the Junction demo link still works.
-- Confirm that both Git commit identities are mine: `Valtteri Pertila` and `Junction Espoo seat (Valtteri)`.
-- Check the Shill or Chill README for the Oxylabs endpoints note and add one factual line to the Junction entry.
-- Run the Lighthouse job through CI and paste its measured scores into `content/quality.json`.
+- Confirm the Junction commit identities before making identity-based attribution public. GitHub links a sample commit by Valtteri Pertila (2ad1d114) to the valtteripertila profile; a sample commit by Junction Espoo seat (Valtteri) (2d1eafef) currently has no linked GitHub author profile. Check whether the latter author email is yours or an alias you control and verified in GitHub Settings > Emails. Check author and committer fields separately. Treat Co-authored-by: Copilot trailers as co-authorship, not proof of the commit author’s identity. Keep the filtered My commits link only for identities that resolve to your GitHub account.
+- Run the Lighthouse job through CI and paste its measured scores into content/quality.json.
