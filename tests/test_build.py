@@ -167,6 +167,14 @@ class BuildTests(unittest.TestCase):
         build.validate_timeline([legacy],legacy_errors)
         self.assertEqual([],legacy_errors)
 
+    def test_seo_description_length_and_outputs_match_localized_content(self):
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        self.assertTrue(150 <= len(en["ui"]["meta_description"]) <= 160)
+        self.assertTrue(150 <= len(fi["ui"]["meta_description"]) <= 160)
+        self.assertEqual([],check.seo_description_check())
+        self.assertEqual([],check.og_lock_check())
+
     def test_print_cv_routes_include_localized_noindex_content_and_menu_links(self):
         en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
         fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))

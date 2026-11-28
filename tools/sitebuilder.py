@@ -549,6 +549,9 @@ def make_llms(shared, en, fi, timeline, pages, domain):
             lines.append(text["headline"])
         if real(text.get("summary")):
             lines.append(text["summary"])
+        meta_description = text.get("ui", {}).get("meta_description", "")
+        if real(meta_description):
+            lines.append(meta_description)
         availability = next((row.get("value", "") for row in text.get("hero", {}).get("status", []) if row.get("key") == "availability"), "")
         if real(availability):
             lines.append(("Availability: " if lang == "en" else "Saatavuus: ") + availability)

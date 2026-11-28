@@ -26,6 +26,10 @@ def image_inputs():
     return {
         "name": shared["name"],
         "headlines": {"en": english["headline"], "fi": finnish["headline"]},
+        "availability": {
+            "en": next(row["value"] for row in english["hero"]["status"] if row["key"] == "availability"),
+            "fi": next(row["value"] for row in finnish["hero"]["status"] if row["key"] == "availability"),
+        },
         "palettes": palettes,
     }
 
@@ -35,7 +39,7 @@ def input_hash():
     return hashlib.sha256(encoded).hexdigest()
 
 
-def page_document(name, headline, palette):
+def page_document(name, headline, availability, palette):
     background = palette["--background"]
     text = palette["--text"]
     accent = palette["--accent"]
@@ -43,8 +47,8 @@ def page_document(name, headline, palette):
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
       *{{box-sizing:border-box}}body{{margin:0;width:1200px;height:630px;padding:76px;background:{background};color:{text};font:32px/1.5 system-ui,sans-serif}}
       main{{height:100%;display:flex;flex-direction:column;justify-content:center;border-left:8px solid {accent};padding-left:54px}}
-      p{{color:{accent};font:24px ui-monospace,monospace}}h1{{font-size:64px;line-height:1.08;margin:0 0 24px}}h2{{max-width:950px;font-size:34px;line-height:1.25;font-weight:500;color:{muted};margin:0}}
-    </style></head><body><main><p>$ whoami</p><h1>{html.escape(name)}</h1><h2>{html.escape(headline)}</h2></main></body></html>"""
+      p{{color:{accent};font:24px ui-monospace,monospace}}h1{{font-size:64px;line-height:1.08;margin:0 0 24px}}h2{{max-width:950px;font-size:34px;line-height:1.25;font-weight:500;color:{muted};margin:0}}.availability{{max-width:950px;margin:22px 0 0;color:{muted};font:22px/1.35 system-ui,sans-serif}}
+    </style></head><body><main><p>$ whoami</p><h1>{html.escape(name)}</h1><h2>{html.escape(headline)}</h2><div class="availability">{html.escape(availability)}</div></main></body></html>"""
 
 
 def render_with_playwright(playwright, output, document):
@@ -79,7 +83,7 @@ def main():
         with sync_playwright() as playwright:
             for lang, filename in targets:
                 render_with_playwright(playwright, ROOT / "site" / filename,
-                                       page_document(inputs["name"], inputs["headlines"][lang], palettes["dark"]))
+                                       page_document(inputs["name"], inputs["headlines"][lang], inputs["availability"][lang], palettes["dark"]))
     else:
         candidates = [shutil.which(name) for name in ("chrome", "chrome.exe", "msedge", "msedge.exe")]
         candidates.extend((r"C:\Program Files\Google\Chrome\Application\chrome.exe",
@@ -90,7 +94,7 @@ def main():
         with tempfile.TemporaryDirectory(prefix="cv-og-") as temporary:
             for lang, filename in targets:
                 render_with_browser(browser, ROOT / "site" / filename,
-                                    page_document(inputs["name"], inputs["headlines"][lang], palettes["dark"]), temporary)
+                                    page_document(inputs["name"], inputs["headlines"][lang], inputs["availability"][lang], palettes["dark"]), temporary)
 
     LOCK.write_text(input_hash() + "\n", encoding="utf-8", newline="\n")
     print("Generated site/og.png and site/og-fi.png; updated tools/og.lock")

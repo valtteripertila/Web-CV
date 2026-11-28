@@ -411,6 +411,25 @@ def domain_consistency_check(site_root=SITE):
     return errors
 
 
+def seo_description_check(site_root=SITE):
+    errors = []
+    llms = (Path(site_root) / "llms.txt").read_text(encoding="utf-8")
+    for lang, filename in (("en", "index.html"), ("fi", "fi/index.html")):
+        data = json.loads((ROOT / f"content/{lang}.json").read_text(encoding="utf-8"))
+        description = data["ui"].get("meta_description", "")
+        if not 150 <= len(description) <= 160:
+            errors.append(f"{lang}: meta description must be 150–160 characters (got {len(description)})")
+        page = Path(site_root) / filename
+        parser = PageMetadata()
+        parser.feed(page.read_text(encoding="utf-8"))
+        for key in ("description", "og:description"):
+            if parser.meta.get(key) != description:
+                errors.append(f"{filename}: {key} does not match the localized meta description")
+        if description not in llms:
+            errors.append(f"llms.txt: missing {lang} meta description")
+    return errors
+
+
 def code_overflow_check():
     css = (SITE / "style.css").read_text(encoding="utf-8")
     if re.search(r"overflow-x\s*:\s*(?:auto|scroll)\b", css, re.I):
@@ -528,6 +547,7 @@ CHECKS = [
     ("contrast", "Both theme palettes pass measured contrast thresholds.", "Molempien teemojen värit läpäisevät mitatut kontrastirajat.", contrast_check),
     ("og-lock", "Open Graph images match their source inputs.", "Open Graph -kuvat vastaavat lähdesisältöään.", og_lock_check),
     ("print", "Both print CVs include localized content and noindex.", "Molemmat tulostettavat CV:t sisältävät kieliversion ja noindex-merkinnän.", print_cv_check),
+    ("seo-description", "Localized SEO descriptions match Open Graph and llms.txt.", "SEO-kuvaukset vastaavat Open Graph- ja llms.txt-sisältöä.", seo_description_check),
     ("privacy", "No private contact details are included.", "Yksityisiä yhteystietoja ei ole lisätty.", privacy_check),
     ("freshness", "Committed site files match a fresh temporary build.", "Julkaistut sivutiedostot vastaavat väliaikaista uutta koostetta.", freshness_check),
 ]
