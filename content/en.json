@@ -159,7 +159,9 @@
     "teamSize": "{count} people",
     "github": "GitHub",
     "linkedin": "LinkedIn",
-    "proofSkill": "See proof for {skill}"
+    "proofSkill": "See proof for {skill}",
+    "emailMe": "Email me",
+    "emailSubject": "Summer job / internship enquiry"
   },
   "hero": {
     "prompt": "whoami",

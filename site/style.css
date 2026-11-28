@@ -147,3 +147,6 @@ html.timeline-filters-ready .filters { display: flex; }
 @media print { :root { color-scheme: light; --background: #fff; --surface: #fff; --text: #000; --muted: #333; --border: #aaa; --accent: #000; --tok-key: #005a9c; --tok-str: #765000; } body { max-width: none; padding: 0; color: #000; background: #fff; font-size: 11pt; } .topbar, .skip-link, .language-switch, .theme-toggle, .back-to-top { display: none !important; } a { color: #000; } .timeline-entry, .entry-card { break-inside: avoid; } }
 
 .skill-proof { text-underline-offset: .18em; }
+
+.contact-buttons a.email-cta { color: var(--background); background: var(--accent); font-weight: 700; }
+.contact-buttons a.email-cta:hover { color: var(--background); }

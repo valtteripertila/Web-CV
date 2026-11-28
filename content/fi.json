@@ -159,7 +159,9 @@
     "teamSize": "{count} henkilöä",
     "github": "GitHub",
     "linkedin": "LinkedIn",
-    "proofSkill": "Katso näyttö taidosta {skill}"
+    "proofSkill": "Katso näyttö taidosta {skill}",
+    "emailMe": "Lähetä sähköpostia",
+    "emailSubject": "Kesätyö / harjoittelu"
   },
   "hero": {
     "prompt": "whoami",

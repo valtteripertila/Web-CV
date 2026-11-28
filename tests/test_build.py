@@ -167,6 +167,19 @@ class BuildTests(unittest.TestCase):
         build.validate_timeline([legacy],legacy_errors)
         self.assertEqual([],legacy_errors)
 
+    def test_hero_email_cta_has_encoded_localized_subject_and_social_links(self):
+        en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
+        fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))
+        shared=json.loads((ROOT/"content/shared.json").read_text(encoding="utf-8"))
+        en_html=sitebuilder.home_sections("en",shared,en,[],en["ui"])
+        fi_html=sitebuilder.home_sections("fi",shared,fi,[],fi["ui"])
+        self.assertIn('mailto:'+shared["email"]+'?subject=Summer%20job%20%2F%20internship%20enquiry',en_html)
+        self.assertIn('>Email me</a>',en_html)
+        self.assertIn('subject=Kes%C3%A4ty%C3%B6%20%2F%20harjoittelu',fi_html)
+        self.assertIn('>Lähetä sähköpostia</a>',fi_html)
+        self.assertIn('href="'+shared["github"]+'"',en_html)
+        self.assertIn('href="'+shared["linkedin"]+'"',en_html)
+
     def test_evidence_skills_link_to_existing_timeline_anchors_with_localized_aria(self):
         en=json.loads((ROOT/"content/en.json").read_text(encoding="utf-8"))
         fi=json.loads((ROOT/"content/fi.json").read_text(encoding="utf-8"))

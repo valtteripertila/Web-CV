@@ -8,7 +8,7 @@ import re
 import shutil
 from datetime import date
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 from tools.quality import contrast_report
 
@@ -230,7 +230,10 @@ def home_sections(lang, shared, text, timeline, ui, sample=False, root=None):
     result = []
     hero = text.get("hero", {})
     status = [(row.get("key", ""), row.get("value", "")) for row in hero.get("status", []) if filled(row.get("value"))]
-    hero_links = " ".join(filter(None, (link(shared.get("github"), ui["github"]), link(shared.get("linkedin"), ui["linkedin"]))))
+    email = shared.get("email", "")
+    subject = quote(ui["emailSubject"], safe="") if email else ""
+    email_cta = f'<a class="email-cta" href="{esc("mailto:" + email + "?subject=" + subject)}">{esc(ui["emailMe"])}</a>' if email else ""
+    hero_links = " ".join(filter(None, (email_cta, link(shared.get("github"), ui["github"]), link(shared.get("linkedin"), ui["linkedin"]))))
     hero_links_html = f'<div class="contact-buttons hero-links">{hero_links}</div>' if hero_links else ""
     result.append(f'<section class="hero"><p class="shell-prompt">$ {esc(hero.get("prompt", "whoami"))}</p><h1>{esc(shared.get("name", ""))}</h1><p class="headline">{esc(text.get("headline", ""))}</p><p class="summary">{esc(text.get("summary", ""))}</p>{code_panel(status,"hero-code")}{hero_links_html}</section>')
     visible_items = [(index, item) for index, item in enumerate(timeline)
